@@ -28,11 +28,14 @@
  */
 namespace OCA\User_LDAP\Jobs;
 
-use OC\BackgroundJob\TimedJob;
+use OCP\AppFramework\Utility\ITimeFactory;
+use OCP\BackgroundJob\TimedJob;
 use OCA\User_LDAP\Group_Proxy;
+use OCP\DB\Exception;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Group\Events\UserAddedEvent;
 use OCP\Group\Events\UserRemovedEvent;
+use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\IGroupManager;
 use OCP\IUser;
@@ -40,20 +43,14 @@ use OCP\IUserManager;
 use Psr\Log\LoggerInterface;
 
 class UpdateGroups extends TimedJob {
-	private $groupsFromDB;
-
-	/** @var Group_Proxy */
-	private $groupBackend;
-	/** @var IEventDispatcher */
-	private $dispatcher;
-	/** @var IGroupManager */
-	private $groupManager;
-	/** @var IUserManager */
-	private $userManager;
-	/** @var LoggerInterface */
-	private $logger;
-	/** @var IDBConnection */
-	private $dbc;
+    /** @var ?array<string, array<string, string>>  */
+	private ?array $groupsFromDB = null;
+	private Group_Proxy $groupBackend;
+	private IEventDispatcher $dispatcher;
+	private IGroupManager $groupManager;
+	private IUserManager $userManager;
+	private LoggerInterface $logger;
+	private IDBConnection $dbc;
 
 	public function __construct(
 		Group_Proxy $groupBackend,
@@ -61,9 +58,12 @@ class UpdateGroups extends TimedJob {
 		IGroupManager $groupManager,
 		IUserManager $userManager,
 		LoggerInterface $logger,
-		IDBConnection $dbc
+		IDBConnection $dbc,
+		IConfig $config,
+		ITimeFactory $timeFactory
 	) {
-		$this->interval = $this->getRefreshInterval();
+		parent::__construct($timeFactory);
+		$this->interval = $config->getAppValue('user_ldap', 'bgjRefreshInterval', 3600);
 		$this->groupBackend = $groupBackend;
 		$this->dispatcher = $dispatcher;
 		$this->groupManager = $groupManager;
@@ -73,26 +73,23 @@ class UpdateGroups extends TimedJob {
 	}
 
 	/**
-	 * @return int
-	 */
-	private function getRefreshInterval() {
-		//defaults to every hour
-		return \OC::$server->getConfig()->getAppValue('user_ldap', 'bgjRefreshInterval', 3600);
-	}
-
-	/**
 	 * @param mixed $argument
+	 * @throws Exception
 	 */
 	public function run($argument) {
 		$this->updateGroups();
 	}
 
-	public function updateGroups() {
+	/**
+	 * @throws Exception
+	 */
+	public function updateGroups(): void {
 		$this->logger->debug(
 			'Run background job "updateGroups"',
 			['app' => 'user_ldap']
 		);
 
+		/** @var string[] $knownGroups */
 		$knownGroups = array_keys($this->getKnownGroups());
 		$actualGroups = $this->groupBackend->getGroups();
 
@@ -115,11 +112,12 @@ class UpdateGroups extends TimedJob {
 	}
 
 	/**
-	 * @return array
+	 * @return array<string, array<string, string>>
+	 * @throws Exception
 	 */
-	private function getKnownGroups() {
+	private function getKnownGroups(): array {
 		if (is_array($this->groupsFromDB)) {
-			$this->groupsFromDB;
+			return $this->groupsFromDB;
 		}
 		$qb = $this->dbc->getQueryBuilder();
 		$qb->select(['owncloudname', 'owncloudusers'])
@@ -137,7 +135,11 @@ class UpdateGroups extends TimedJob {
 		return $this->groupsFromDB;
 	}
 
-	private function handleKnownGroups(array $groups) {
+	/**
+	 * @param string[] $groups
+	 * @throws Exception
+	 */
+	private function handleKnownGroups(array $groups): void {
 		$this->logger->debug(
 			'bgJ "updateGroups" – Dealing with known Groups.',
 			['app' => 'user_ldap']
@@ -202,8 +204,9 @@ class UpdateGroups extends TimedJob {
 
 	/**
 	 * @param string[] $createdGroups
+	 * @throws Exception
 	 */
-	private function handleCreatedGroups($createdGroups) {
+	private function handleCreatedGroups(array $createdGroups): void {
 		$this->logger->debug(
 			'bgJ "updateGroups" – dealing with created Groups.',
 			['app' => 'user_ldap']
@@ -232,8 +235,9 @@ class UpdateGroups extends TimedJob {
 
 	/**
 	 * @param string[] $removedGroups
+	 * @throws Exception
 	 */
-	private function handleRemovedGroups($removedGroups) {
+	private function handleRemovedGroups(array $removedGroups): void {
 		$this->logger->debug(
 			'bgJ "updateGroups" – dealing with removed groups.',
 			['app' => 'user_ldap']
