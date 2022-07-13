@@ -66,6 +66,10 @@ class PublicKeyTokenProviderTest extends TestCase {
 				['secret', '', '1f4h9s'],
 				['openssl', [], []],
 			]);
+		$this->config->method('getSystemValueBool')
+			->willReturnMap([
+				['auth.storeCryptedPassword', true, true],
+			]);
 		$this->logger = $this->createMock(LoggerInterface::class);
 		$this->timeFactory = $this->createMock(ITimeFactory::class);
 		$this->time = 1313131;
