@@ -173,11 +173,11 @@ $canCreateMounts = $_['visibilityType'] === BackendService::VISIBILITY_ADMIN || 
 					</td>
 				<?php endif; ?>
 				<td class="mountOptionsToggle hidden">
-					<div class="icon-more" title="<?php p($l->t('Advanced settings')); ?>"></div>
+					<div class="icon-more" title="<?php p($l->t('Advanced settings')); ?>" role="button" tabindex=0 aria-expanded=false></div>
 					<input type="hidden" class="mountOptions" value="" />
 				</td>
 				<td class="save hidden">
-					<div class="icon-checkmark" title="<?php p($l->t('Save')); ?>"></div>
+					<div class="icon-checkmark" title="<?php p($l->t('Save')); ?>" role="button" tabindex=0></div>
 				</td>
 			</tr>
 		</tbody>
