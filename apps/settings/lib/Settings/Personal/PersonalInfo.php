@@ -143,10 +143,8 @@ class PersonalInfo implements ISettings {
 			'usage' => \OC_Helper::humanFileSize($storageInfo['used']),
 			'usage_relative' => round($storageInfo['relative']),
 			'quota' => $storageInfo['quota'],
-			'avatarChangeSupported' => $user->canChangeAvatar(),
 			'federationEnabled' => $federationEnabled,
 			'lookupServerUploadEnabled' => $lookupServerUploadEnabled,
-			'avatarScope' => $account->getProperty(IAccountManager::PROPERTY_AVATAR)->getScope(),
 			'phone' => $account->getProperty(IAccountManager::PROPERTY_PHONE)->getValue(),
 			'phoneScope' => $account->getProperty(IAccountManager::PROPERTY_PHONE)->getScope(),
 			'groups' => $this->getGroups($user),
@@ -156,6 +154,7 @@ class PersonalInfo implements ISettings {
 
 		$personalInfoParameters = [
 			'userId' => $uid,
+			'avatar' => $this->getProperty($account, IAccountManager::PROPERTY_AVATAR),
 			'displayName' => $this->getProperty($account, IAccountManager::PROPERTY_DISPLAYNAME),
 			'emailMap' => $this->getEmailMap($account),
 			'location' => $this->getProperty($account, IAccountManager::PROPERTY_ADDRESS),
@@ -171,6 +170,7 @@ class PersonalInfo implements ISettings {
 		];
 
 		$accountParameters = [
+			'avatarChangeSupported' => $user->canChangeAvatar(),
 			'displayNameChangeSupported' => $user->canChangeDisplayName(),
 			'lookupServerUploadEnabled' => $lookupServerUploadEnabled,
 		];
