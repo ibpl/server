@@ -128,21 +128,6 @@ export default {
 		resize: vertical;
 		grid-area: 1 / 1;
 		width: 100%;
-		margin: 3px 3px 3px 0;
-		padding: 7px 14px;
-		color: var(--color-main-text);
-		border: 1px solid var(--color-border-dark);
-		border-radius: var(--border-radius);
-		background-color: var(--color-main-background);
-		font-family: var(--font-face);
-		cursor: text;
-
-		&:hover,
-		&:focus,
-		&:active {
-			border-color: var(--color-primary-element) !important;
-			outline: none !important;
-		}
 	}
 
 	.biography__actions-container {
