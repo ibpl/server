@@ -78,9 +78,9 @@
 					{{ t('files_sharing', 'Allow resharing') }}
 				</ActionCheckbox>
 
-				<ActionCheckbox ref="canDownload"
+				<ActionCheckbox v-if="isSetDownloadButtonVisible"
+					ref="canDownload"
 					:checked.sync="canDownload"
-					v-if="isSetDownloadButtonVisible"
 					:disabled="saving || !canSetDownload">
 					{{ allowDownloadText }}
 				</ActionCheckbox>
