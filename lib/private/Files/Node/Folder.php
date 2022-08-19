@@ -193,7 +193,7 @@ class Folder extends Node implements \OCP\Files\Folder {
 			if ($result === false) {
 				throw new NotPermittedException('Could not create path');
 			}
-			$node = new File($this->root, $this->view, $fullPath, $this);
+			$node = new File($this->root, $this->view, $fullPath, null, $this);
 			$this->sendHooks(['postWrite', 'postCreate'], [$node]);
 			return $node;
 		}
