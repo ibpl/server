@@ -26,15 +26,15 @@
  */
 namespace OC\Migration;
 
+use OCP\BackgroundJob\IJobList;
+use OCP\EventDispatcher\IEventDispatcher;
+use OCP\ILogger;
 use OC\BackgroundJob\JobList;
 use OC\BackgroundJob\TimedJob;
 use OC\NeedsUpdateException;
 use OC\Repair;
 use OC_App;
-use OCP\BackgroundJob\IJobList;
-use OCP\ILogger;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class BackgroundRepair
@@ -49,10 +49,9 @@ class BackgroundRepair extends TimedJob {
 	/** @var ILogger */
 	private $logger;
 
-	/** @var EventDispatcherInterface */
-	private $dispatcher;
+	private IEventDispatcher $dispatcher;
 
-	public function __construct(EventDispatcherInterface $dispatcher) {
+	public function __construct(IEventDispatcher $dispatcher) {
 		$this->dispatcher = $dispatcher;
 	}
 
