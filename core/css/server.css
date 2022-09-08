@@ -4267,6 +4267,7 @@ kbd {
 #content[class*=app-] .popovermenu li > button,
 #content[class*=app-] .popovermenu li > a,
 #content[class*=app-] .popovermenu li > .menuitem {
+  width: fit-content;
   /* DEPRECATED! old img in popover fallback
   * TODO: to remove */
 }
