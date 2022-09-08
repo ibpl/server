@@ -26,30 +26,38 @@ declare(strict_types=1);
 namespace OCA\Theming\Listener;
 
 use OCA\Theming\AppInfo\Application;
+use OCA\Theming\Service\BackgroundService;
 use OCA\Theming\Service\JSDataService;
 use OCA\Theming\Service\ThemeInjectionService;
-use OCA\Theming\Service\ThemesService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\IConfig;
 use OCP\IInitialStateService;
 use OCP\IServerContainer;
 use OCP\IURLGenerator;
+use OCP\IUserSession;
 
 class BeforeTemplateRenderedListener implements IEventListener {
 
 	private IInitialStateService $initialStateService;
 	private IServerContainer $serverContainer;
 	private ThemeInjectionService $themeInjectionService;
+	private IUserSession $userSession;
+	private IConfig $config;
+	private IURLGenerator $urlGenerator;
 
 	public function __construct(
 		IInitialStateService $initialStateService,
 		IServerContainer $serverContainer,
-		ThemeInjectionService $themeInjectionService
+		ThemeInjectionService $themeInjectionService,
+		IUserSession $userSession,
+		IConfig $config
 	) {
 		$this->initialStateService = $initialStateService;
 		$this->serverContainer = $serverContainer;
 		$this->themeInjectionService = $themeInjectionService;
+		$this->userSession = $userSession;
+		$this->config = $config;
 	}
 
 	public function handle(Event $event): void {
@@ -59,6 +67,32 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		});
 
 		$this->themeInjectionService->injectHeaders();
+
+		$userId = $this->userSession->getUser()->getUID();
+
+		$this->initialStateService->provideInitialState(
+			Application::APP_ID,
+			'background',
+			$this->config->getUserValue($userId, Application::APP_ID, 'background', 'default'),
+		);
+
+		$this->initialStateService->provideInitialState(
+			Application::APP_ID,
+			'backgroundVersion',
+			$this->config->getUserValue($userId, Application::APP_ID, 'backgroundVersion', 0),
+		);
+
+		$this->initialStateService->provideInitialState(
+			Application::APP_ID,
+			'themingDefaultBackground',
+			 $this->config->getAppValue('theming', 'backgroundMime', ''),
+		);
+
+		$this->initialStateService->provideInitialState(
+			Application::APP_ID,
+			'shippedBackgrounds',
+			 BackgroundService::SHIPPED_BACKGROUNDS,
+		);
 
 		// Making sure to inject just after core
 		\OCP\Util::addScript('theming', 'theming', 'core');

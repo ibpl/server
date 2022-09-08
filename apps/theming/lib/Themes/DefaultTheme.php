@@ -240,13 +240,13 @@ class DefaultTheme implements ITheme {
 		$appManager = Server::get(IAppManager::class);
 		$userSession = Server::get(IUserSession::class);
 		$user = $userSession->getUser();
-		if ($appManager->isEnabledForUser('dashboard') && $user !== null) {
-			$dashboardBackground = $this->config->getUserValue($user->getUID(), 'dashboard', 'background', 'default');
+		if ($appManager->isEnabledForUser('theming') && $user !== null) {
+			$themingBackground = $this->config->getUserValue($user->getUID(), 'theming', 'background', 'default');
 
-			if ($dashboardBackground === 'custom') {
-				$variables['--image-main-background'] = "url('" . $this->urlGenerator->linkToRouteAbsolute('dashboard.dashboard.getBackground') . "')";
-			} elseif ($dashboardBackground !== 'default' && substr($dashboardBackground, 0, 1) !== '#') {
-				$variables['--image-main-background'] = "url('/apps/dashboard/img/" . $dashboardBackground . "')";
+			if ($themingBackground === 'custom') {
+				$variables['--image-main-background'] = "url('" . $this->urlGenerator->linkToRouteAbsolute('theming.theming.getBackground') . "')";
+			} elseif ($themingBackground !== 'default' && substr($themingBackground, 0, 1) !== '#') {
+				$variables['--image-main-background'] = "url('" . $this->urlGenerator->linkTo('theming', "/img/background/$themingBackground") . "')";
 			}
 		}
 

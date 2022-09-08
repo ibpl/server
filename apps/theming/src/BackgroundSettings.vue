@@ -3,7 +3,8 @@
   - @copyright Copyright (c) 2022 Greta Doci <gretadoci@gmail.com>
   -
   - @author Julius Härtl <jus@bitgrid.net>
-  - @author Greta Doci
+  - @author Greta Doci <gretadoci@gmail.com>
+  - @author Christopher Ng <chrng8@gmail.com>
   -
   - @license GNU AGPL version 3 or any later version
   -
@@ -56,13 +57,18 @@
 <script>
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
+import Tooltip from '@nextcloud/vue/dist/Directives/Tooltip'
 import { loadState } from '@nextcloud/initial-state'
-import getBackgroundUrl from '../src/helpers/getBackgroundUrl'
-import prefixWithBaseUrl from '../src/helpers/prefixWithBaseUrl'
+import { getBackgroundUrl } from '../src/helpers/getBackgroundUrl'
+import { prefixWithBaseUrl } from '../src/helpers/prefixWithBaseUrl'
+
 const shippedBackgroundList = loadState('theming', 'shippedBackgrounds')
 
 export default {
 	name: 'BackgroundSettings',
+	directives: {
+		Tooltip,
+	},
 	props: {
 		background: {
 			type: String,
@@ -81,12 +87,12 @@ export default {
 	},
 	computed: {
 		shippedBackgrounds() {
-			return Object.keys(shippedBackgroundList).map((item) => {
+			return Object.keys(shippedBackgroundList).map(fileName => {
 				return {
-					name: item,
-					url: prefixWithBaseUrl(item),
-					preview: prefixWithBaseUrl('previews/' + item),
-					details: shippedBackgroundList[item],
+					name: fileName,
+					url: prefixWithBaseUrl(fileName),
+					preview: prefixWithBaseUrl('preview/' + fileName),
+					details: shippedBackgroundList[fileName],
 				}
 			})
 		},

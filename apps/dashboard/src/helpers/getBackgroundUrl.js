@@ -22,16 +22,12 @@
  *
  */
 
-// FIXME hoist this into a package? The same logic is used in `apps/dashboard/src/helpers/getBackgroundUrl.js`
-
 import { generateUrl } from '@nextcloud/router'
 import { prefixWithBaseUrl } from './prefixWithBaseUrl.js'
 
 export const getBackgroundUrl = (background, time = 0, themingDefaultBackground = '') => {
-	const enabledThemes = window.OCA?.Theming?.enabledThemes || []
-	const isDarkTheme = (enabledThemes.length === 0 || enabledThemes[0] === 'default')
-		? window.matchMedia('(prefers-color-scheme: dark)').matches
-		: enabledThemes.join('').indexOf('dark') !== -1
+	const enabledThemes = window.OCA.Theming.enabledThemes
+	const isDarkTheme = enabledThemes.join('').indexOf('dark') !== -1
 
 	if (background === 'default') {
 		if (themingDefaultBackground && themingDefaultBackground !== 'backgroundColor') {
