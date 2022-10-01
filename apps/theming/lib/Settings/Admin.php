@@ -30,16 +30,19 @@ namespace OCA\Theming\Settings;
 use OCA\Theming\ImageManager;
 use OCA\Theming\ThemingDefaults;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Services\IInitialState;
 use OCP\IConfig;
 use OCP\IL10N;
 use OCP\IURLGenerator;
 use OCP\Settings\IDelegatedSettings;
+use OCP\Util;
 
 class Admin implements IDelegatedSettings {
 	private string $appName;
 	private IConfig $config;
 	private IL10N $l;
 	private ThemingDefaults $themingDefaults;
+	private IInitialState $initialState;
 	private IURLGenerator $urlGenerator;
 	private ImageManager $imageManager;
 
@@ -47,12 +50,14 @@ class Admin implements IDelegatedSettings {
 								IConfig $config,
 								IL10N $l,
 								ThemingDefaults $themingDefaults,
+								IInitialState $initialState,
 								IURLGenerator $urlGenerator,
 								ImageManager $imageManager) {
 		$this->appName = $appName;
 		$this->config = $config;
 		$this->l = $l;
 		$this->themingDefaults = $themingDefaults;
+		$this->initialState = $initialState;
 		$this->urlGenerator = $urlGenerator;
 		$this->imageManager = $imageManager;
 	}
@@ -70,21 +75,27 @@ class Admin implements IDelegatedSettings {
 		}
 
 		$parameters = [
-			'themable' => $themable,
-			'errorMessage' => $errorMessage,
+			// Contains image mimes
+			'images' => $this->imageManager->getCustomImages(),
+		];
+
+		$this->initialState->provideInitialState('adminThemingParameters', [
+			'isThemable' => $themable,
+			'notThemableErrorMessage' => $errorMessage,
 			'name' => $this->themingDefaults->getEntity(),
 			'url' => $this->themingDefaults->getBaseUrl(),
 			'slogan' => $this->themingDefaults->getSlogan(),
 			'color' => $this->themingDefaults->getColorPrimary(),
-			'uploadLogoRoute' => $this->urlGenerator->linkToRoute('theming.Theming.uploadImage'),
+			'legalNoticeUrl' => $this->themingDefaults->getImprintUrl(),
+			'privacyPolicyUrl' => $this->themingDefaults->getPrivacyUrl(),
+			'docUrl' => $this->urlGenerator->linkToDocs('admin-theming'),
+			'docUrlIcons' => $this->urlGenerator->linkToDocs('admin-theming-icons'),
 			'canThemeIcons' => $this->imageManager->shouldReplaceIcons(),
-			'iconDocs' => $this->urlGenerator->linkToDocs('admin-theming-icons'),
-			'images' => $this->imageManager->getCustomImages(),
-			'imprintUrl' => $this->themingDefaults->getImprintUrl(),
-			'privacyUrl' => $this->themingDefaults->getPrivacyUrl(),
-		];
+		]);
 
-		return new TemplateResponse($this->appName, 'settings-admin', $parameters, '');
+		Util::addScript($this->appName, 'admin-theming');
+
+		return new TemplateResponse($this->appName, 'settings-admin');
 	}
 
 	/**
