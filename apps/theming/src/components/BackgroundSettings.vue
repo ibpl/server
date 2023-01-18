@@ -67,16 +67,11 @@
 		<!-- Background set selection -->
 		<button v-for="shippedBackground in shippedBackgrounds"
 			:key="shippedBackground.name"
-<<<<<<< HEAD
-			v-tooltip="shippedBackground.details.attribution"
+			:title="shippedBackground.details.attribution"
+			:aria-label="shippedBackground.details.attribution"
 			:class="{ 'icon-loading': loading === shippedBackground.name, active: background === shippedBackground.name }"
 			tabindex="0"
 			class="background"
-=======
-			:title="shippedBackground.details.attribution"
-			:aria-label="shippedBackground.details.attribution"
-			:class="{ 'icon-loading': loading === shippedBackground.name, 'background--active': backgroundImage === shippedBackground.name }"
->>>>>>> 087f445499e (Replace custom tooltips with native tooltips)
 			:data-color-bright="shippedBackground.details.theming === 'dark'"
 			:style="{ 'background-image': 'url(' + shippedBackground.preview + ')' }"
 			@click="setShipped(shippedBackground.name)" />
@@ -91,14 +86,6 @@ import { prefixWithBaseUrl } from '../helpers/prefixWithBaseUrl.js'
 import axios from '@nextcloud/axios'
 import debounce from 'debounce'
 import NcColorPicker from '@nextcloud/vue/dist/Components/NcColorPicker'
-<<<<<<< HEAD
-import Tooltip from '@nextcloud/vue/dist/Directives/Tooltip'
-=======
-import Vibrant from 'node-vibrant'
-import { Palette } from 'node-vibrant/lib/color'
-import { getFilePickerBuilder } from '@nextcloud/dialogs'
-import { getCurrentUser } from '@nextcloud/auth'
->>>>>>> 087f445499e (Replace custom tooltips with native tooltips)
 
 const shippedBackgroundList = loadState('theming', 'shippedBackgrounds')
 
