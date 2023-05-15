@@ -40,8 +40,8 @@ trait CommonThemeTrait {
 	protected function generatePrimaryVariables(string $colorMainBackground, string $colorMainText): array {
 		$isBrightColor = $this->util->isBrightColor($colorMainBackground);
 		$colorPrimaryElement = $this->util->elementColor($this->primaryColor, $isBrightColor);
-		$colorPrimaryLight = $this->util->mix($colorPrimaryElement, $colorMainBackground, -80);
-		$colorPrimaryElementLight = $this->util->mix($colorPrimaryElement, $colorMainBackground, -80);
+		$colorPrimaryLight = $this->util->mix($this->primaryColor, $colorMainBackground, -70);
+		$colorPrimaryElementLight = $this->util->mix($colorPrimaryElement, $colorMainBackground, -70);
 
 		// primary related colours
 		return [
@@ -60,7 +60,7 @@ trait CommonThemeTrait {
 			'--color-primary-hover' => $this->util->mix($this->primaryColor, $colorMainBackground, 60),
 			'--color-primary-light' => $colorPrimaryLight,
 			'--color-primary-light-text' => $this->util->mix($this->primaryColor, $this->util->invertTextColor($colorPrimaryLight) ? '#000000' : '#ffffff', -20),
-			'--color-primary-light-hover' => $this->util->mix($colorPrimaryLight, $colorMainText, 90),
+			'--color-primary-light-hover' => $this->util->mix($colorPrimaryLight, $colorMainText, 80),
 
 			// used for buttons, inputs...
 			'--color-primary-element' => $colorPrimaryElement,
@@ -69,7 +69,7 @@ trait CommonThemeTrait {
 
 			// used for hover/focus states
 			'--color-primary-element-light' => $colorPrimaryElementLight,
-			'--color-primary-element-light-hover' => $this->util->mix($colorPrimaryElementLight, $colorMainText, 90),
+			'--color-primary-element-light-hover' => $this->util->mix($colorPrimaryElementLight, $colorMainText, 80),
 			'--color-primary-element-light-text' => $this->util->mix($colorPrimaryElement, $this->util->invertTextColor($colorPrimaryElementLight) ? '#000000' : '#ffffff', -20),
 			// mostly used for disabled states
 			'--color-primary-element-text-dark' => $this->util->darken($this->util->invertTextColor($colorPrimaryElement) ? '#000000' : '#ffffff', 7),
