@@ -50,6 +50,7 @@ use Sabre\VObject\ParseException;
 use Sabre\VObject\Recur\EventIterator;
 use Sabre\VObject\Recur\MaxInstancesExceededException;
 use Sabre\VObject\Recur\NoInstancesException;
+use Throwable;
 use function count;
 use function strcasecmp;
 
@@ -243,7 +244,14 @@ class ReminderService {
 		$isRecurring = $masterItem ? $this->isRecurring($masterItem) : false;
 
 		foreach ($recurrenceExceptions as $recurrenceException) {
-			$eventHash = $this->getEventHash($recurrenceException);
+			try {
+				$eventHash = $this->getEventHash($recurrenceException);
+			} catch (Throwable $e) {
+				$this->logger->warning("Could not hash event for reminder: " . $e->getMessage(), [
+					'exception' => $e,
+				]);
+				continue;
+			}
 
 			if (!isset($recurrenceException->VALARM)) {
 				continue;
@@ -267,7 +275,14 @@ class ReminderService {
 		if ($masterItem) {
 			$processedAlarms = [];
 			$masterAlarms = [];
-			$masterHash = $this->getEventHash($masterItem);
+			try {
+				$masterHash = $this->getEventHash($recurrenceException);
+			} catch (Throwable $e) {
+				$this->logger->warning("Could not hash event for reminder: " . $e->getMessage(), [
+					'exception' => $e,
+				]);
+				return;
+			}
 
 			if (!isset($masterItem->VALARM)) {
 				return;
@@ -397,7 +412,14 @@ class ReminderService {
 										   bool $isRecurring = false,
 										   bool $isRecurrenceException = false):array {
 		if ($eventHash === null) {
-			$eventHash = $this->getEventHash($valarm->parent);
+			try {
+				$eventHash = $this->getEventHash($valarm->parent);
+			} catch (Throwable $e) {
+				$this->logger->warning("Could not hash event for reminder: " . $e->getMessage(), [
+					'exception' => $e,
+				]);
+				return [];
+			}
 		}
 		if ($alarmHash === null) {
 			$alarmHash = $this->getAlarmHash($valarm);
