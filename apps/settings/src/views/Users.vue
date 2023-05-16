@@ -89,9 +89,9 @@
 							input-id="default-quota-multiselect"
 							:taggable="true"
 							:options="quotaOptions"
+							:create-option="validateQuota"
 							:placeholder="t('settings', 'Select default quota')"
 							:close-on-select="true"
-							:create-option="validateQuota"
 							@option:selected="setDefaultQuota" />
 					</div>
 					<div>
@@ -396,10 +396,11 @@ export default {
 			// only used for new presets sent through @Tag
 			const validQuota = OC.Util.computerFileSize(quota)
 			if (validQuota === null) {
-				return this.setDefaultQuota('none')
+				return this.unlimitedQuota
 			} else {
 				// unify format output
-				return this.setDefaultQuota(OC.Util.humanFileSize(OC.Util.computerFileSize(quota)))
+				quota =  OC.Util.humanFileSize(OC.Util.computerFileSize(quota))
+				return { id: quota, label: quota }
 			}
 		},
 
