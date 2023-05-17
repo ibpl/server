@@ -232,12 +232,13 @@ class SystemAddressbook extends AddressBook {
 		}
 
 		/** @psalm-suppress NoInterfaceProperties */
-		if (!isset($this->request->server['PHP_AUTH_USER']) || $this->request->server['PHP_AUTH_USER'] !== 'system') {
+		$server = $this->request->server;
+		if (!isset($server['PHP_AUTH_USER']) || $server['PHP_AUTH_USER'] !== 'system') {
 			return false;
 		}
 
 		/** @psalm-suppress NoInterfaceProperties */
-		$sharedSecret = $this->request->server['PHP_AUTH_PW'] ?? null;
+		$sharedSecret = $server['PHP_AUTH_PW'] ?? null;
 		if ($sharedSecret === null) {
 			return false;
 		}
