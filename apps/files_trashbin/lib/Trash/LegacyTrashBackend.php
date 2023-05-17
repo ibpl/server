@@ -58,11 +58,12 @@ class LegacyTrashBackend implements ITrashBackend {
 			if (!$originalLocation) {
 				$originalLocation = $file->getName();
 			}
+			$trashFilename = Trashbin::getTrashFilename($file->getName(), $file->getMtime());
 			return new TrashItem(
 				$this,
 				$originalLocation,
 				$file->getMTime(),
-				$parentTrashPath . '/' . $file->getName() . ($isRoot ? '.d' . $file->getMtime() : ''),
+				$parentTrashPath . '/' . $file->getName() . ($isRoot ? substr($trashFilename, strrpos($trashFilename, '.d')) : ''),
 				$file,
 				$user
 			);
@@ -87,7 +88,7 @@ class LegacyTrashBackend implements ITrashBackend {
 	public function removeItem(ITrashItem $item) {
 		$user = $item->getUser();
 		if ($item->isRootItem()) {
-			$path = substr($item->getTrashPath(), 0, -strlen('.d' . $item->getDeletedTime()));
+			$path = substr($item->getTrashPath(), 0, strrpos($item->getTrashPath(), '.d'));
 			Trashbin::delete($path, $user->getUID(), $item->getDeletedTime());
 		} else {
 			Trashbin::delete($item->getTrashPath(), $user->getUID(), null);
