@@ -224,9 +224,9 @@ class HookConnector {
 				$info = null;
 			}
 			if (Filesystem::is_dir($path)) {
-				return new NonExistingFolder($this->root, $this->view, $fullPath, $info);
+				return new NonExistingFolder($this->root, $this->view, $fullPath, $info, $this->root->get(dirname($fullPath)));
 			} else {
-				return new NonExistingFile($this->root, $this->view, $fullPath, $info);
+				return new NonExistingFile($this->root, $this->view, $fullPath, $info, $this->root->get(dirname($fullPath)));
 			}
 		}
 		if ($info->getType() === FileInfo::TYPE_FILE) {

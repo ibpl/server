@@ -481,7 +481,7 @@ abstract class NodeTest extends \Test\TestCase {
 		$parentNode = new \OC\Files\Node\Folder($this->root, $this->view, '/bar');
 		$newNode = $this->createTestNode($this->root, $this->view, '/bar/asd');
 
-		$this->root->expects($this->exactly(2))
+		$this->root->expects($this->any())
 			->method('get')
 			->willReturnMap([
 				['/bar/asd', $newNode],

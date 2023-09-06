@@ -40,7 +40,7 @@ class File extends Node implements \OCP\Files\File {
 	 * @return NonExistingFile non-existing node
 	 */
 	protected function createNonExistingNode($path) {
-		return new NonExistingFile($this->root, $this->view, $path);
+		return new NonExistingFile($this->root, $this->view, $path, $this->root->get(dirname($path)));
 	}
 
 	/**
