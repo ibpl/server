@@ -1,2 +1,172 @@
-({39583:function(){window.addEventListener("DOMContentLoaded",(()=>{$("#loglevel").change((function(){$.post(OC.generateUrl("/settings/admin/log/level"),{level:$(this).val()},(()=>{OC.Log.reload()}))})),$("#mail_smtpauth").change((function(){this.checked?$("#mail_credentials").removeClass("hidden"):$("#mail_credentials").addClass("hidden")})),$("#mail_smtpmode").change((function(){"smtp"!==$(this).val()?($("#setting_smtpauth").addClass("hidden"),$("#setting_smtphost").addClass("hidden"),$("#mail_smtpsecure_label").addClass("hidden"),$("#mail_smtpsecure").addClass("hidden"),$("#mail_credentials").addClass("hidden"),$("#mail_sendmailmode_label, #mail_sendmailmode").removeClass("hidden")):($("#setting_smtpauth").removeClass("hidden"),$("#setting_smtphost").removeClass("hidden"),$("#mail_smtpsecure_label").removeClass("hidden"),$("#mail_smtpsecure").removeClass("hidden"),$("#mail_smtpauth").is(":checked")&&$("#mail_credentials").removeClass("hidden"),$("#mail_sendmailmode_label, #mail_sendmailmode").addClass("hidden"))}));const e=function(){OC.PasswordConfirmation.requiresPasswordConfirmation()?OC.PasswordConfirmation.requirePasswordConfirmation(e):(OC.msg.startSaving("#mail_settings_msg"),$.ajax({url:OC.generateUrl("/settings/admin/mailsettings"),type:"POST",data:$("#mail_general_settings_form").serialize(),success:()=>{OC.msg.finishedSuccess("#mail_settings_msg",t("settings","Saved"))},error:e=>{OC.msg.finishedError("#mail_settings_msg",e.responseJSON)}}))},s=function(){OC.PasswordConfirmation.requiresPasswordConfirmation()?OC.PasswordConfirmation.requirePasswordConfirmation(s):(OC.msg.startSaving("#mail_settings_msg"),$.ajax({url:OC.generateUrl("/settings/admin/mailsettings/credentials"),type:"POST",data:$("#mail_credentials_settings").serialize(),success:()=>{OC.msg.finishedSuccess("#mail_settings_msg",t("settings","Saved"))},error:e=>{OC.msg.finishedError("#mail_settings_msg",e.responseJSON)}}))};$("#mail_general_settings_form").change(e),$("#mail_credentials_settings_submit").click(s),$("#mail_smtppassword").click((()=>{"text"===this.d&&"********"===this.S&&(this.d="password",this.S="")})),$("#sendtestemail").click((e=>{e.preventDefault(),OC.msg.startAction("#sendtestmail_msg",t("settings","Sending…")),$.ajax({url:OC.generateUrl("/settings/admin/mailtest"),type:"POST",success:()=>{OC.msg.finishedSuccess("#sendtestmail_msg",t("settings","Email sent"))},error:e=>{OC.msg.finishedError("#sendtestmail_msg",e.responseJSON)}})})),null!==document.getElementById("security-warning")&&$.when(OC.SetupChecks.checkWebDAV(),OC.SetupChecks.checkWellKnownUrl("GET","/.well-known/webfinger",OC.theme.docPlaceholderUrl,!0===$("#postsetupchecks").data("check-wellknown"),[200,404],!0),OC.SetupChecks.checkWellKnownUrl("GET","/.well-known/nodeinfo",OC.theme.docPlaceholderUrl,!0===$("#postsetupchecks").data("check-wellknown"),[200,404],!0),OC.SetupChecks.checkWellKnownUrl("PROPFIND","/.well-known/caldav",OC.theme.docPlaceholderUrl,!0===$("#postsetupchecks").data("check-wellknown")),OC.SetupChecks.checkWellKnownUrl("PROPFIND","/.well-known/carddav",OC.theme.docPlaceholderUrl,!0===$("#postsetupchecks").data("check-wellknown")),OC.SetupChecks.checkProviderUrl(OC.getRootPath()+"/ocm-provider/",OC.theme.docPlaceholderUrl,!0===$("#postsetupchecks").data("check-wellknown")),OC.SetupChecks.checkProviderUrl(OC.getRootPath()+"/ocs-provider/",OC.theme.docPlaceholderUrl,!0===$("#postsetupchecks").data("check-wellknown")),OC.SetupChecks.checkSetup(),OC.SetupChecks.checkGeneric(),OC.SetupChecks.checkWOFF2Loading(OC.filePath("core","","fonts/NotoSans-Regular-latin.woff2"),OC.theme.docPlaceholderUrl),OC.SetupChecks.checkDataProtected()).then(((e,s,t,n,i,a,l,d,r,c,o)=>{const m=[].concat(e,s,t,n,i,a,l,d,r,c,o),h=$("#postsetupchecks");$("#security-warning-state-loading").addClass("hidden");let C=!1;const g=h.find(".errors"),u=h.find(".warnings"),p=h.find(".info");for(let e=0;e<m.length;e++)switch(m[e].type){case OC.SetupChecks.MESSAGE_TYPE_INFO:p.append("<li>"+m[e].msg+"</li>");break;case OC.SetupChecks.MESSAGE_TYPE_WARNING:u.append("<li>"+m[e].msg+"</li>");break;case OC.SetupChecks.MESSAGE_TYPE_ERROR:default:g.append("<li>"+m[e].msg+"</li>")}g.find("li").length>0&&(g.removeClass("hidden"),C=!0),u.find("li").length>0&&(u.removeClass("hidden"),C=!0),p.find("li").length>0&&(p.removeClass("hidden"),C=!0),C?($("#postsetupchecks-hint").removeClass("hidden"),g.find("li").length>0?$("#security-warning-state-failure").removeClass("hidden"):$("#security-warning-state-warning").removeClass("hidden")):0===$("#security-warning").children("ul").children().length?$("#security-warning-state-ok").removeClass("hidden"):$("#security-warning-state-failure").removeClass("hidden")}))}))}})[39583]();
-//# sourceMappingURL=settings-legacy-admin.js.map?v=7be66bbde1dde0e14a61
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./apps/settings/src/admin.js":
+/*!************************************!*\
+  !*** ./apps/settings/src/admin.js ***!
+  \************************************/
+/***/ (function() {
+
+window.addEventListener('DOMContentLoaded', () => {
+  $('#loglevel').change(function () {
+    $.post(OC.generateUrl('/settings/admin/log/level'), {
+      level: $(this).val()
+    }, () => {
+      OC.Log.reload();
+    });
+  });
+  $('#mail_smtpauth').change(function () {
+    if (!this.checked) {
+      $('#mail_credentials').addClass('hidden');
+    } else {
+      $('#mail_credentials').removeClass('hidden');
+    }
+  });
+  $('#mail_smtpmode').change(function () {
+    if ($(this).val() !== 'smtp') {
+      $('#setting_smtpauth').addClass('hidden');
+      $('#setting_smtphost').addClass('hidden');
+      $('#mail_smtpsecure_label').addClass('hidden');
+      $('#mail_smtpsecure').addClass('hidden');
+      $('#mail_credentials').addClass('hidden');
+      $('#mail_sendmailmode_label, #mail_sendmailmode').removeClass('hidden');
+    } else {
+      $('#setting_smtpauth').removeClass('hidden');
+      $('#setting_smtphost').removeClass('hidden');
+      $('#mail_smtpsecure_label').removeClass('hidden');
+      $('#mail_smtpsecure').removeClass('hidden');
+      if ($('#mail_smtpauth').is(':checked')) {
+        $('#mail_credentials').removeClass('hidden');
+      }
+      $('#mail_sendmailmode_label, #mail_sendmailmode').addClass('hidden');
+    }
+  });
+  const changeEmailSettings = function () {
+    if (OC.PasswordConfirmation.requiresPasswordConfirmation()) {
+      OC.PasswordConfirmation.requirePasswordConfirmation(changeEmailSettings);
+      return;
+    }
+    OC.msg.startSaving('#mail_settings_msg');
+    $.ajax({
+      url: OC.generateUrl('/settings/admin/mailsettings'),
+      type: 'POST',
+      data: $('#mail_general_settings_form').serialize(),
+      success: () => {
+        OC.msg.finishedSuccess('#mail_settings_msg', t('settings', 'Saved'));
+      },
+      error: xhr => {
+        OC.msg.finishedError('#mail_settings_msg', xhr.responseJSON);
+      }
+    });
+  };
+  const toggleEmailCredentials = function () {
+    if (OC.PasswordConfirmation.requiresPasswordConfirmation()) {
+      OC.PasswordConfirmation.requirePasswordConfirmation(toggleEmailCredentials);
+      return;
+    }
+    OC.msg.startSaving('#mail_settings_msg');
+    $.ajax({
+      url: OC.generateUrl('/settings/admin/mailsettings/credentials'),
+      type: 'POST',
+      data: $('#mail_credentials_settings').serialize(),
+      success: () => {
+        OC.msg.finishedSuccess('#mail_settings_msg', t('settings', 'Saved'));
+      },
+      error: xhr => {
+        OC.msg.finishedError('#mail_settings_msg', xhr.responseJSON);
+      }
+    });
+  };
+  $('#mail_general_settings_form').change(changeEmailSettings);
+  $('#mail_credentials_settings_submit').click(toggleEmailCredentials);
+  $('#mail_smtppassword').click(() => {
+    if (this.type === 'text' && this.value === '********') {
+      this.type = 'password';
+      this.value = '';
+    }
+  });
+  $('#sendtestemail').click(event => {
+    event.preventDefault();
+    OC.msg.startAction('#sendtestmail_msg', t('settings', 'Sending…'));
+    $.ajax({
+      url: OC.generateUrl('/settings/admin/mailtest'),
+      type: 'POST',
+      success: () => {
+        OC.msg.finishedSuccess('#sendtestmail_msg', t('settings', 'Email sent'));
+      },
+      error: xhr => {
+        OC.msg.finishedError('#sendtestmail_msg', xhr.responseJSON);
+      }
+    });
+  });
+  const setupChecks = () => {
+    // run setup checks then gather error messages
+    $.when(OC.SetupChecks.checkWebDAV(), OC.SetupChecks.checkWellKnownUrl('GET', '/.well-known/webfinger', OC.theme.docPlaceholderUrl, $('#postsetupchecks').data('check-wellknown') === true, [200, 404], true), OC.SetupChecks.checkWellKnownUrl('GET', '/.well-known/nodeinfo', OC.theme.docPlaceholderUrl, $('#postsetupchecks').data('check-wellknown') === true, [200, 404], true), OC.SetupChecks.checkWellKnownUrl('PROPFIND', '/.well-known/caldav', OC.theme.docPlaceholderUrl, $('#postsetupchecks').data('check-wellknown') === true), OC.SetupChecks.checkWellKnownUrl('PROPFIND', '/.well-known/carddav', OC.theme.docPlaceholderUrl, $('#postsetupchecks').data('check-wellknown') === true), OC.SetupChecks.checkProviderUrl(OC.getRootPath() + '/ocm-provider/', OC.theme.docPlaceholderUrl, $('#postsetupchecks').data('check-wellknown') === true), OC.SetupChecks.checkProviderUrl(OC.getRootPath() + '/ocs-provider/', OC.theme.docPlaceholderUrl, $('#postsetupchecks').data('check-wellknown') === true), OC.SetupChecks.checkSetup(), OC.SetupChecks.checkGeneric(), OC.SetupChecks.checkWOFF2Loading(OC.filePath('core', '', 'fonts/NotoSans-Regular-latin.woff2'), OC.theme.docPlaceholderUrl), OC.SetupChecks.checkDataProtected()).then((check1, check2, check3, check4, check5, check6, check7, check8, check9, check10, check11) => {
+      const messages = [].concat(check1, check2, check3, check4, check5, check6, check7, check8, check9, check10, check11);
+      const $el = $('#postsetupchecks');
+      $('#security-warning-state-loading').addClass('hidden');
+      let hasMessages = false;
+      const $errorsEl = $el.find('.errors');
+      const $warningsEl = $el.find('.warnings');
+      const $infoEl = $el.find('.info');
+      for (let i = 0; i < messages.length; i++) {
+        switch (messages[i].type) {
+          case OC.SetupChecks.MESSAGE_TYPE_INFO:
+            $infoEl.append('<li>' + messages[i].msg + '</li>');
+            break;
+          case OC.SetupChecks.MESSAGE_TYPE_WARNING:
+            $warningsEl.append('<li>' + messages[i].msg + '</li>');
+            break;
+          case OC.SetupChecks.MESSAGE_TYPE_ERROR:
+          default:
+            $errorsEl.append('<li>' + messages[i].msg + '</li>');
+        }
+      }
+      if ($errorsEl.find('li').length > 0) {
+        $errorsEl.removeClass('hidden');
+        hasMessages = true;
+      }
+      if ($warningsEl.find('li').length > 0) {
+        $warningsEl.removeClass('hidden');
+        hasMessages = true;
+      }
+      if ($infoEl.find('li').length > 0) {
+        $infoEl.removeClass('hidden');
+        hasMessages = true;
+      }
+      if (hasMessages) {
+        $('#postsetupchecks-hint').removeClass('hidden');
+        if ($errorsEl.find('li').length > 0) {
+          $('#security-warning-state-failure').removeClass('hidden');
+        } else {
+          $('#security-warning-state-warning').removeClass('hidden');
+        }
+      } else {
+        const securityWarning = $('#security-warning');
+        if (securityWarning.children('ul').children().length === 0) {
+          $('#security-warning-state-ok').removeClass('hidden');
+        } else {
+          $('#security-warning-state-failure').removeClass('hidden');
+        }
+      }
+    });
+  };
+  if (document.getElementById('security-warning') !== null) {
+    setupChecks();
+  }
+});
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__["./apps/settings/src/admin.js"]();
+/******/ 	
+/******/ })()
+;
+//# sourceMappingURL=settings-legacy-admin.js.map?v=e7daa9d760c46e5518a3

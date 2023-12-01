@@ -1,5 +1,9 @@
 <template>
 	<div class="files-list" data-cy-files-list>
+		<div v-if="!!$scopedSlots['header-overlay']" class="files-list__thead-overlay">
+			<slot name="header-overlay" />
+		</div>
+
 		<!-- Header -->
 		<div ref="before" class="files-list__before">
 			<slot name="before" />
@@ -259,3 +263,14 @@ export default Vue.extend({
 	},
 })
 </script>
+
+<style lang="scss" scoped>
+.files-list__thead-overlay {
+	position: absolute;
+    top: 0;
+    height: 55px;
+    left: 55px;
+    z-index: 1000;
+    max-width: 500px; // TODO
+}
+</style>

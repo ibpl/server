@@ -1,3 +1,292 @@
-/*! For license information please see comments-comments.js.LICENSE.txt */
-(()=>{var e={4921:()=>{OCA.Comments.ActivityTabViewPlugin={prepareModelForDisplay(e,t,n){if("comments"===e.get("app")&&"comments"===e.get("type")&&"ActivityTabView"===n&&(t.addClass("comment"),e.get("message")&&this._isLong(e.get("message")))){t.addClass("collapsed");const e=$("<div>").addClass("message-overlay");t.find(".activitymessage").after(e),t.on("click",this._onClickCollapsedComment)}},_onClickCollapsedComment(e){let t=$(e.target);t.is(".comment")||(t=t.closest(".comment")),t.removeClass("collapsed")},_isLong:e=>e.length>250||(e.match(/\n/g)||[]).length>1},OC.Plugins.register("OCA.Activity.RenderingPlugins",OCA.Comments.ActivityTabViewPlugin)},75387:()=>{OCA.Comments||(OCA.Comments={})},4543:()=>{var e;e=Handlebars.template,(OCA.Comments.Templates=OCA.Comments.Templates||{}).filesplugin=e({compiler:[8,">= 4.3.0"],main:function(e,t,n,s,o){var l,a=null!=t?t:e.nullContext||{},i=e.hooks.helperMissing,r="function",m=e.escapeExpression,c=e.lookupProperty||function(e,t){if(Object.prototype.hasOwnProperty.call(e,t))return e[t]};return'<a class="action action-comment permanent" title="'+m(typeof(l=null!=(l=c(n,"countMessage")||(null!=t?c(t,"countMessage"):t))?l:i)===r?l.call(a,{name:"countMessage",hash:{},data:o,loc:{start:{line:1,column:50},end:{line:1,column:66}}}):l)+'" href="#">\n\t<img class="svg" src="'+m(typeof(l=null!=(l=c(n,"iconUrl")||(null!=t?c(t,"iconUrl"):t))?l:i)===r?l.call(a,{name:"iconUrl",hash:{},data:o,loc:{start:{line:2,column:23},end:{line:2,column:34}}}):l)+'"/>\n</a>\n'},useData:!0})}},t={};function n(s){var o=t[s];if(void 0!==o)return o.exports;var l=t[s]={exports:{}};return e[s](l,l.exports,n),l.exports}n.n=e=>{var t=e&&e.__esModule?()=>e.default:()=>e;return n.d(t,{a:t}),t},n.d=(e,t)=>{for(var s in t)n.o(t,s)&&!n.o(e,s)&&Object.defineProperty(e,s,{enumerable:!0,get:t[s]})},n.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t),(()=>{"use strict";n(75387),n(4543),n(4921),window.OCA.Comments=OCA.Comments})()})();
-//# sourceMappingURL=comments-comments.js.map?v=939781fd2ba7f3a0ee0e
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./apps/comments/src/activitytabviewplugin.js":
+/*!****************************************************!*\
+  !*** ./apps/comments/src/activitytabviewplugin.js ***!
+  \****************************************************/
+/***/ (() => {
+
+/**
+ * Copyright (c) 2016
+ *
+ * @author Joas Schilling <coding@schilljs.com>
+ * @author John Molakvoæ <skjnldsv@protonmail.com>
+ *
+ * @license AGPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+/** @typedef {import('jquery')} jQuery */
+
+(function () {
+  OCA.Comments.ActivityTabViewPlugin = {
+    /**
+     * Prepare activity for display
+     *
+     * @param {OCA.Activity.ActivityModel} model for this activity
+     * @param {jQuery} $el jQuery handle for this activity
+     * @param {string} view The view that displays this activity
+     */
+    prepareModelForDisplay(model, $el, view) {
+      if (model.get('app') !== 'comments' || model.get('type') !== 'comments') {
+        return;
+      }
+      if (view === 'ActivityTabView') {
+        $el.addClass('comment');
+        if (model.get('message') && this._isLong(model.get('message'))) {
+          $el.addClass('collapsed');
+          const $overlay = $('<div>').addClass('message-overlay');
+          $el.find('.activitymessage').after($overlay);
+          $el.on('click', this._onClickCollapsedComment);
+        }
+      }
+    },
+    /*
+     * Copy of CommentsTabView._onClickComment()
+     */
+    _onClickCollapsedComment(ev) {
+      let $row = $(ev.target);
+      if (!$row.is('.comment')) {
+        $row = $row.closest('.comment');
+      }
+      $row.removeClass('collapsed');
+    },
+    /*
+     * Copy of CommentsTabView._isLong()
+     */
+    _isLong(message) {
+      return message.length > 250 || (message.match(/\n/g) || []).length > 1;
+    }
+  };
+})();
+OC.Plugins.register('OCA.Activity.RenderingPlugins', OCA.Comments.ActivityTabViewPlugin);
+
+/***/ }),
+
+/***/ "./apps/comments/src/app.js":
+/*!**********************************!*\
+  !*** ./apps/comments/src/app.js ***!
+  \**********************************/
+/***/ (() => {
+
+/**
+ * Copyright (c) 2016 Vincent Petry <pvince81@owncloud.com>
+ *
+ * @author John Molakvoæ <skjnldsv@protonmail.com>
+ * @author Vincent Petry <vincent@nextcloud.com>
+ *
+ * @license AGPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+(function () {
+  if (!OCA.Comments) {
+    /**
+     * @namespace
+     */
+    OCA.Comments = {};
+  }
+})();
+
+/***/ }),
+
+/***/ "./apps/comments/src/templates.js":
+/*!****************************************!*\
+  !*** ./apps/comments/src/templates.js ***!
+  \****************************************/
+/***/ (() => {
+
+(function () {
+  var template = Handlebars.template,
+    templates = OCA.Comments.Templates = OCA.Comments.Templates || {};
+  templates['filesplugin'] = template({
+    "compiler": [8, ">= 4.3.0"],
+    "main": function (container, depth0, helpers, partials, data) {
+      var helper,
+        alias1 = depth0 != null ? depth0 : container.nullContext || {},
+        alias2 = container.hooks.helperMissing,
+        alias3 = "function",
+        alias4 = container.escapeExpression,
+        lookupProperty = container.lookupProperty || function (parent, propertyName) {
+          if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {
+            return parent[propertyName];
+          }
+          return undefined;
+        };
+      return "<a class=\"action action-comment permanent\" title=\"" + alias4((helper = (helper = lookupProperty(helpers, "countMessage") || (depth0 != null ? lookupProperty(depth0, "countMessage") : depth0)) != null ? helper : alias2, typeof helper === alias3 ? helper.call(alias1, {
+        "name": "countMessage",
+        "hash": {},
+        "data": data,
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 50
+          },
+          "end": {
+            "line": 1,
+            "column": 66
+          }
+        }
+      }) : helper)) + "\" href=\"#\">\n	<img class=\"svg\" src=\"" + alias4((helper = (helper = lookupProperty(helpers, "iconUrl") || (depth0 != null ? lookupProperty(depth0, "iconUrl") : depth0)) != null ? helper : alias2, typeof helper === alias3 ? helper.call(alias1, {
+        "name": "iconUrl",
+        "hash": {},
+        "data": data,
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 23
+          },
+          "end": {
+            "line": 2,
+            "column": 34
+          }
+        }
+      }) : helper)) + "\"/>\n</a>\n";
+    },
+    "useData": true
+  });
+})();
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+(() => {
+"use strict";
+/*!***************************************!*\
+  !*** ./apps/comments/src/comments.js ***!
+  \***************************************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _app_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./app.js */ "./apps/comments/src/app.js");
+/* harmony import */ var _app_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_app_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _templates_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./templates.js */ "./apps/comments/src/templates.js");
+/* harmony import */ var _templates_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_templates_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _activitytabviewplugin_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./activitytabviewplugin.js */ "./apps/comments/src/activitytabviewplugin.js");
+/* harmony import */ var _activitytabviewplugin_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_activitytabviewplugin_js__WEBPACK_IMPORTED_MODULE_2__);
+/**
+ * @copyright Copyright (c) 2016 Roeland Jago Douma <roeland@famdouma.nl>
+ *
+ * @author John Molakvoæ <skjnldsv@protonmail.com>
+ * @author Roeland Jago Douma <roeland@famdouma.nl>
+ *
+ * @license AGPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+
+
+
+window.OCA.Comments = OCA.Comments;
+})();
+
+/******/ })()
+;
+//# sourceMappingURL=comments-comments.js.map?v=c41fb04de95eaf99837e

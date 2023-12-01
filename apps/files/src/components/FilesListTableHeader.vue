@@ -26,12 +26,12 @@
 		</th>
 
 		<!-- Actions multiple if some are selected -->
-		<FilesListTableHeaderActions v-if="!isNoneSelected"
+		<!-- <FilesListTableHeaderActions v-if="!isNoneSelected"
 			:current-view="currentView"
-			:selected-nodes="selectedNodes" />
+			:selected-nodes="selectedNodes" /> -->
 
 		<!-- Columns display -->
-		<template v-else>
+		<template v-if="true">
 			<!-- Link to file -->
 			<th class="files-list__column files-list__row-name files-list__column--sortable"
 				:aria-sort="ariaSortForMode('basename')">

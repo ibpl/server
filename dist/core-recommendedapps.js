@@ -1,3 +1,806 @@
-/*! For license information please see core-recommendedapps.js.LICENSE.txt */
-(()=>{"use strict";var t,e={5941:(t,e,n)=>{var a=n(77958),i=n(31352),o=n(20144),r=n(17499);const s=null===(l=(0,a.ts)())?(0,r.IY)().setApp("core").build():(0,r.IY)().setApp("core").setUid(l.uid).build();var l,p=n(93664),c=n(79753),d=n(43554),u=n(43452);function m(t){if(!Number.isInteger(t)&&t!==Number.POSITIVE_INFINITY||!(t>0))throw new TypeError("Expected `concurrency` to be a number from 1 and up");const e=new u.Z;let n=0;const a=async(t,a,i)=>{n++;const o=(async()=>t(...i))();a(o);try{await o}catch{}n--,e.size>0&&e.dequeue()()},i=function(i){for(var o=arguments.length,r=new Array(o>1?o-1:0),s=1;s<o;s++)r[s-1]=arguments[s];return new Promise((o=>{((i,o,r)=>{e.enqueue(a.bind(void 0,i,o,r)),(async()=>{await Promise.resolve(),n<t&&e.size>0&&e.dequeue()()})()})(i,o,r)}))};return Object.defineProperties(i,{activeCount:{get:()=>n},pendingCount:{get:()=>e.size},clearQueue:{value:()=>{e.clear()}}}),i}var g=n(74628);const A={calendar:{description:(0,i.Iu)("core","Schedule work & meetings, synced with all your devices."),icon:(0,c.imagePath)("core","places/calendar.svg")},contacts:{description:(0,i.Iu)("core","Keep your colleagues and friends in one place without leaking their private info."),icon:(0,c.imagePath)("core","places/contacts.svg")},mail:{description:(0,i.Iu)("core","Simple email app nicely integrated with Files, Contacts and Calendar."),icon:(0,c.imagePath)("core","actions/mail.svg")},spreed:{description:(0,i.Iu)("core","Chatting, video calls, screensharing, online meetings and web conferencing – in your browser and with mobile apps."),icon:(0,c.imagePath)("core","apps/spreed.svg")},richdocuments:{name:"Nextcloud Office",description:(0,i.Iu)("core","Collaborative documents, spreadsheets and presentations, built on Collabora Online."),icon:(0,c.imagePath)("core","apps/richdocuments.svg")},notes:{description:(0,i.Iu)("core","Distraction free note taking app."),icon:(0,c.imagePath)("core","apps/notes.svg")},richdocumentscode:{hidden:!0}},h=Object.keys(A),f={name:"RecommendedApps",components:{NcButton:g.Z},data:()=>({showInstallButton:!1,installingApps:!1,loadingApps:!0,loadingAppsError:!1,apps:[],defaultPageUrl:(0,d.j)("core","defaultPageUrl")}),computed:{recommendedApps(){return this.apps.filter((t=>h.includes(t.id)))}},async mounted(){try{const{data:t}=await p.Z.get((0,c.generateUrl)("settings/apps/list"));s.info(`${t.apps.length} apps fetched`),this.apps=t.apps.map((t=>Object.assign(t,{loading:!1,installationError:!1}))),s.debug(`${this.recommendedApps.length} recommended apps found`,{apps:this.recommendedApps}),this.showInstallButton=!0}catch(t){s.error("could not fetch app list",{error:t}),this.loadingAppsError=!0}finally{this.loadingApps=!1}},methods:{installApps(){this.showInstallButton=!1,this.installingApps=!0;const t=m(1),e=this.recommendedApps.filter((t=>!t.active&&t.isCompatible&&t.canInstall)).map((e=>t((()=>(s.info(`installing ${e.id}`),e.loading=!0,p.Z.post((0,c.generateUrl)("settings/apps/enable"),{appIds:[e.id],groups:[]}).catch((t=>{s.error(`could not install ${e.id}`,{error:t}),e.installationError=!0})).then((()=>{s.info(`installed ${e.id}`),e.loading=!1})))))));s.debug(`installing ${e.length} recommended apps`),Promise.all(e).then((()=>{s.info("all recommended apps installed, redirecting …"),window.location=this.defaultPageUrl})).catch((t=>s.error("could not install recommended apps",{error:t})))},customIcon:t=>t in A&&A[t].icon?A[t].icon:(s.warn(`no app icon for recommended app ${t}`),(0,c.imagePath)("core","places/default-app-icon.svg")),customName:t=>t.id in A&&A[t.id].name||t.name,customDescription:t=>t in A?A[t].description:(s.warn(`no app description for recommended app ${t}`),""),isHidden:t=>t in A&&!!A[t].hidden}};var v=n(93379),b=n.n(v),C=n(7795),y=n.n(C),w=n(90569),_=n.n(w),x=n(3565),I=n.n(x),k=n(19216),P=n.n(k),O=n(44589),B=n.n(O),j=n(14400),E={};E.styleTagTransform=B(),E.setAttributes=I(),E.insert=_().bind(null,"head"),E.domAPI=y(),E.insertStyleElement=P(),b()(j.Z,E),j.Z&&j.Z.locals&&j.Z.locals;const D=(0,n(51900).Z)(f,(function(){var t=this,e=t._self._c;return e("div",{staticClass:"guest-box"},[e("h2",[t._v(t._s(t.t("core","Recommended apps")))]),t._v(" "),t.loadingApps?e("p",{staticClass:"loading text-center"},[t._v("\n\t\t"+t._s(t.t("core","Loading apps …"))+"\n\t")]):t.loadingAppsError?e("p",{staticClass:"loading-error text-center"},[t._v("\n\t\t"+t._s(t.t("core","Could not fetch list of apps from the App Store."))+"\n\t")]):t.installingApps?e("p",{staticClass:"text-center"},[t._v("\n\t\t"+t._s(t.t("core","Installing apps …"))+"\n\t")]):t._e(),t._v(" "),t._l(t.recommendedApps,(function(n){return e("div",{key:n.id,staticClass:"app"},[t.isHidden(n.id)?t._e():[e("img",{attrs:{src:t.customIcon(n.id),alt:""}}),t._v(" "),e("div",{staticClass:"info"},[e("h3",[t._v("\n\t\t\t\t\t"+t._s(t.customName(n))+"\n\t\t\t\t\t"),n.loading?e("span",{staticClass:"icon icon-loading-small-dark"}):n.active?e("span",{staticClass:"icon icon-checkmark-white"}):t._e()]),t._v(" "),e("p",{domProps:{innerHTML:t._s(t.customDescription(n.id))}}),t._v(" "),n.installationError?e("p",[e("strong",[t._v(t._s(t.t("core","App download or installation failed")))])]):n.isCompatible?n.canInstall?t._e():e("p",[e("strong",[t._v(t._s(t.t("core","Cannot install this app")))])]):e("p",[e("strong",[t._v(t._s(t.t("core","Cannot install this app because it is not compatible")))])])])]],2)})),t._v(" "),e("div",{staticClass:"dialog-row"},[t.showInstallButton?e("NcButton",{attrs:{type:"tertiary",role:"link",href:t.defaultPageUrl}},[t._v("\n\t\t\t"+t._s(t.t("core","Skip"))+"\n\t\t")]):t._e(),t._v(" "),t.showInstallButton?e("NcButton",{attrs:{type:"primary"},on:{click:function(e){return e.stopPropagation(),e.preventDefault(),t.installApps.apply(null,arguments)}}},[t._v("\n\t\t\t"+t._s(t.t("core","Install recommended apps"))+"\n\t\t")]):t._e()],1)],2)}),[],!1,null,"880500b4",null).exports;n.nc=btoa((0,a.IH)()),o.default.mixin({methods:{t:i.Iu}}),(new(o.default.extend(D))).$mount("#recommended-apps"),s.debug("recommended apps view rendered")},14400:(t,e,n)=>{n.d(e,{Z:()=>s});var a=n(87537),i=n.n(a),o=n(23645),r=n.n(o)()(i());r.push([t.id,".dialog-row[data-v-880500b4]{display:flex;justify-content:end;margin-top:8px}p.loading[data-v-880500b4],p.loading-error[data-v-880500b4]{height:100px}p[data-v-880500b4]:last-child{margin-top:10px}.text-center[data-v-880500b4]{text-align:center}.app[data-v-880500b4]{display:flex;flex-direction:row}.app img[data-v-880500b4]{height:50px;width:50px;filter:var(--background-invert-if-dark)}.app img[data-v-880500b4],.app .info[data-v-880500b4]{padding:12px}.app .info h3[data-v-880500b4],.app .info p[data-v-880500b4]{text-align:left}.app .info h3[data-v-880500b4]{margin-top:0}.app .info h3>span.icon[data-v-880500b4]{display:inline-block}","",{version:3,sources:["webpack://./core/src/components/setup/RecommendedApps.vue"],names:[],mappings:"AACA,6BACC,YAAA,CACA,mBAAA,CACA,cAAA,CAIA,4DAEC,YAAA,CAGD,8BACC,eAAA,CAIF,8BACC,iBAAA,CAGD,sBACC,YAAA,CACA,kBAAA,CAEA,0BACC,WAAA,CACA,UAAA,CACA,uCAAA,CAGD,sDACC,YAAA,CAIA,6DACC,eAAA,CAGD,+BACC,YAAA,CAGD,yCACC,oBAAA",sourcesContent:["\n.dialog-row {\n\tdisplay: flex;\n\tjustify-content: end;\n\tmargin-top: 8px;\n}\n\np {\n\t&.loading,\n\t&.loading-error {\n\t\theight: 100px;\n\t}\n\n\t&:last-child {\n\t\tmargin-top: 10px;\n\t}\n}\n\n.text-center {\n\ttext-align: center;\n}\n\n.app {\n\tdisplay: flex;\n\tflex-direction: row;\n\n\timg {\n\t\theight: 50px;\n\t\twidth: 50px;\n\t\tfilter: var(--background-invert-if-dark);\n\t}\n\n\timg, .info {\n\t\tpadding: 12px;\n\t}\n\n\t.info {\n\t\th3, p {\n\t\t\ttext-align: left;\n\t\t}\n\n\t\th3 {\n\t\t\tmargin-top: 0;\n\t\t}\n\n\t\th3 > span.icon {\n\t\t\tdisplay: inline-block;\n\t\t}\n\t}\n}\n"],sourceRoot:""}]);const s=r}},n={};function a(t){var i=n[t];if(void 0!==i)return i.exports;var o=n[t]={id:t,loaded:!1,exports:{}};return e[t].call(o.exports,o,o.exports,a),o.loaded=!0,o.exports}a.m=e,t=[],a.O=(e,n,i,o)=>{if(!n){var r=1/0;for(c=0;c<t.length;c++){n=t[c][0],i=t[c][1],o=t[c][2];for(var s=!0,l=0;l<n.length;l++)(!1&o||r>=o)&&Object.keys(a.O).every((t=>a.O[t](n[l])))?n.splice(l--,1):(s=!1,o<r&&(r=o));if(s){t.splice(c--,1);var p=i();void 0!==p&&(e=p)}}return e}o=o||0;for(var c=t.length;c>0&&t[c-1][2]>o;c--)t[c]=t[c-1];t[c]=[n,i,o]},a.n=t=>{var e=t&&t.__esModule?()=>t.default:()=>t;return a.d(e,{a:e}),e},a.d=(t,e)=>{for(var n in e)a.o(e,n)&&!a.o(t,n)&&Object.defineProperty(t,n,{enumerable:!0,get:e[n]})},a.e=()=>Promise.resolve(),a.g=function(){if("object"==typeof globalThis)return globalThis;try{return this||new Function("return this")()}catch(t){if("object"==typeof window)return window}}(),a.o=(t,e)=>Object.prototype.hasOwnProperty.call(t,e),a.r=t=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},a.nmd=t=>(t.paths=[],t.children||(t.children=[]),t),a.j=1033,(()=>{a.b=document.baseURI||self.location.href;var t={1033:0};a.O.j=e=>0===t[e];var e=(e,n)=>{var i,o,r=n[0],s=n[1],l=n[2],p=0;if(r.some((e=>0!==t[e]))){for(i in s)a.o(s,i)&&(a.m[i]=s[i]);if(l)var c=l(a)}for(e&&e(n);p<r.length;p++)o=r[p],a.o(t,o)&&t[o]&&t[o][0](),t[o]=0;return a.O(c)},n=self.webpackChunknextcloud=self.webpackChunknextcloud||[];n.forEach(e.bind(null,0)),n.push=e.bind(null,n.push.bind(n))})(),a.nc=void 0;var i=a.O(void 0,[7874],(()=>a(5941)));i=a.O(i)})();
-//# sourceMappingURL=core-recommendedapps.js.map?v=681c4dc904bc148191b7
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./core/src/logger.js":
+/*!****************************!*\
+  !*** ./core/src/logger.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _nextcloud_auth__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @nextcloud/auth */ "./node_modules/@nextcloud/auth/dist/index.es.mjs");
+/* harmony import */ var _nextcloud_logger__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @nextcloud/logger */ "./node_modules/@nextcloud/logger/dist/index.js");
+/**
+ * @copyright 2019 Christoph Wurst <christoph@winzerhof-wurst.at>
+ *
+ * @author Christoph Wurst <christoph@winzerhof-wurst.at>
+ *
+ * @license AGPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+
+
+const getLogger = user => {
+  if (user === null) {
+    return (0,_nextcloud_logger__WEBPACK_IMPORTED_MODULE_1__.getLoggerBuilder)().setApp('core').build();
+  }
+  return (0,_nextcloud_logger__WEBPACK_IMPORTED_MODULE_1__.getLoggerBuilder)().setApp('core').setUid(user.uid).build();
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (getLogger((0,_nextcloud_auth__WEBPACK_IMPORTED_MODULE_0__.getCurrentUser)()));
+
+/***/ }),
+
+/***/ "./core/src/recommendedapps.js":
+/*!*************************************!*\
+  !*** ./core/src/recommendedapps.js ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _nextcloud_auth__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @nextcloud/auth */ "./node_modules/@nextcloud/auth/dist/index.es.mjs");
+/* harmony import */ var _nextcloud_l10n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @nextcloud/l10n */ "./node_modules/@nextcloud/l10n/dist/index.mjs");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.runtime.esm.js");
+/* harmony import */ var _logger_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./logger.js */ "./core/src/logger.js");
+/* harmony import */ var _components_setup_RecommendedApps_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/setup/RecommendedApps.vue */ "./core/src/components/setup/RecommendedApps.vue");
+/**
+ * @copyright 2019 Christoph Wurst <christoph@winzerhof-wurst.at>
+ *
+ * @author Christoph Wurst <christoph@winzerhof-wurst.at>
+ *
+ * @license AGPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+
+
+
+
+
+
+// eslint-disable-next-line camelcase
+__webpack_require__.nc = btoa((0,_nextcloud_auth__WEBPACK_IMPORTED_MODULE_0__.getRequestToken)());
+vue__WEBPACK_IMPORTED_MODULE_4__["default"].mixin({
+  methods: {
+    t: _nextcloud_l10n__WEBPACK_IMPORTED_MODULE_1__.translate
+  }
+});
+const View = vue__WEBPACK_IMPORTED_MODULE_4__["default"].extend(_components_setup_RecommendedApps_vue__WEBPACK_IMPORTED_MODULE_3__["default"]);
+new View().$mount('#recommended-apps');
+_logger_js__WEBPACK_IMPORTED_MODULE_2__["default"].debug('recommended apps view rendered');
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./core/src/components/setup/RecommendedApps.vue?vue&type=script&lang=js":
+/*!***********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./core/src/components/setup/RecommendedApps.vue?vue&type=script&lang=js ***!
+  \***********************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _nextcloud_axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @nextcloud/axios */ "./node_modules/@nextcloud/axios/dist/index.es.mjs");
+/* harmony import */ var _nextcloud_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @nextcloud/router */ "./node_modules/@nextcloud/router/dist/index.js");
+/* harmony import */ var _nextcloud_initial_state__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @nextcloud/initial-state */ "./node_modules/@nextcloud/initial-state/dist/index.es.mjs");
+/* harmony import */ var p_limit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! p-limit */ "./node_modules/p-limit/index.js");
+/* harmony import */ var _nextcloud_l10n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @nextcloud/l10n */ "./node_modules/@nextcloud/l10n/dist/index.mjs");
+/* harmony import */ var _nextcloud_vue_dist_Components_NcButton_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @nextcloud/vue/dist/Components/NcButton.js */ "./node_modules/@nextcloud/vue/dist/Components/NcButton.mjs");
+/* harmony import */ var _logger_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../logger.js */ "./core/src/logger.js");
+
+
+
+
+
+
+
+const recommended = {
+  calendar: {
+    description: (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_4__.translate)('core', 'Schedule work & meetings, synced with all your devices.'),
+    icon: (0,_nextcloud_router__WEBPACK_IMPORTED_MODULE_1__.imagePath)('core', 'places/calendar.svg')
+  },
+  contacts: {
+    description: (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_4__.translate)('core', 'Keep your colleagues and friends in one place without leaking their private info.'),
+    icon: (0,_nextcloud_router__WEBPACK_IMPORTED_MODULE_1__.imagePath)('core', 'places/contacts.svg')
+  },
+  mail: {
+    description: (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_4__.translate)('core', 'Simple email app nicely integrated with Files, Contacts and Calendar.'),
+    icon: (0,_nextcloud_router__WEBPACK_IMPORTED_MODULE_1__.imagePath)('core', 'actions/mail.svg')
+  },
+  spreed: {
+    description: (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_4__.translate)('core', 'Chatting, video calls, screensharing, online meetings and web conferencing – in your browser and with mobile apps.'),
+    icon: (0,_nextcloud_router__WEBPACK_IMPORTED_MODULE_1__.imagePath)('core', 'apps/spreed.svg')
+  },
+  richdocuments: {
+    name: 'Nextcloud Office',
+    description: (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_4__.translate)('core', 'Collaborative documents, spreadsheets and presentations, built on Collabora Online.'),
+    icon: (0,_nextcloud_router__WEBPACK_IMPORTED_MODULE_1__.imagePath)('core', 'apps/richdocuments.svg')
+  },
+  notes: {
+    description: (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_4__.translate)('core', 'Distraction free note taking app.'),
+    icon: (0,_nextcloud_router__WEBPACK_IMPORTED_MODULE_1__.imagePath)('core', 'apps/notes.svg')
+  },
+  richdocumentscode: {
+    hidden: true
+  }
+};
+const recommendedIds = Object.keys(recommended);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  name: 'RecommendedApps',
+  components: {
+    NcButton: _nextcloud_vue_dist_Components_NcButton_js__WEBPACK_IMPORTED_MODULE_5__["default"]
+  },
+  data() {
+    return {
+      showInstallButton: false,
+      installingApps: false,
+      loadingApps: true,
+      loadingAppsError: false,
+      apps: [],
+      defaultPageUrl: (0,_nextcloud_initial_state__WEBPACK_IMPORTED_MODULE_2__.loadState)('core', 'defaultPageUrl')
+    };
+  },
+  computed: {
+    recommendedApps() {
+      return this.apps.filter(app => recommendedIds.includes(app.id));
+    }
+  },
+  async mounted() {
+    try {
+      const {
+        data
+      } = await _nextcloud_axios__WEBPACK_IMPORTED_MODULE_0__["default"].get((0,_nextcloud_router__WEBPACK_IMPORTED_MODULE_1__.generateUrl)('settings/apps/list'));
+      _logger_js__WEBPACK_IMPORTED_MODULE_6__["default"].info(`${data.apps.length} apps fetched`);
+      this.apps = data.apps.map(app => Object.assign(app, {
+        loading: false,
+        installationError: false
+      }));
+      _logger_js__WEBPACK_IMPORTED_MODULE_6__["default"].debug(`${this.recommendedApps.length} recommended apps found`, {
+        apps: this.recommendedApps
+      });
+      this.showInstallButton = true;
+    } catch (error) {
+      _logger_js__WEBPACK_IMPORTED_MODULE_6__["default"].error('could not fetch app list', {
+        error
+      });
+      this.loadingAppsError = true;
+    } finally {
+      this.loadingApps = false;
+    }
+  },
+  methods: {
+    installApps() {
+      this.showInstallButton = false;
+      this.installingApps = true;
+      const limit = (0,p_limit__WEBPACK_IMPORTED_MODULE_3__["default"])(1);
+      const installing = this.recommendedApps.filter(app => !app.active && app.isCompatible && app.canInstall).map(app => limit(() => {
+        _logger_js__WEBPACK_IMPORTED_MODULE_6__["default"].info(`installing ${app.id}`);
+        app.loading = true;
+        return _nextcloud_axios__WEBPACK_IMPORTED_MODULE_0__["default"].post((0,_nextcloud_router__WEBPACK_IMPORTED_MODULE_1__.generateUrl)('settings/apps/enable'), {
+          appIds: [app.id],
+          groups: []
+        }).catch(error => {
+          _logger_js__WEBPACK_IMPORTED_MODULE_6__["default"].error(`could not install ${app.id}`, {
+            error
+          });
+          app.installationError = true;
+        }).then(() => {
+          _logger_js__WEBPACK_IMPORTED_MODULE_6__["default"].info(`installed ${app.id}`);
+          app.loading = false;
+        });
+      }));
+      _logger_js__WEBPACK_IMPORTED_MODULE_6__["default"].debug(`installing ${installing.length} recommended apps`);
+      Promise.all(installing).then(() => {
+        _logger_js__WEBPACK_IMPORTED_MODULE_6__["default"].info('all recommended apps installed, redirecting …');
+        window.location = this.defaultPageUrl;
+      }).catch(error => _logger_js__WEBPACK_IMPORTED_MODULE_6__["default"].error('could not install recommended apps', {
+        error
+      }));
+    },
+    customIcon(appId) {
+      if (!(appId in recommended) || !recommended[appId].icon) {
+        _logger_js__WEBPACK_IMPORTED_MODULE_6__["default"].warn(`no app icon for recommended app ${appId}`);
+        return (0,_nextcloud_router__WEBPACK_IMPORTED_MODULE_1__.imagePath)('core', 'places/default-app-icon.svg');
+      }
+      return recommended[appId].icon;
+    },
+    customName(app) {
+      if (!(app.id in recommended)) {
+        return app.name;
+      }
+      return recommended[app.id].name || app.name;
+    },
+    customDescription(appId) {
+      if (!(appId in recommended)) {
+        _logger_js__WEBPACK_IMPORTED_MODULE_6__["default"].warn(`no app description for recommended app ${appId}`);
+        return '';
+      }
+      return recommended[appId].description;
+    },
+    isHidden(appId) {
+      if (!(appId in recommended)) {
+        return false;
+      }
+      return !!recommended[appId].hidden;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[3]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./core/src/components/setup/RecommendedApps.vue?vue&type=template&id=0530d6c2&scoped=true":
+/*!**********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[3]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./core/src/components/setup/RecommendedApps.vue?vue&type=template&id=0530d6c2&scoped=true ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   render: () => (/* binding */ render),
+/* harmony export */   staticRenderFns: () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function render() {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "guest-box"
+  }, [_c("h2", [_vm._v(_vm._s(_vm.t("core", "Recommended apps")))]), _vm._v(" "), _vm.loadingApps ? _c("p", {
+    staticClass: "loading text-center"
+  }, [_vm._v("\n\t\t" + _vm._s(_vm.t("core", "Loading apps …")) + "\n\t")]) : _vm.loadingAppsError ? _c("p", {
+    staticClass: "loading-error text-center"
+  }, [_vm._v("\n\t\t" + _vm._s(_vm.t("core", "Could not fetch list of apps from the App Store.")) + "\n\t")]) : _vm.installingApps ? _c("p", {
+    staticClass: "text-center"
+  }, [_vm._v("\n\t\t" + _vm._s(_vm.t("core", "Installing apps …")) + "\n\t")]) : _vm._e(), _vm._v(" "), _vm._l(_vm.recommendedApps, function (app) {
+    return _c("div", {
+      key: app.id,
+      staticClass: "app"
+    }, [!_vm.isHidden(app.id) ? [_c("img", {
+      attrs: {
+        src: _vm.customIcon(app.id),
+        alt: ""
+      }
+    }), _vm._v(" "), _c("div", {
+      staticClass: "info"
+    }, [_c("h3", [_vm._v("\n\t\t\t\t\t" + _vm._s(_vm.customName(app)) + "\n\t\t\t\t\t"), app.loading ? _c("span", {
+      staticClass: "icon icon-loading-small-dark"
+    }) : app.active ? _c("span", {
+      staticClass: "icon icon-checkmark-white"
+    }) : _vm._e()]), _vm._v(" "), _c("p", {
+      domProps: {
+        innerHTML: _vm._s(_vm.customDescription(app.id))
+      }
+    }), _vm._v(" "), app.installationError ? _c("p", [_c("strong", [_vm._v(_vm._s(_vm.t("core", "App download or installation failed")))])]) : !app.isCompatible ? _c("p", [_c("strong", [_vm._v(_vm._s(_vm.t("core", "Cannot install this app because it is not compatible")))])]) : !app.canInstall ? _c("p", [_c("strong", [_vm._v(_vm._s(_vm.t("core", "Cannot install this app")))])]) : _vm._e()])] : _vm._e()], 2);
+  }), _vm._v(" "), _c("div", {
+    staticClass: "dialog-row"
+  }, [_vm.showInstallButton ? _c("NcButton", {
+    attrs: {
+      type: "tertiary",
+      role: "link",
+      href: _vm.defaultPageUrl
+    }
+  }, [_vm._v("\n\t\t\t" + _vm._s(_vm.t("core", "Skip")) + "\n\t\t")]) : _vm._e(), _vm._v(" "), _vm.showInstallButton ? _c("NcButton", {
+    attrs: {
+      type: "primary"
+    },
+    on: {
+      click: function ($event) {
+        $event.stopPropagation();
+        $event.preventDefault();
+        return _vm.installApps.apply(null, arguments);
+      }
+    }
+  }, [_vm._v("\n\t\t\t" + _vm._s(_vm.t("core", "Install recommended apps")) + "\n\t\t")]) : _vm._e()], 1)], 2);
+};
+var staticRenderFns = [];
+render._withStripped = true;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./core/src/components/setup/RecommendedApps.vue?vue&type=style&index=0&id=0530d6c2&lang=scss&scoped=true":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./core/src/components/setup/RecommendedApps.vue?vue&type=style&index=0&id=0530d6c2&lang=scss&scoped=true ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/noSourceMaps.js */ "./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.dialog-row[data-v-0530d6c2] {
+  display: flex;
+  justify-content: end;
+  margin-top: 8px;
+}
+p.loading[data-v-0530d6c2], p.loading-error[data-v-0530d6c2] {
+  height: 100px;
+}
+p[data-v-0530d6c2]:last-child {
+  margin-top: 10px;
+}
+.text-center[data-v-0530d6c2] {
+  text-align: center;
+}
+.app[data-v-0530d6c2] {
+  display: flex;
+  flex-direction: row;
+}
+.app img[data-v-0530d6c2] {
+  height: 50px;
+  width: 50px;
+  filter: var(--background-invert-if-dark);
+}
+.app img[data-v-0530d6c2], .app .info[data-v-0530d6c2] {
+  padding: 12px;
+}
+.app .info h3[data-v-0530d6c2], .app .info p[data-v-0530d6c2] {
+  text-align: left;
+}
+.app .info h3[data-v-0530d6c2] {
+  margin-top: 0;
+}
+.app .info h3 > span.icon[data-v-0530d6c2] {
+  display: inline-block;
+}`, ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./core/src/components/setup/RecommendedApps.vue?vue&type=style&index=0&id=0530d6c2&lang=scss&scoped=true":
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./core/src/components/setup/RecommendedApps.vue?vue&type=style&index=0&id=0530d6c2&lang=scss&scoped=true ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_RecommendedApps_vue_vue_type_style_index_0_id_0530d6c2_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/sass-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./RecommendedApps.vue?vue&type=style&index=0&id=0530d6c2&lang=scss&scoped=true */ "./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./core/src/components/setup/RecommendedApps.vue?vue&type=style&index=0&id=0530d6c2&lang=scss&scoped=true");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+
+      options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+    
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_RecommendedApps_vue_vue_type_style_index_0_id_0530d6c2_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_RecommendedApps_vue_vue_type_style_index_0_id_0530d6c2_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_RecommendedApps_vue_vue_type_style_index_0_id_0530d6c2_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_RecommendedApps_vue_vue_type_style_index_0_id_0530d6c2_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./core/src/components/setup/RecommendedApps.vue":
+/*!*******************************************************!*\
+  !*** ./core/src/components/setup/RecommendedApps.vue ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _RecommendedApps_vue_vue_type_template_id_0530d6c2_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./RecommendedApps.vue?vue&type=template&id=0530d6c2&scoped=true */ "./core/src/components/setup/RecommendedApps.vue?vue&type=template&id=0530d6c2&scoped=true");
+/* harmony import */ var _RecommendedApps_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./RecommendedApps.vue?vue&type=script&lang=js */ "./core/src/components/setup/RecommendedApps.vue?vue&type=script&lang=js");
+/* harmony import */ var _RecommendedApps_vue_vue_type_style_index_0_id_0530d6c2_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./RecommendedApps.vue?vue&type=style&index=0&id=0530d6c2&lang=scss&scoped=true */ "./core/src/components/setup/RecommendedApps.vue?vue&type=style&index=0&id=0530d6c2&lang=scss&scoped=true");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+;
+
+
+/* normalize component */
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _RecommendedApps_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"],
+  _RecommendedApps_vue_vue_type_template_id_0530d6c2_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render,
+  _RecommendedApps_vue_vue_type_template_id_0530d6c2_scoped_true__WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  "0530d6c2",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "core/src/components/setup/RecommendedApps.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
+/***/ "./core/src/components/setup/RecommendedApps.vue?vue&type=script&lang=js":
+/*!*******************************************************************************!*\
+  !*** ./core/src/components/setup/RecommendedApps.vue?vue&type=script&lang=js ***!
+  \*******************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_RecommendedApps_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./RecommendedApps.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./core/src/components/setup/RecommendedApps.vue?vue&type=script&lang=js");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_RecommendedApps_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./core/src/components/setup/RecommendedApps.vue?vue&type=template&id=0530d6c2&scoped=true":
+/*!*************************************************************************************************!*\
+  !*** ./core/src/components/setup/RecommendedApps.vue?vue&type=template&id=0530d6c2&scoped=true ***!
+  \*************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   render: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_3_node_modules_vue_loader_lib_index_js_vue_loader_options_RecommendedApps_vue_vue_type_template_id_0530d6c2_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   staticRenderFns: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_3_node_modules_vue_loader_lib_index_js_vue_loader_options_RecommendedApps_vue_vue_type_template_id_0530d6c2_scoped_true__WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_3_node_modules_vue_loader_lib_index_js_vue_loader_options_RecommendedApps_vue_vue_type_template_id_0530d6c2_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[3]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./RecommendedApps.vue?vue&type=template&id=0530d6c2&scoped=true */ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[3]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./core/src/components/setup/RecommendedApps.vue?vue&type=template&id=0530d6c2&scoped=true");
+
+
+/***/ }),
+
+/***/ "./core/src/components/setup/RecommendedApps.vue?vue&type=style&index=0&id=0530d6c2&lang=scss&scoped=true":
+/*!****************************************************************************************************************!*\
+  !*** ./core/src/components/setup/RecommendedApps.vue?vue&type=style&index=0&id=0530d6c2&lang=scss&scoped=true ***!
+  \****************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_RecommendedApps_vue_vue_type_style_index_0_id_0530d6c2_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader/dist/cjs.js!../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/sass-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./RecommendedApps.vue?vue&type=style&index=0&id=0530d6c2&lang=scss&scoped=true */ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./core/src/components/setup/RecommendedApps.vue?vue&type=style&index=0&id=0530d6c2&lang=scss&scoped=true");
+
+
+/***/ }),
+
+/***/ "./node_modules/p-limit/index.js":
+/*!***************************************!*\
+  !*** ./node_modules/p-limit/index.js ***!
+  \***************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ pLimit)
+/* harmony export */ });
+/* harmony import */ var yocto_queue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! yocto-queue */ "./node_modules/yocto-queue/index.js");
+
+function pLimit(concurrency) {
+  if (!((Number.isInteger(concurrency) || concurrency === Number.POSITIVE_INFINITY) && concurrency > 0)) {
+    throw new TypeError('Expected `concurrency` to be a number from 1 and up');
+  }
+  const queue = new yocto_queue__WEBPACK_IMPORTED_MODULE_0__["default"]();
+  let activeCount = 0;
+  const next = () => {
+    activeCount--;
+    if (queue.size > 0) {
+      queue.dequeue()();
+    }
+  };
+  const run = async (fn, resolve, args) => {
+    activeCount++;
+    const result = (async () => fn(...args))();
+    resolve(result);
+    try {
+      await result;
+    } catch {}
+    next();
+  };
+  const enqueue = (fn, resolve, args) => {
+    queue.enqueue(run.bind(undefined, fn, resolve, args));
+    (async () => {
+      // This function needs to wait until the next microtask before comparing
+      // `activeCount` to `concurrency`, because `activeCount` is updated asynchronously
+      // when the run function is dequeued and called. The comparison in the if-statement
+      // needs to happen asynchronously as well to get an up-to-date value for `activeCount`.
+      await Promise.resolve();
+      if (activeCount < concurrency && queue.size > 0) {
+        queue.dequeue()();
+      }
+    })();
+  };
+  const generator = function (fn) {
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+    return new Promise(resolve => {
+      enqueue(fn, resolve, args);
+    });
+  };
+  Object.defineProperties(generator, {
+    activeCount: {
+      get: () => activeCount
+    },
+    pendingCount: {
+      get: () => queue.size
+    },
+    clearQueue: {
+      value: () => {
+        queue.clear();
+      }
+    }
+  });
+  return generator;
+}
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			id: moduleId,
+/******/ 			loaded: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = __webpack_modules__;
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/chunk loaded */
+/******/ 	(() => {
+/******/ 		var deferred = [];
+/******/ 		__webpack_require__.O = (result, chunkIds, fn, priority) => {
+/******/ 			if(chunkIds) {
+/******/ 				priority = priority || 0;
+/******/ 				for(var i = deferred.length; i > 0 && deferred[i - 1][2] > priority; i--) deferred[i] = deferred[i - 1];
+/******/ 				deferred[i] = [chunkIds, fn, priority];
+/******/ 				return;
+/******/ 			}
+/******/ 			var notFulfilled = Infinity;
+/******/ 			for (var i = 0; i < deferred.length; i++) {
+/******/ 				var chunkIds = deferred[i][0];
+/******/ 				var fn = deferred[i][1];
+/******/ 				var priority = deferred[i][2];
+/******/ 				var fulfilled = true;
+/******/ 				for (var j = 0; j < chunkIds.length; j++) {
+/******/ 					if ((priority & 1 === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
+/******/ 						chunkIds.splice(j--, 1);
+/******/ 					} else {
+/******/ 						fulfilled = false;
+/******/ 						if(priority < notFulfilled) notFulfilled = priority;
+/******/ 					}
+/******/ 				}
+/******/ 				if(fulfilled) {
+/******/ 					deferred.splice(i--, 1)
+/******/ 					var r = fn();
+/******/ 					if (r !== undefined) result = r;
+/******/ 				}
+/******/ 			}
+/******/ 			return result;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/ensure chunk */
+/******/ 	(() => {
+/******/ 		// The chunk loading function for additional chunks
+/******/ 		// Since all referenced chunks are already included
+/******/ 		// in this file, this function is empty here.
+/******/ 		__webpack_require__.e = () => (Promise.resolve());
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/global */
+/******/ 	(() => {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/node module decorator */
+/******/ 	(() => {
+/******/ 		__webpack_require__.nmd = (module) => {
+/******/ 			module.paths = [];
+/******/ 			if (!module.children) module.children = [];
+/******/ 			return module;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/jsonp chunk loading */
+/******/ 	(() => {
+/******/ 		__webpack_require__.b = document.baseURI || self.location.href;
+/******/ 		
+/******/ 		// object to store loaded and loading chunks
+/******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
+/******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
+/******/ 		var installedChunks = {
+/******/ 			"core-recommendedapps": 0
+/******/ 		};
+/******/ 		
+/******/ 		// no chunk on demand loading
+/******/ 		
+/******/ 		// no prefetching
+/******/ 		
+/******/ 		// no preloaded
+/******/ 		
+/******/ 		// no HMR
+/******/ 		
+/******/ 		// no HMR manifest
+/******/ 		
+/******/ 		__webpack_require__.O.j = (chunkId) => (installedChunks[chunkId] === 0);
+/******/ 		
+/******/ 		// install a JSONP callback for chunk loading
+/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
+/******/ 			var chunkIds = data[0];
+/******/ 			var moreModules = data[1];
+/******/ 			var runtime = data[2];
+/******/ 			// add "moreModules" to the modules object,
+/******/ 			// then flag all "chunkIds" as loaded and fire callback
+/******/ 			var moduleId, chunkId, i = 0;
+/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
+/******/ 				for(moduleId in moreModules) {
+/******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
+/******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
+/******/ 					}
+/******/ 				}
+/******/ 				if(runtime) var result = runtime(__webpack_require__);
+/******/ 			}
+/******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
+/******/ 			for(;i < chunkIds.length; i++) {
+/******/ 				chunkId = chunkIds[i];
+/******/ 				if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
+/******/ 					installedChunks[chunkId][0]();
+/******/ 				}
+/******/ 				installedChunks[chunkId] = 0;
+/******/ 			}
+/******/ 			return __webpack_require__.O(result);
+/******/ 		}
+/******/ 		
+/******/ 		var chunkLoadingGlobal = self["webpackChunknextcloud"] = self["webpackChunknextcloud"] || [];
+/******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
+/******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/nonce */
+/******/ 	(() => {
+/******/ 		__webpack_require__.nc = undefined;
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["core-common"], () => (__webpack_require__("./core/src/recommendedapps.js")))
+/******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
+/******/ 	
+/******/ })()
+;
+//# sourceMappingURL=core-recommendedapps.js.map?v=0f010ab87365f38e371e

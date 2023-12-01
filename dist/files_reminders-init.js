@@ -1,3 +1,1698 @@
-/*! For license information please see files_reminders-init.js.LICENSE.txt */
-(()=>{var t,e,n,r={61199:(t,e,n)=>{"use strict";var r=n(5656),i=n(31352);const s="set-reminder-menu",o=new r.p$({id:s,displayName:()=>(0,i.Iu)("files","Set reminder"),iconSvgInline:()=>'<svg xmlns="http://www.w3.org/2000/svg" id="mdi-alarm" viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22A9,9 0 0,0 21,13A9,9 0 0,0 12,4M12.5,8H11V14L15.75,16.85L16.5,15.62L12.5,13.25V8M7.88,3.39L6.6,1.86L2,5.71L3.29,7.24L7.88,3.39M22,5.72L17.4,1.86L16.11,3.39L20.71,7.25L22,5.72Z" /></svg>',enabled:()=>!0,exec:async()=>null,order:20});var a,d=n(64024),l=n(80351),u=n.n(l);!function(t){t.LaterToday="later-today",t.Tomorrow="tomorrow",t.ThisWeekend="this-weekend",t.NextWeek="next-week"}(a||(a={}));const c=()=>{const t=u()().get("hour");return u()().startOf("day").add(t+2,"hour").toDate()},m=t=>{let e={hour:"numeric",minute:"2-digit"};const n=u()(t),r=u()();return n.isSame(r,"date")||(e={...e,weekday:"short"}),n.isSame(r,"week")||(e={...e,month:"short",day:"numeric"}),t.toLocaleString((0,i.aj)(),e)},p=(0,n(17499).IY)().setApp("files_reminders").detectUser().build();var h=n(93664),f=n(79753);const g=async(t,e)=>{const n=(0,f.generateOcsUrl)("/apps/files_reminders/api/v1/{fileId}",{fileId:t});return(await h.Z.put(n,{dueDate:e.toISOString()})).data.ocs.data};var b=n(93379),v=n.n(b),w=n(7795),y=n.n(w),A=n(90569),j=n.n(A),N=n(3565),x=n.n(N),_=n(19216),E=n.n(_),C=n(44589),k=n.n(C),D=n(58362),I={};I.styleTagTransform=k(),I.setAttributes=x(),I.insert=j().bind(null,"head"),I.domAPI=y(),I.insertStyleElement=E(),v()(D.Z,I),D.Z&&D.Z.locals&&D.Z.locals;const T=[{dateTimePreset:a.LaterToday,label:(0,i.Iu)("files_reminders","Later today"),ariaLabel:(0,i.Iu)("files_reminders","Set reminder for later today")},{dateTimePreset:a.Tomorrow,label:(0,i.Iu)("files_reminders","Tomorrow"),ariaLabel:(0,i.Iu)("files_reminders","Set reminder for tomorrow")},{dateTimePreset:a.ThisWeekend,label:(0,i.Iu)("files_reminders","This weekend"),ariaLabel:(0,i.Iu)("files_reminders","Set reminder for this weekend")},{dateTimePreset:a.NextWeek,label:(0,i.Iu)("files_reminders","Next week"),ariaLabel:(0,i.Iu)("files_reminders","Set reminder for next week")}].map((t=>{const e=(t=>({[a.LaterToday]:()=>{const t=u()(),e=u()().startOf("day").add(18,"hour"),n=e.clone().subtract(1,"hour");return t.isSameOrAfter(n)?null:e.toDate()},[a.Tomorrow]:()=>u()().add(1,"day").startOf("day").add(8,"hour").toDate(),[a.ThisWeekend]:()=>{const t=u()();return[5,6,7].includes(t.isoWeekday())?null:u()().startOf("isoWeek").add(5,"day").add(8,"hour").toDate()},[a.NextWeek]:()=>7===u()().isoWeekday()?null:u()().startOf("isoWeek").add(1,"week").add(8,"hour").toDate()}[t]()))(t.dateTimePreset);return e?new r.p$({id:`set-reminder-${t.dateTimePreset}`,displayName:()=>`${t.label} – ${m(e)}`,title:()=>{return`${t.ariaLabel} – ${n=e,n.toLocaleString((0,i.aj)(),{weekday:"long",hour:"numeric",minute:"2-digit",month:"long",day:"numeric"})}`;var n},iconSvgInline:()=>"<svg></svg>",enabled:()=>!0,parent:s,async exec(t){if(!t.fileid)return p.error("Failed to set reminder, missing file id"),(0,d.x2)((0,i.Iu)("files_reminders","Failed to set reminder")),null;try{await g(t.fileid,e),(0,d.s$)((0,i.Iu)("files_reminders",'Reminder set for "{fileName}"',{fileName:t.basename}))}catch(t){p.error("Failed to set reminder",{error:t}),(0,d.x2)((0,i.Iu)("files_reminders","Failed to set reminder"))}return null},order:21}):null})).filter(Boolean);var O=n(20144),P=n(74628),S=n(97947),L=n(37008),$=n(25475),R=n(6156);const F=O.default.extend({name:"SetCustomReminderModal",components:{NcButton:P.Z,NcDateTime:S.Z,NcDateTimePickerNative:L.Z,NcModal:$.Z,NcNoteCard:R.Z},data:()=>({node:void 0,opened:!1,isValid:!0,customDueDate:c(),nowDate:new Date}),computed:{fileId(){return this.node.fileid},fileName(){return this.node.basename},title(){return(0,i.Iu)("files_reminders",'Set reminder for "{fileName}"',{fileName:this.fileName})},label:()=>(0,i.Iu)("files_reminders","Set reminder at custom date & time"),clearAriaLabel:()=>(0,i.Iu)("files_reminders","Clear reminder")},methods:{t:i.Iu,getDateString:m,async open(t){this.node=t,this.isValid=!0,this.opened=!0,this.customDueDate=c(),this.nowDate=new Date,setTimeout((()=>{const t=document.getElementById("set-custom-reminder");t.focus(),t.showPicker()}),300)},async setCustom(){if(this.customDueDate instanceof Date&&!isNaN(this.customDueDate))try{await g(this.fileId,this.customDueDate),(0,d.s$)((0,i.Iu)("files_reminders",'Reminder set for "{fileName}"',{fileName:this.fileName})),this.onClose()}catch(t){p.error("Failed to set reminder",{error:t}),(0,d.x2)((0,i.Iu)("files_reminders","Failed to set reminder"))}else(0,d.x2)((0,i.Iu)("files_reminders","Please choose a valid date & time"))},onClose(){this.opened=!1,this.$emit("close")},onInput(){const t=document.getElementById("set-custom-reminder");this.isValid=t.checkValidity()}}});var B=n(34647),V={};V.styleTagTransform=k(),V.setAttributes=x(),V.insert=j().bind(null,"head"),V.domAPI=y(),V.insertStyleElement=E(),v()(B.Z,V),B.Z&&B.Z.locals&&B.Z.locals;const M=(0,n(51900).Z)(F,(function(){var t=this,e=t._self._c;return t._self._setupProxy,t.opened?e("NcModal",{attrs:{"out-transition":!0,size:"small"},on:{close:t.onClose}},[e("form",{staticClass:"custom-reminder-modal",on:{submit:function(e){return e.preventDefault(),t.setCustom.apply(null,arguments)}}},[e("h2",{staticClass:"custom-reminder-modal__title"},[t._v("\n\t\t\t"+t._s(t.title)+"\n\t\t")]),t._v(" "),e("NcDateTimePickerNative",{attrs:{id:"set-custom-reminder",label:t.label,min:t.nowDate,required:!0,type:"datetime-local"},on:{input:t.onInput},model:{value:t.customDueDate,callback:function(e){t.customDueDate=e},expression:"customDueDate"}}),t._v(" "),t.isValid?e("NcNoteCard",{attrs:{type:"info"}},[t._v("\n\t\t\t"+t._s(t.t("files_reminders","We will remind you of this file"))+"\n\t\t\t"),e("NcDateTime",{attrs:{timestamp:t.customDueDate}})],1):e("NcNoteCard",{attrs:{type:"error"}},[t._v("\n\t\t\t"+t._s(t.t("files_reminders","Please choose a valid date & time"))+"\n\t\t")]),t._v(" "),e("div",{staticClass:"custom-reminder-modal__buttons"},[e("NcButton",{on:{click:t.onClose}},[t._v("\n\t\t\t\t"+t._s(t.t("files_reminders","Cancel"))+"\n\t\t\t")]),t._v(" "),e("NcButton",{attrs:{disabled:!t.isValid,"native-type":"submit",type:"primary"}},[t._v("\n\t\t\t\t"+t._s(t.t("files_reminders","Set reminder"))+"\n\t\t\t")])],1)],1)]):t._e()}),[],!1,null,"97db5bfc",null).exports,z=O.default.extend(M),U=document.createElement("div");U.id="set-custom-reminder-modal",document.body.appendChild(U);const W=new z({name:"SetCustomReminderModal",el:U}),Z=new r.p$({id:"set-reminder-custom",displayName:()=>(0,i.Iu)("files","Set custom reminder"),title:()=>(0,i.Iu)("files_reminders","Set reminder at custom date & time"),iconSvgInline:()=>'<svg xmlns="http://www.w3.org/2000/svg" id="mdi-calendar-clock" viewBox="0 0 24 24"><path d="M15,13H16.5V15.82L18.94,17.23L18.19,18.53L15,16.69V13M19,8H5V19H9.67C9.24,18.09 9,17.07 9,16A7,7 0 0,1 16,9C17.07,9 18.09,9.24 19,9.67V8M5,21C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H6V1H8V3H16V1H18V3H19A2,2 0 0,1 21,5V11.1C22.24,12.36 23,14.09 23,16A7,7 0 0,1 16,23C14.09,23 12.36,22.24 11.1,21H5M16,11.15A4.85,4.85 0 0,0 11.15,16C11.15,18.68 13.32,20.85 16,20.85A4.85,4.85 0 0,0 20.85,16C20.85,13.32 18.68,11.15 16,11.15Z" /></svg>',enabled:()=>!0,parent:s,exec:async t=>((async t=>{W.open(t),new Promise((t=>{W.$on("close",t)}))})(t),null),order:22});(0,r.p4)(o),(0,r.p4)(Z),T.forEach((t=>(0,r.p4)(t)))},58362:(t,e,n)=>{"use strict";n.d(e,{Z:()=>a});var r=n(87537),i=n.n(r),s=n(23645),o=n.n(s)()(i());o.push([t.id,'.files-list__row-action-set-reminder-custom{margin-top:13px;position:relative}.files-list__row-action-set-reminder-custom::before{content:"";margin:3px 10px 3px 15px;border-bottom:1px solid var(--color-border-dark);cursor:default;display:flex;height:0;position:absolute;left:0;right:0;top:-10px}',"",{version:3,sources:["webpack://./apps/files_reminders/src/actions/setReminderSuggestionActions.scss"],names:[],mappings:"AAuBA,4CACC,eAAA,CACA,iBAAA,CAEA,oDACC,UAAA,CACA,wBAAA,CACA,gDAAA,CACA,cAAA,CACA,YAAA,CACA,QAAA,CACA,iBAAA,CACA,MAAA,CACA,OAAA,CACA,SAAA",sourcesContent:['/**\n * @copyright Copyright (c) 2023 John Molakvoæ <skjnldsv@protonmail.com>\n *\n * @author John Molakvoæ <skjnldsv@protonmail.com>\n *\n * @license AGPL-3.0-or-later\n *\n * This program is free software: you can redistribute it and/or modify\n * it under the terms of the GNU Affero General Public License as\n * published by the Free Software Foundation, either version 3 of the\n * License, or (at your option) any later version.\n *\n * This program is distributed in the hope that it will be useful,\n * but WITHOUT ANY WARRANTY; without even the implied warranty of\n * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n * GNU Affero General Public License for more details.\n *\n * You should have received a copy of the GNU Affero General Public License\n * along with this program. If not, see <http://www.gnu.org/licenses/>.\n *\n */\n // TODO: remove when/if the actions API supports a separator\n // This the last preset action, so we need to add a separator\n.files-list__row-action-set-reminder-custom {\n\tmargin-top: 13px;\n\tposition: relative;\n\n\t&::before {\n\t\tcontent: "";\n\t\tmargin: 3px 10px 3px 15px;\n\t\tborder-bottom: 1px solid var(--color-border-dark);\n\t\tcursor: default;\n\t\tdisplay: flex;\n\t\theight: 0;\n\t\tposition: absolute;\n\t\tleft: 0;\n\t\tright: 0;\n\t\ttop: -10px;\n\t}\n}\n'],sourceRoot:""}]);const a=o},34647:(t,e,n)=>{"use strict";n.d(e,{Z:()=>a});var r=n(87537),i=n.n(r),s=n(23645),o=n.n(s)()(i());o.push([t.id,".custom-reminder-modal[data-v-97db5bfc]{margin:30px}.custom-reminder-modal__title[data-v-97db5bfc]{font-size:16px;line-height:2em}.custom-reminder-modal__buttons[data-v-97db5bfc]{display:flex;justify-content:flex-end;margin-top:30px}.custom-reminder-modal__buttons button[data-v-97db5bfc]{margin-left:10px}","",{version:3,sources:["webpack://./apps/files_reminders/src/components/SetCustomReminderModal.vue"],names:[],mappings:"AACA,wCACC,WAAA,CAEA,+CACC,cAAA,CACA,eAAA,CAGD,iDACC,YAAA,CACA,wBAAA,CACA,eAAA,CAEA,wDACC,gBAAA",sourcesContent:["\n.custom-reminder-modal {\n\tmargin: 30px;\n\n\t&__title {\n\t\tfont-size: 16px;\n\t\tline-height: 2em;\n\t}\n\n\t&__buttons {\n\t\tdisplay: flex;\n\t\tjustify-content: flex-end;\n\t\tmargin-top: 30px;\n\n\t\tbutton {\n\t\t\tmargin-left: 10px;\n\t\t}\n\t}\n}\n"],sourceRoot:""}]);const a=o},46700:(t,e,n)=>{var r={"./af":42786,"./af.js":42786,"./ar":30867,"./ar-dz":14130,"./ar-dz.js":14130,"./ar-kw":96135,"./ar-kw.js":96135,"./ar-ly":56440,"./ar-ly.js":56440,"./ar-ma":47702,"./ar-ma.js":47702,"./ar-sa":16040,"./ar-sa.js":16040,"./ar-tn":37100,"./ar-tn.js":37100,"./ar.js":30867,"./az":31083,"./az.js":31083,"./be":9808,"./be.js":9808,"./bg":68338,"./bg.js":68338,"./bm":67438,"./bm.js":67438,"./bn":8905,"./bn-bd":76225,"./bn-bd.js":76225,"./bn.js":8905,"./bo":11560,"./bo.js":11560,"./br":1278,"./br.js":1278,"./bs":80622,"./bs.js":80622,"./ca":2468,"./ca.js":2468,"./cs":5822,"./cs.js":5822,"./cv":50877,"./cv.js":50877,"./cy":47373,"./cy.js":47373,"./da":24780,"./da.js":24780,"./de":59740,"./de-at":60217,"./de-at.js":60217,"./de-ch":60894,"./de-ch.js":60894,"./de.js":59740,"./dv":5300,"./dv.js":5300,"./el":50837,"./el.js":50837,"./en-au":78348,"./en-au.js":78348,"./en-ca":77925,"./en-ca.js":77925,"./en-gb":22243,"./en-gb.js":22243,"./en-ie":46436,"./en-ie.js":46436,"./en-il":47207,"./en-il.js":47207,"./en-in":44175,"./en-in.js":44175,"./en-nz":76319,"./en-nz.js":76319,"./en-sg":31662,"./en-sg.js":31662,"./eo":92915,"./eo.js":92915,"./es":55655,"./es-do":55251,"./es-do.js":55251,"./es-mx":96112,"./es-mx.js":96112,"./es-us":71146,"./es-us.js":71146,"./es.js":55655,"./et":5603,"./et.js":5603,"./eu":77763,"./eu.js":77763,"./fa":76959,"./fa.js":76959,"./fi":11897,"./fi.js":11897,"./fil":42549,"./fil.js":42549,"./fo":94694,"./fo.js":94694,"./fr":94470,"./fr-ca":63049,"./fr-ca.js":63049,"./fr-ch":52330,"./fr-ch.js":52330,"./fr.js":94470,"./fy":5044,"./fy.js":5044,"./ga":29295,"./ga.js":29295,"./gd":2101,"./gd.js":2101,"./gl":38794,"./gl.js":38794,"./gom-deva":27884,"./gom-deva.js":27884,"./gom-latn":23168,"./gom-latn.js":23168,"./gu":95349,"./gu.js":95349,"./he":24206,"./he.js":24206,"./hi":30094,"./hi.js":30094,"./hr":30316,"./hr.js":30316,"./hu":22138,"./hu.js":22138,"./hy-am":11423,"./hy-am.js":11423,"./id":29218,"./id.js":29218,"./is":90135,"./is.js":90135,"./it":90626,"./it-ch":10150,"./it-ch.js":10150,"./it.js":90626,"./ja":39183,"./ja.js":39183,"./jv":24286,"./jv.js":24286,"./ka":12105,"./ka.js":12105,"./kk":47772,"./kk.js":47772,"./km":18758,"./km.js":18758,"./kn":79282,"./kn.js":79282,"./ko":33730,"./ko.js":33730,"./ku":1408,"./ku.js":1408,"./ky":33291,"./ky.js":33291,"./lb":36841,"./lb.js":36841,"./lo":55466,"./lo.js":55466,"./lt":57010,"./lt.js":57010,"./lv":37595,"./lv.js":37595,"./me":39861,"./me.js":39861,"./mi":35493,"./mi.js":35493,"./mk":95966,"./mk.js":95966,"./ml":87341,"./ml.js":87341,"./mn":5115,"./mn.js":5115,"./mr":10370,"./mr.js":10370,"./ms":9847,"./ms-my":41237,"./ms-my.js":41237,"./ms.js":9847,"./mt":72126,"./mt.js":72126,"./my":56165,"./my.js":56165,"./nb":64924,"./nb.js":64924,"./ne":16744,"./ne.js":16744,"./nl":93901,"./nl-be":59814,"./nl-be.js":59814,"./nl.js":93901,"./nn":83877,"./nn.js":83877,"./oc-lnc":92135,"./oc-lnc.js":92135,"./pa-in":15858,"./pa-in.js":15858,"./pl":64495,"./pl.js":64495,"./pt":89520,"./pt-br":57971,"./pt-br.js":57971,"./pt.js":89520,"./ro":96459,"./ro.js":96459,"./ru":21793,"./ru.js":21793,"./sd":40950,"./sd.js":40950,"./se":10490,"./se.js":10490,"./si":90124,"./si.js":90124,"./sk":64249,"./sk.js":64249,"./sl":14985,"./sl.js":14985,"./sq":51104,"./sq.js":51104,"./sr":49131,"./sr-cyrl":79915,"./sr-cyrl.js":79915,"./sr.js":49131,"./ss":85893,"./ss.js":85893,"./sv":98760,"./sv.js":98760,"./sw":91172,"./sw.js":91172,"./ta":27333,"./ta.js":27333,"./te":23110,"./te.js":23110,"./tet":52095,"./tet.js":52095,"./tg":27321,"./tg.js":27321,"./th":9041,"./th.js":9041,"./tk":19005,"./tk.js":19005,"./tl-ph":75768,"./tl-ph.js":75768,"./tlh":89444,"./tlh.js":89444,"./tr":72397,"./tr.js":72397,"./tzl":28254,"./tzl.js":28254,"./tzm":51106,"./tzm-latn":30699,"./tzm-latn.js":30699,"./tzm.js":51106,"./ug-cn":9288,"./ug-cn.js":9288,"./uk":67691,"./uk.js":67691,"./ur":13795,"./ur.js":13795,"./uz":6791,"./uz-latn":60588,"./uz-latn.js":60588,"./uz.js":6791,"./vi":65666,"./vi.js":65666,"./x-pseudo":14378,"./x-pseudo.js":14378,"./yo":75805,"./yo.js":75805,"./zh-cn":83839,"./zh-cn.js":83839,"./zh-hk":55726,"./zh-hk.js":55726,"./zh-mo":99807,"./zh-mo.js":99807,"./zh-tw":74152,"./zh-tw.js":74152};function i(t){var e=s(t);return n(e)}function s(t){if(!n.o(r,t)){var e=new Error("Cannot find module '"+t+"'");throw e.code="MODULE_NOT_FOUND",e}return r[t]}i.keys=function(){return Object.keys(r)},i.resolve=s,t.exports=i,i.id=46700},5656:(t,e,n)=>{"use strict";n.d(e,{RL:()=>$,Tv:()=>_,_o:()=>O,h7:()=>N,p$:()=>g,p4:()=>b,pC:()=>L,rp:()=>S,sS:()=>h,tB:()=>x});var r=n(77958),i=n(17499),s=n(31352),o=n(62520),a=n(65358),d=n(79753),l=n(14596);const u=null===(c=(0,r.ts)())?(0,i.IY)().setApp("files").build():(0,i.IY)().setApp("files").setUid(c.uid).build();var c;const m=["B","KB","MB","GB","TB","PB"],p=["B","KiB","MiB","GiB","TiB","PiB"];function h(t,e=!1,n=!1,r=!1){n=n&&!r,"string"==typeof t&&(t=Number(t));let i=t>0?Math.floor(Math.log(t)/Math.log(r?1e3:1024)):0;i=Math.min((n?p.length:m.length)-1,i);const o=n?p[i]:m[i];let a=(t/Math.pow(r?1e3:1024,i)).toFixed(1);return!0===e&&0===i?("0.0"!==a?"< 1 ":"0 ")+(n?p[1]:m[1]):(a=i<2?parseFloat(a).toFixed(0):parseFloat(a).toLocaleString((0,s.aj)()),a+" "+o)}var f=(t=>(t.DEFAULT="default",t.HIDDEN="hidden",t))(f||{});class g{_action;constructor(t){this.validateAction(t),this._action=t}get id(){return this._action.id}get displayName(){return this._action.displayName}get title(){return this._action.title}get iconSvgInline(){return this._action.iconSvgInline}get enabled(){return this._action.enabled}get exec(){return this._action.exec}get execBatch(){return this._action.execBatch}get order(){return this._action.order}get parent(){return this._action.parent}get default(){return this._action.default}get inline(){return this._action.inline}get renderInline(){return this._action.renderInline}validateAction(t){if(!t.id||"string"!=typeof t.id)throw new Error("Invalid id");if(!t.displayName||"function"!=typeof t.displayName)throw new Error("Invalid displayName function");if("title"in t&&"function"!=typeof t.title)throw new Error("Invalid title function");if(!t.iconSvgInline||"function"!=typeof t.iconSvgInline)throw new Error("Invalid iconSvgInline function");if(!t.exec||"function"!=typeof t.exec)throw new Error("Invalid exec function");if("enabled"in t&&"function"!=typeof t.enabled)throw new Error("Invalid enabled function");if("execBatch"in t&&"function"!=typeof t.execBatch)throw new Error("Invalid execBatch function");if("order"in t&&"number"!=typeof t.order)throw new Error("Invalid order");if("parent"in t&&"string"!=typeof t.parent)throw new Error("Invalid parent");if(t.default&&!Object.values(f).includes(t.default))throw new Error("Invalid default");if("inline"in t&&"function"!=typeof t.inline)throw new Error("Invalid inline function");if("renderInline"in t&&"function"!=typeof t.renderInline)throw new Error("Invalid renderInline function")}}const b=function(t){typeof window._nc_fileactions>"u"&&(window._nc_fileactions=[],u.debug("FileActions initialized")),window._nc_fileactions.find((e=>e.id===t.id))?u.error(`FileAction ${t.id} already registered`,{action:t}):window._nc_fileactions.push(t)};var v=(t=>(t[t.NONE=0]="NONE",t[t.CREATE=4]="CREATE",t[t.READ=1]="READ",t[t.UPDATE=2]="UPDATE",t[t.DELETE=8]="DELETE",t[t.SHARE=16]="SHARE",t[t.ALL=31]="ALL",t))(v||{});const w=["d:getcontentlength","d:getcontenttype","d:getetag","d:getlastmodified","d:quota-available-bytes","d:resourcetype","nc:has-preview","nc:is-encrypted","nc:mount-type","nc:share-attributes","oc:comments-unread","oc:favorite","oc:fileid","oc:owner-display-name","oc:owner-id","oc:permissions","oc:share-types","oc:size","ocs:share-permissions"],y={d:"DAV:",nc:"http://nextcloud.org/ns",oc:"http://owncloud.org/ns",ocs:"http://open-collaboration-services.org/ns"},A=function(){return typeof window._nc_dav_properties>"u"&&(window._nc_dav_properties=[...w]),window._nc_dav_properties.map((t=>`<${t} />`)).join(" ")},j=function(){return typeof window._nc_dav_namespaces>"u"&&(window._nc_dav_namespaces={...y}),Object.keys(window._nc_dav_namespaces).map((t=>`xmlns:${t}="${window._nc_dav_namespaces?.[t]}"`)).join(" ")},N=function(){return`<?xml version="1.0"?>\n\t\t<d:propfind ${j()}>\n\t\t\t<d:prop>\n\t\t\t\t${A()}\n\t\t\t</d:prop>\n\t\t</d:propfind>`},x=function(t){return`<?xml version="1.0" encoding="UTF-8"?>\n<d:searchrequest ${j()}\n\txmlns:ns="https://github.com/icewind1991/SearchDAV/ns">\n\t<d:basicsearch>\n\t\t<d:select>\n\t\t\t<d:prop>\n\t\t\t\t${A()}\n\t\t\t</d:prop>\n\t\t</d:select>\n\t\t<d:from>\n\t\t\t<d:scope>\n\t\t\t\t<d:href>/files/${(0,r.ts)()?.uid}/</d:href>\n\t\t\t\t<d:depth>infinity</d:depth>\n\t\t\t</d:scope>\n\t\t</d:from>\n\t\t<d:where>\n\t\t\t<d:and>\n\t\t\t\t<d:or>\n\t\t\t\t\t<d:not>\n\t\t\t\t\t\t<d:eq>\n\t\t\t\t\t\t\t<d:prop>\n\t\t\t\t\t\t\t\t<d:getcontenttype/>\n\t\t\t\t\t\t\t</d:prop>\n\t\t\t\t\t\t\t<d:literal>httpd/unix-directory</d:literal>\n\t\t\t\t\t\t</d:eq>\n\t\t\t\t\t</d:not>\n\t\t\t\t\t<d:eq>\n\t\t\t\t\t\t<d:prop>\n\t\t\t\t\t\t\t<oc:size/>\n\t\t\t\t\t\t</d:prop>\n\t\t\t\t\t\t<d:literal>0</d:literal>\n\t\t\t\t\t</d:eq>\n\t\t\t\t</d:or>\n\t\t\t\t<d:gt>\n\t\t\t\t\t<d:prop>\n\t\t\t\t\t\t<d:getlastmodified/>\n\t\t\t\t\t</d:prop>\n\t\t\t\t\t<d:literal>${t}</d:literal>\n\t\t\t\t</d:gt>\n\t\t\t</d:and>\n\t\t</d:where>\n\t\t<d:orderby>\n\t\t\t<d:order>\n\t\t\t\t<d:prop>\n\t\t\t\t\t<d:getlastmodified/>\n\t\t\t\t</d:prop>\n\t\t\t\t<d:descending/>\n\t\t\t</d:order>\n\t\t</d:orderby>\n\t\t<d:limit>\n\t\t\t<d:nresults>100</d:nresults>\n\t\t\t<ns:firstresult>0</ns:firstresult>\n\t\t</d:limit>\n\t</d:basicsearch>\n</d:searchrequest>`};var _=(t=>(t.Folder="folder",t.File="file",t))(_||{});const E=function(t,e){return null!==t.match(e)},C=(t,e)=>{if(t.id&&"number"!=typeof t.id)throw new Error("Invalid id type of value");if(!t.source)throw new Error("Missing mandatory source");try{new URL(t.source)}catch{throw new Error("Invalid source format, source must be a valid URL")}if(!t.source.startsWith("http"))throw new Error("Invalid source format, only http(s) is supported");if(t.mtime&&!(t.mtime instanceof Date))throw new Error("Invalid mtime type");if(t.crtime&&!(t.crtime instanceof Date))throw new Error("Invalid crtime type");if(!t.mime||"string"!=typeof t.mime||!t.mime.match(/^[-\w.]+\/[-+\w.]+$/gi))throw new Error("Missing or invalid mandatory mime");if("size"in t&&"number"!=typeof t.size&&void 0!==t.size)throw new Error("Invalid size type");if("permissions"in t&&void 0!==t.permissions&&!("number"==typeof t.permissions&&t.permissions>=v.NONE&&t.permissions<=v.ALL))throw new Error("Invalid permissions");if(t.owner&&null!==t.owner&&"string"!=typeof t.owner)throw new Error("Invalid owner type");if(t.attributes&&"object"!=typeof t.attributes)throw new Error("Invalid attributes type");if(t.root&&"string"!=typeof t.root)throw new Error("Invalid root type");if(t.root&&!t.root.startsWith("/"))throw new Error("Root must start with a leading slash");if(t.root&&!t.source.includes(t.root))throw new Error("Root must be part of the source");if(t.root&&E(t.source,e)){const n=t.source.match(e)[0];if(!t.source.includes((0,o.join)(n,t.root)))throw new Error("The root must be relative to the service. e.g /files/emma")}if(t.status&&!Object.values(k).includes(t.status))throw new Error("Status must be a valid NodeStatus")};var k=(t=>(t.NEW="new",t.FAILED="failed",t.LOADING="loading",t.LOCKED="locked",t))(k||{});class D{_data;_attributes;_knownDavService=/(remote|public)\.php\/(web)?dav/i;constructor(t,e){C(t,e||this._knownDavService),this._data=t;const n={set:(t,e,n)=>(this.updateMtime(),Reflect.set(t,e,n)),deleteProperty:(t,e)=>(this.updateMtime(),Reflect.deleteProperty(t,e))};this._attributes=new Proxy(t.attributes||{},n),delete this._data.attributes,e&&(this._knownDavService=e)}get source(){return this._data.source.replace(/\/$/i,"")}get encodedSource(){const{origin:t}=new URL(this.source);return t+(0,a.Ec)(this.source.slice(t.length))}get basename(){return(0,o.basename)(this.source)}get extension(){return(0,o.extname)(this.source)}get dirname(){if(this.root){const t=this.source.indexOf(this.root);return(0,o.dirname)(this.source.slice(t+this.root.length)||"/")}const t=new URL(this.source);return(0,o.dirname)(t.pathname)}get mime(){return this._data.mime}get mtime(){return this._data.mtime}get crtime(){return this._data.crtime}get size(){return this._data.size}get attributes(){return this._attributes}get permissions(){return null!==this.owner||this.isDavRessource?void 0!==this._data.permissions?this._data.permissions:v.NONE:v.READ}get owner(){return this.isDavRessource?this._data.owner:null}get isDavRessource(){return E(this.source,this._knownDavService)}get root(){return this._data.root?this._data.root.replace(/^(.+)\/$/,"$1"):this.isDavRessource&&(0,o.dirname)(this.source).split(this._knownDavService).pop()||null}get path(){if(this.root){const t=this.source.indexOf(this.root);return this.source.slice(t+this.root.length)||"/"}return(this.dirname+"/"+this.basename).replace(/\/\//g,"/")}get fileid(){return this._data?.id||this.attributes?.fileid}get status(){return this._data?.status}set status(t){this._data.status=t}move(t){C({...this._data,source:t},this._knownDavService),this._data.source=t,this.updateMtime()}rename(t){if(t.includes("/"))throw new Error("Invalid basename");this.move((0,o.dirname)(this.source)+"/"+t)}updateMtime(){this._data.mtime&&(this._data.mtime=new Date)}}class I extends D{get type(){return _.File}}class T extends D{constructor(t){super({...t,mime:"httpd/unix-directory"})}get type(){return _.Folder}get extension(){return null}get mime(){return"httpd/unix-directory"}}const O=`/files/${(0,r.ts)()?.uid}`,P=(0,d.generateRemoteUrl)("dav"),S=function(t=P){const e=(0,l.eI)(t);function n(t){e.setHeaders({"X-Requested-With":"XMLHttpRequest",requesttoken:t??""})}return(0,r._S)(n),n((0,r.IH)()),(0,l.lD)().patch("fetch",((t,e)=>{const n=e.headers;return n?.method&&(e.method=n.method,delete n.method),fetch(t,e)})),e},L=async(t,e="/",n=O)=>(await t.getDirectoryContents(`${n}${e}`,{details:!0,data:`<?xml version="1.0"?>\n\t\t<oc:filter-files ${j()}>\n\t\t\t<d:prop>\n\t\t\t\t${A()}\n\t\t\t</d:prop>\n\t\t\t<oc:filter-rules>\n\t\t\t\t<oc:favorite>1</oc:favorite>\n\t\t\t</oc:filter-rules>\n\t\t</oc:filter-files>`,headers:{method:"REPORT"},includeSelf:!0})).data.filter((t=>t.filename!==e)).map((t=>$(t,n))),$=function(t,e=O,n=P){const i=t.props,s=function(t=""){let e=v.NONE;return t&&((t.includes("C")||t.includes("K"))&&(e|=v.CREATE),t.includes("G")&&(e|=v.READ),(t.includes("W")||t.includes("N")||t.includes("V"))&&(e|=v.UPDATE),t.includes("D")&&(e|=v.DELETE),t.includes("R")&&(e|=v.SHARE)),e}(i?.permissions),o=(0,r.ts)()?.uid,a={id:i?.fileid||0,source:`${n}${t.filename}`,mtime:new Date(Date.parse(t.lastmod)),mime:t.mime,size:i?.size||Number.parseInt(i.getcontentlength||"0"),permissions:s,owner:o,root:e,attributes:{...t,...i,hasPreview:i?.["has-preview"]}};return delete a.attributes?.props,"file"===t.type?new I(a):new T(a)};var R={};!function(t){const e=":A-Za-z_\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD",n="["+e+"]["+e+"\\-.\\d\\u00B7\\u0300-\\u036F\\u203F-\\u2040]*",r=new RegExp("^"+n+"$");t.isExist=function(t){return typeof t<"u"},t.isEmptyObject=function(t){return 0===Object.keys(t).length},t.merge=function(t,e,n){if(e){const r=Object.keys(e),i=r.length;for(let s=0;s<i;s++)t[r[s]]="strict"===n?[e[r[s]]]:e[r[s]]}},t.getValue=function(e){return t.isExist(e)?e:""},t.isName=function(t){const e=r.exec(t);return!(null===e||typeof e>"u")},t.getAllMatches=function(t,e){const n=[];let r=e.exec(t);for(;r;){const i=[];i.startIndex=e.lastIndex-r[0].length;const s=r.length;for(let t=0;t<s;t++)i.push(r[t]);n.push(i),r=e.exec(t)}return n},t.nameRegexp=n}(R);new RegExp("(\\s*)([^\\s=]+)(\\s*=)?(\\s*(['\"])(([\\s\\S])*?)\\5)?","g");var F={};const B={preserveOrder:!1,attributeNamePrefix:"@_",attributesGroupName:!1,textNodeName:"#text",ignoreAttributes:!0,removeNSPrefix:!1,allowBooleanAttributes:!1,parseTagValue:!0,parseAttributeValue:!1,trimValues:!0,cdataPropName:!1,numberParseOptions:{hex:!0,leadingZeros:!0,eNotation:!0},tagValueProcessor:function(t,e){return e},attributeValueProcessor:function(t,e){return e},stopNodes:[],alwaysCreateTextNode:!1,isArray:()=>!1,commentPropName:!1,unpairedTags:[],processEntities:!0,htmlEntities:!1,ignoreDeclaration:!1,ignorePiTags:!1,transformTagName:!1,transformAttributeName:!1,updateTag:function(t,e,n){return t}};F.buildOptions=function(t){return Object.assign({},B,t)},F.defaultOptions=B,!Number.parseInt&&window.parseInt&&(Number.parseInt=window.parseInt),!Number.parseFloat&&window.parseFloat&&(Number.parseFloat=window.parseFloat);"<((!\\[CDATA\\[([\\s\\S]*?)(]]>))|((NAME:)?(NAME))([^>]*)>|((\\/)(NAME)\\s*>))([^<]*)".replace(/NAME/g,R.nameRegexp),new RegExp("([^\\s=]+)\\s*(=\\s*(['\"])([\\s\\S]*?)\\3)?","gm");var V={};function M(t,e,n){let r;const i={};for(let s=0;s<t.length;s++){const o=t[s],a=z(o);let d="";if(d=void 0===n?a:n+"."+a,a===e.textNodeName)void 0===r?r=o[a]:r+=""+o[a];else{if(void 0===a)continue;if(o[a]){let t=M(o[a],e,d);const n=W(t,e);o[":@"]?U(t,o[":@"],d,e):1!==Object.keys(t).length||void 0===t[e.textNodeName]||e.alwaysCreateTextNode?0===Object.keys(t).length&&(e.alwaysCreateTextNode?t[e.textNodeName]="":t=""):t=t[e.textNodeName],void 0!==i[a]&&i.hasOwnProperty(a)?(Array.isArray(i[a])||(i[a]=[i[a]]),i[a].push(t)):e.isArray(a,d,n)?i[a]=[t]:i[a]=t}}}return"string"==typeof r?r.length>0&&(i[e.textNodeName]=r):void 0!==r&&(i[e.textNodeName]=r),i}function z(t){const e=Object.keys(t);for(let t=0;t<e.length;t++){const n=e[t];if(":@"!==n)return n}}function U(t,e,n,r){if(e){const i=Object.keys(e),s=i.length;for(let o=0;o<s;o++){const s=i[o];r.isArray(s,n+"."+s,!0,!0)?t[s]=[e[s]]:t[s]=e[s]}}}function W(t,e){const{textNodeName:n}=e,r=Object.keys(t).length;return!(0!==r&&(1!==r||!t[n]&&"boolean"!=typeof t[n]&&0!==t[n]))}V.prettify=function(t,e){return M(t,e)};const{buildOptions:Z}=F,{prettify:G}=V;function H(t,e,n,r){let i="",s=!1;for(let o=0;o<t.length;o++){const a=t[o],d=q(a);if(void 0===d)continue;let l="";if(l=0===n.length?d:`${n}.${d}`,d===e.textNodeName){let t=a[d];K(l,e)||(t=e.tagValueProcessor(d,t),t=J(t,e)),s&&(i+=r),i+=t,s=!1;continue}if(d===e.cdataPropName){s&&(i+=r),i+=`<![CDATA[${a[d][0][e.textNodeName]}]]>`,s=!1;continue}if(d===e.commentPropName){i+=r+`\x3c!--${a[d][0][e.textNodeName]}--\x3e`,s=!0;continue}if("?"===d[0]){const t=Y(a[":@"],e),n="?xml"===d?"":r;let o=a[d][0][e.textNodeName];o=0!==o.length?" "+o:"",i+=n+`<${d}${o}${t}?>`,s=!0;continue}let u=r;""!==u&&(u+=e.indentBy);const c=r+`<${d}${Y(a[":@"],e)}`,m=H(a[d],e,l,u);-1!==e.unpairedTags.indexOf(d)?e.suppressUnpairedNode?i+=c+">":i+=c+"/>":m&&0!==m.length||!e.suppressEmptyNode?m&&m.endsWith(">")?i+=c+`>${m}${r}</${d}>`:(i+=c+">",m&&""!==r&&(m.includes("/>")||m.includes("</"))?i+=r+e.indentBy+m+r:i+=m,i+=`</${d}>`):i+=c+"/>",s=!0}return i}function q(t){const e=Object.keys(t);for(let n=0;n<e.length;n++){const r=e[n];if(t.hasOwnProperty(r)&&":@"!==r)return r}}function Y(t,e){let n="";if(t&&!e.ignoreAttributes)for(let r in t){if(!t.hasOwnProperty(r))continue;let i=e.attributeValueProcessor(r,t[r]);i=J(i,e),!0===i&&e.suppressBooleanAttributes?n+=` ${r.substr(e.attributeNamePrefix.length)}`:n+=` ${r.substr(e.attributeNamePrefix.length)}="${i}"`}return n}function K(t,e){let n=(t=t.substr(0,t.length-e.textNodeName.length-1)).substr(t.lastIndexOf(".")+1);for(let r in e.stopNodes)if(e.stopNodes[r]===t||e.stopNodes[r]==="*."+n)return!0;return!1}function J(t,e){if(t&&t.length>0&&e.processEntities)for(let n=0;n<e.entities.length;n++){const r=e.entities[n];t=t.replace(r.regex,r.val)}return t}const X=function(t,e){let n="";return e.format&&e.indentBy.length>0&&(n="\n"),H(t,e,"",n)},Q={attributeNamePrefix:"@_",attributesGroupName:!1,textNodeName:"#text",ignoreAttributes:!0,cdataPropName:!1,format:!1,indentBy:"  ",suppressEmptyNode:!1,suppressUnpairedNode:!0,suppressBooleanAttributes:!0,tagValueProcessor:function(t,e){return e},attributeValueProcessor:function(t,e){return e},preserveOrder:!1,commentPropName:!1,unpairedTags:[],entities:[{regex:new RegExp("&","g"),val:"&amp;"},{regex:new RegExp(">","g"),val:"&gt;"},{regex:new RegExp("<","g"),val:"&lt;"},{regex:new RegExp("'","g"),val:"&apos;"},{regex:new RegExp('"',"g"),val:"&quot;"}],processEntities:!0,stopNodes:[],oneListGroup:!1};function tt(t){this.options=Object.assign({},Q,t),this.options.ignoreAttributes||this.options.attributesGroupName?this.isAttribute=function(){return!1}:(this.attrPrefixLen=this.options.attributeNamePrefix.length,this.isAttribute=rt),this.processTextOrObjNode=et,this.options.format?(this.indentate=nt,this.tagEndChar=">\n",this.newLine="\n"):(this.indentate=function(){return""},this.tagEndChar=">",this.newLine="")}function et(t,e,n){const r=this.j2x(t,n+1);return void 0!==t[this.options.textNodeName]&&1===Object.keys(t).length?this.buildTextValNode(t[this.options.textNodeName],e,r.attrStr,n):this.buildObjectNode(r.val,e,r.attrStr,n)}function nt(t){return this.options.indentBy.repeat(t)}function rt(t){return!(!t.startsWith(this.options.attributeNamePrefix)||t===this.options.textNodeName)&&t.substr(this.attrPrefixLen)}tt.prototype.build=function(t){return this.options.preserveOrder?X(t,this.options):(Array.isArray(t)&&this.options.arrayNodeName&&this.options.arrayNodeName.length>1&&(t={[this.options.arrayNodeName]:t}),this.j2x(t,0).val)},tt.prototype.j2x=function(t,e){let n="",r="";for(let i in t)if(Object.prototype.hasOwnProperty.call(t,i))if(typeof t[i]>"u")this.isAttribute(i)&&(r+="");else if(null===t[i])this.isAttribute(i)?r+="":"?"===i[0]?r+=this.indentate(e)+"<"+i+"?"+this.tagEndChar:r+=this.indentate(e)+"<"+i+"/"+this.tagEndChar;else if(t[i]instanceof Date)r+=this.buildTextValNode(t[i],i,"",e);else if("object"!=typeof t[i]){const s=this.isAttribute(i);if(s)n+=this.buildAttrPairStr(s,""+t[i]);else if(i===this.options.textNodeName){let e=this.options.tagValueProcessor(i,""+t[i]);r+=this.replaceEntitiesValue(e)}else r+=this.buildTextValNode(t[i],i,"",e)}else if(Array.isArray(t[i])){const n=t[i].length;let s="";for(let o=0;o<n;o++){const n=t[i][o];typeof n>"u"||(null===n?"?"===i[0]?r+=this.indentate(e)+"<"+i+"?"+this.tagEndChar:r+=this.indentate(e)+"<"+i+"/"+this.tagEndChar:"object"==typeof n?this.options.oneListGroup?s+=this.j2x(n,e+1).val:s+=this.processTextOrObjNode(n,i,e):s+=this.buildTextValNode(n,i,"",e))}this.options.oneListGroup&&(s=this.buildObjectNode(s,i,"",e)),r+=s}else if(this.options.attributesGroupName&&i===this.options.attributesGroupName){const e=Object.keys(t[i]),r=e.length;for(let s=0;s<r;s++)n+=this.buildAttrPairStr(e[s],""+t[i][e[s]])}else r+=this.processTextOrObjNode(t[i],i,e);return{attrStr:n,val:r}},tt.prototype.buildAttrPairStr=function(t,e){return e=this.options.attributeValueProcessor(t,""+e),e=this.replaceEntitiesValue(e),this.options.suppressBooleanAttributes&&"true"===e?" "+t:" "+t+'="'+e+'"'},tt.prototype.buildObjectNode=function(t,e,n,r){if(""===t)return"?"===e[0]?this.indentate(r)+"<"+e+n+"?"+this.tagEndChar:this.indentate(r)+"<"+e+n+this.closeTag(e)+this.tagEndChar;{let i="</"+e+this.tagEndChar,s="";return"?"===e[0]&&(s="?",i=""),!n&&""!==n||-1!==t.indexOf("<")?!1!==this.options.commentPropName&&e===this.options.commentPropName&&0===s.length?this.indentate(r)+`\x3c!--${t}--\x3e`+this.newLine:this.indentate(r)+"<"+e+n+s+this.tagEndChar+t+this.indentate(r)+i:this.indentate(r)+"<"+e+n+s+">"+t+i}},tt.prototype.closeTag=function(t){let e="";return-1!==this.options.unpairedTags.indexOf(t)?this.options.suppressUnpairedNode||(e="/"):e=this.options.suppressEmptyNode?"/":`></${t}`,e},tt.prototype.buildTextValNode=function(t,e,n,r){if(!1!==this.options.cdataPropName&&e===this.options.cdataPropName)return this.indentate(r)+`<![CDATA[${t}]]>`+this.newLine;if(!1!==this.options.commentPropName&&e===this.options.commentPropName)return this.indentate(r)+`\x3c!--${t}--\x3e`+this.newLine;if("?"===e[0])return this.indentate(r)+"<"+e+n+"?"+this.tagEndChar;{let i=this.options.tagValueProcessor(e,t);return i=this.replaceEntitiesValue(i),""===i?this.indentate(r)+"<"+e+n+this.closeTag(e)+this.tagEndChar:this.indentate(r)+"<"+e+n+">"+i+"</"+e+this.tagEndChar}},tt.prototype.replaceEntitiesValue=function(t){if(t&&t.length>0&&this.options.processEntities)for(let e=0;e<this.options.entities.length;e++){const n=this.options.entities[e];t=t.replace(n.regex,n.val)}return t}}},i={};function s(t){var e=i[t];if(void 0!==e)return e.exports;var n=i[t]={id:t,loaded:!1,exports:{}};return r[t].call(n.exports,n,n.exports,s),n.loaded=!0,n.exports}s.m=r,t=[],s.O=(e,n,r,i)=>{if(!n){var o=1/0;for(u=0;u<t.length;u++){n=t[u][0],r=t[u][1],i=t[u][2];for(var a=!0,d=0;d<n.length;d++)(!1&i||o>=i)&&Object.keys(s.O).every((t=>s.O[t](n[d])))?n.splice(d--,1):(a=!1,i<o&&(o=i));if(a){t.splice(u--,1);var l=r();void 0!==l&&(e=l)}}return e}i=i||0;for(var u=t.length;u>0&&t[u-1][2]>i;u--)t[u]=t[u-1];t[u]=[n,r,i]},s.n=t=>{var e=t&&t.__esModule?()=>t.default:()=>t;return s.d(e,{a:e}),e},s.d=(t,e)=>{for(var n in e)s.o(e,n)&&!s.o(t,n)&&Object.defineProperty(t,n,{enumerable:!0,get:e[n]})},s.f={},s.e=t=>Promise.all(Object.keys(s.f).reduce(((e,n)=>(s.f[n](t,e),e)),[])),s.u=t=>t+"-"+t+".js?v="+{2048:"78a82614529a3cefcde7",4180:"fe82f3a2dac70d6b82bc"}[t],s.g=function(){if("object"==typeof globalThis)return globalThis;try{return this||new Function("return this")()}catch(t){if("object"==typeof window)return window}}(),s.o=(t,e)=>Object.prototype.hasOwnProperty.call(t,e),e={},n="nextcloud:",s.l=(t,r,i,o)=>{if(e[t])e[t].push(r);else{var a,d;if(void 0!==i)for(var l=document.getElementsByTagName("script"),u=0;u<l.length;u++){var c=l[u];if(c.getAttribute("src")==t||c.getAttribute("data-webpack")==n+i){a=c;break}}a||(d=!0,(a=document.createElement("script")).charset="utf-8",a.timeout=120,s.nc&&a.setAttribute("nonce",s.nc),a.setAttribute("data-webpack",n+i),a.src=t),e[t]=[r];var m=(n,r)=>{a.onerror=a.onload=null,clearTimeout(p);var i=e[t];if(delete e[t],a.parentNode&&a.parentNode.removeChild(a),i&&i.forEach((t=>t(r))),n)return n(r)},p=setTimeout(m.bind(null,void 0,{type:"timeout",target:a}),12e4);a.onerror=m.bind(null,a.onerror),a.onload=m.bind(null,a.onload),d&&document.head.appendChild(a)}},s.r=t=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},s.nmd=t=>(t.paths=[],t.children||(t.children=[]),t),s.j=6437,(()=>{var t;s.g.importScripts&&(t=s.g.location+"");var e=s.g.document;if(!t&&e&&(e.currentScript&&(t=e.currentScript.src),!t)){var n=e.getElementsByTagName("script");if(n.length)for(var r=n.length-1;r>-1&&!t;)t=n[r--].src}if(!t)throw new Error("Automatic publicPath is not supported in this browser");t=t.replace(/#.*$/,"").replace(/\?.*$/,"").replace(/\/[^\/]+$/,"/"),s.p=t})(),(()=>{s.b=document.baseURI||self.location.href;var t={6437:0};s.f.j=(e,n)=>{var r=s.o(t,e)?t[e]:void 0;if(0!==r)if(r)n.push(r[2]);else{var i=new Promise(((n,i)=>r=t[e]=[n,i]));n.push(r[2]=i);var o=s.p+s.u(e),a=new Error;s.l(o,(n=>{if(s.o(t,e)&&(0!==(r=t[e])&&(t[e]=void 0),r)){var i=n&&("load"===n.type?"missing":n.type),o=n&&n.target&&n.target.src;a.message="Loading chunk "+e+" failed.\n("+i+": "+o+")",a.name="ChunkLoadError",a.type=i,a.request=o,r[1](a)}}),"chunk-"+e,e)}},s.O.j=e=>0===t[e];var e=(e,n)=>{var r,i,o=n[0],a=n[1],d=n[2],l=0;if(o.some((e=>0!==t[e]))){for(r in a)s.o(a,r)&&(s.m[r]=a[r]);if(d)var u=d(s)}for(e&&e(n);l<o.length;l++)i=o[l],s.o(t,i)&&t[i]&&t[i][0](),t[i]=0;return s.O(u)},n=self.webpackChunknextcloud=self.webpackChunknextcloud||[];n.forEach(e.bind(null,0)),n.push=e.bind(null,n.push.bind(n))})(),s.nc=void 0;var o=s.O(void 0,[7874],(()=>s(61199)));o=s.O(o)})();
-//# sourceMappingURL=files_reminders-init.js.map?v=b1abb6a98be84af65c88
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./apps/files_reminders/src/actions/setReminderCustomAction.ts":
+/*!*********************************************************************!*\
+  !*** ./apps/files_reminders/src/actions/setReminderCustomAction.ts ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   action: () => (/* binding */ action)
+/* harmony export */ });
+/* harmony import */ var _nextcloud_files__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @nextcloud/files */ "./node_modules/@nextcloud/files/dist/index.mjs");
+/* harmony import */ var _nextcloud_l10n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @nextcloud/l10n */ "./node_modules/@nextcloud/l10n/dist/index.mjs");
+/* harmony import */ var _mdi_svg_svg_calendar_clock_svg_raw__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @mdi/svg/svg/calendar-clock.svg?raw */ "./node_modules/@mdi/svg/svg/calendar-clock.svg?raw");
+/* harmony import */ var _setReminderMenuAction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./setReminderMenuAction */ "./apps/files_reminders/src/actions/setReminderMenuAction.ts");
+/* harmony import */ var _services_customPicker__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../services/customPicker */ "./apps/files_reminders/src/services/customPicker.ts");
+/**
+ * @copyright Copyright (c) 2023 John Molakvoæ <skjnldsv@protonmail.com>
+ *
+ * @author John Molakvoæ <skjnldsv@protonmail.com>
+ *
+ * @license AGPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+
+
+
+
+const action = new _nextcloud_files__WEBPACK_IMPORTED_MODULE_0__.FileAction({
+  id: 'set-reminder-custom',
+  displayName: () => (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_1__.translate)('files', 'Set custom reminder'),
+  title: () => (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_1__.translate)('files_reminders', 'Set reminder at custom date & time'),
+  iconSvgInline: () => _mdi_svg_svg_calendar_clock_svg_raw__WEBPACK_IMPORTED_MODULE_2__,
+  enabled: () => true,
+  parent: _setReminderMenuAction__WEBPACK_IMPORTED_MODULE_3__.SET_REMINDER_MENU_ID,
+  async exec(file) {
+    (0,_services_customPicker__WEBPACK_IMPORTED_MODULE_4__.pickCustomDate)(file);
+    return null;
+  },
+  // After presets
+  order: 22
+});
+
+/***/ }),
+
+/***/ "./apps/files_reminders/src/actions/setReminderMenuAction.ts":
+/*!*******************************************************************!*\
+  !*** ./apps/files_reminders/src/actions/setReminderMenuAction.ts ***!
+  \*******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SET_REMINDER_MENU_ID: () => (/* binding */ SET_REMINDER_MENU_ID),
+/* harmony export */   action: () => (/* binding */ action)
+/* harmony export */ });
+/* harmony import */ var _nextcloud_files__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @nextcloud/files */ "./node_modules/@nextcloud/files/dist/index.mjs");
+/* harmony import */ var _nextcloud_l10n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @nextcloud/l10n */ "./node_modules/@nextcloud/l10n/dist/index.mjs");
+/* harmony import */ var _mdi_svg_svg_alarm_svg_raw__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @mdi/svg/svg/alarm.svg?raw */ "./node_modules/@mdi/svg/svg/alarm.svg?raw");
+/**
+ * @copyright Copyright (c) 2023 John Molakvoæ <skjnldsv@protonmail.com>
+ *
+ * @author John Molakvoæ <skjnldsv@protonmail.com>
+ *
+ * @license AGPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+
+
+const SET_REMINDER_MENU_ID = 'set-reminder-menu';
+const action = new _nextcloud_files__WEBPACK_IMPORTED_MODULE_0__.FileAction({
+  id: SET_REMINDER_MENU_ID,
+  displayName: () => (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_1__.translate)('files', 'Set reminder'),
+  iconSvgInline: () => _mdi_svg_svg_alarm_svg_raw__WEBPACK_IMPORTED_MODULE_2__,
+  enabled: () => true,
+  async exec() {
+    return null;
+  },
+  order: 20
+});
+
+/***/ }),
+
+/***/ "./apps/files_reminders/src/actions/setReminderSuggestionActions.ts":
+/*!**************************************************************************!*\
+  !*** ./apps/files_reminders/src/actions/setReminderSuggestionActions.ts ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   actions: () => (/* binding */ actions)
+/* harmony export */ });
+/* harmony import */ var _nextcloud_files__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @nextcloud/files */ "./node_modules/@nextcloud/files/dist/index.mjs");
+/* harmony import */ var _nextcloud_dialogs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @nextcloud/dialogs */ "./node_modules/@nextcloud/dialogs/dist/index.mjs");
+/* harmony import */ var _nextcloud_l10n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @nextcloud/l10n */ "./node_modules/@nextcloud/l10n/dist/index.mjs");
+/* harmony import */ var _shared_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/utils */ "./apps/files_reminders/src/shared/utils.ts");
+/* harmony import */ var _shared_logger__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../shared/logger */ "./apps/files_reminders/src/shared/logger.ts");
+/* harmony import */ var _setReminderMenuAction__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./setReminderMenuAction */ "./apps/files_reminders/src/actions/setReminderMenuAction.ts");
+/* harmony import */ var _services_reminderService__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../services/reminderService */ "./apps/files_reminders/src/services/reminderService.ts");
+/* harmony import */ var _setReminderSuggestionActions_scss__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./setReminderSuggestionActions.scss */ "./apps/files_reminders/src/actions/setReminderSuggestionActions.scss");
+
+
+
+
+
+
+
+
+const laterToday = {
+  dateTimePreset: _shared_utils__WEBPACK_IMPORTED_MODULE_3__.DateTimePreset.LaterToday,
+  label: (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_2__.translate)('files_reminders', 'Later today'),
+  ariaLabel: (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_2__.translate)('files_reminders', 'Set reminder for later today')
+};
+const tomorrow = {
+  dateTimePreset: _shared_utils__WEBPACK_IMPORTED_MODULE_3__.DateTimePreset.Tomorrow,
+  label: (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_2__.translate)('files_reminders', 'Tomorrow'),
+  ariaLabel: (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_2__.translate)('files_reminders', 'Set reminder for tomorrow')
+};
+const thisWeekend = {
+  dateTimePreset: _shared_utils__WEBPACK_IMPORTED_MODULE_3__.DateTimePreset.ThisWeekend,
+  label: (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_2__.translate)('files_reminders', 'This weekend'),
+  ariaLabel: (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_2__.translate)('files_reminders', 'Set reminder for this weekend')
+};
+const nextWeek = {
+  dateTimePreset: _shared_utils__WEBPACK_IMPORTED_MODULE_3__.DateTimePreset.NextWeek,
+  label: (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_2__.translate)('files_reminders', 'Next week'),
+  ariaLabel: (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_2__.translate)('files_reminders', 'Set reminder for next week')
+};
+/**
+ * Generate a file action for the given option
+ *
+ * @param option The option to generate the action for
+ * @return The file action or null if the option should not be shown
+ */
+const generateFileAction = option => {
+  const dateTime = (0,_shared_utils__WEBPACK_IMPORTED_MODULE_3__.getDateTime)(option.dateTimePreset);
+  if (!dateTime) {
+    return null;
+  }
+  return new _nextcloud_files__WEBPACK_IMPORTED_MODULE_0__.FileAction({
+    id: `set-reminder-${option.dateTimePreset}`,
+    displayName: () => `${option.label} – ${(0,_shared_utils__WEBPACK_IMPORTED_MODULE_3__.getDateString)(dateTime)}`,
+    title: () => `${option.ariaLabel} – ${(0,_shared_utils__WEBPACK_IMPORTED_MODULE_3__.getVerboseDateString)(dateTime)}`,
+    // Empty svg to hide the icon
+    iconSvgInline: () => '<svg></svg>',
+    enabled: () => true,
+    parent: _setReminderMenuAction__WEBPACK_IMPORTED_MODULE_5__.SET_REMINDER_MENU_ID,
+    async exec(node) {
+      // Can't really happen, but just in case™
+      if (!node.fileid) {
+        _shared_logger__WEBPACK_IMPORTED_MODULE_4__.logger.error('Failed to set reminder, missing file id');
+        (0,_nextcloud_dialogs__WEBPACK_IMPORTED_MODULE_1__.showError)((0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_2__.translate)('files_reminders', 'Failed to set reminder'));
+        return null;
+      }
+      // Set the reminder
+      try {
+        await (0,_services_reminderService__WEBPACK_IMPORTED_MODULE_6__.setReminder)(node.fileid, dateTime);
+        (0,_nextcloud_dialogs__WEBPACK_IMPORTED_MODULE_1__.showSuccess)((0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_2__.translate)('files_reminders', 'Reminder set for "{fileName}"', {
+          fileName: node.basename
+        }));
+      } catch (error) {
+        _shared_logger__WEBPACK_IMPORTED_MODULE_4__.logger.error('Failed to set reminder', {
+          error
+        });
+        (0,_nextcloud_dialogs__WEBPACK_IMPORTED_MODULE_1__.showError)((0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_2__.translate)('files_reminders', 'Failed to set reminder'));
+      }
+      // Silent success as we display our own notification
+      return null;
+    },
+    order: 21
+  });
+};
+// Generate the default preset actions
+const actions = [laterToday, tomorrow, thisWeekend, nextWeek].map(generateFileAction).filter(Boolean);
+
+/***/ }),
+
+/***/ "./apps/files_reminders/src/init.ts":
+/*!******************************************!*\
+  !*** ./apps/files_reminders/src/init.ts ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _nextcloud_files__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @nextcloud/files */ "./node_modules/@nextcloud/files/dist/index.mjs");
+/* harmony import */ var _actions_setReminderMenuAction__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./actions/setReminderMenuAction */ "./apps/files_reminders/src/actions/setReminderMenuAction.ts");
+/* harmony import */ var _actions_setReminderSuggestionActions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./actions/setReminderSuggestionActions */ "./apps/files_reminders/src/actions/setReminderSuggestionActions.ts");
+/* harmony import */ var _actions_setReminderCustomAction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./actions/setReminderCustomAction */ "./apps/files_reminders/src/actions/setReminderCustomAction.ts");
+/**
+ * @copyright 2023 Christopher Ng <chrng8@gmail.com>
+ *
+ * @author Christopher Ng <chrng8@gmail.com>
+ *
+ * @license AGPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+
+
+
+(0,_nextcloud_files__WEBPACK_IMPORTED_MODULE_0__.registerFileAction)(_actions_setReminderMenuAction__WEBPACK_IMPORTED_MODULE_1__.action);
+(0,_nextcloud_files__WEBPACK_IMPORTED_MODULE_0__.registerFileAction)(_actions_setReminderCustomAction__WEBPACK_IMPORTED_MODULE_3__.action);
+_actions_setReminderSuggestionActions__WEBPACK_IMPORTED_MODULE_2__.actions.forEach(action => (0,_nextcloud_files__WEBPACK_IMPORTED_MODULE_0__.registerFileAction)(action));
+
+/***/ }),
+
+/***/ "./apps/files_reminders/src/services/customPicker.ts":
+/*!***********************************************************!*\
+  !*** ./apps/files_reminders/src/services/customPicker.ts ***!
+  \***********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   pickCustomDate: () => (/* binding */ pickCustomDate)
+/* harmony export */ });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.runtime.esm.js");
+/* harmony import */ var _components_SetCustomReminderModal_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/SetCustomReminderModal.vue */ "./apps/files_reminders/src/components/SetCustomReminderModal.vue");
+/**
+ * @copyright Copyright (c) 2023 John Molakvoæ <skjnldsv@protonmail.com>
+ *
+ * @author John Molakvoæ <skjnldsv@protonmail.com>
+ *
+ * @license AGPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+
+const View = vue__WEBPACK_IMPORTED_MODULE_1__["default"].extend(_components_SetCustomReminderModal_vue__WEBPACK_IMPORTED_MODULE_0__["default"]);
+const mount = document.createElement('div');
+mount.id = 'set-custom-reminder-modal';
+document.body.appendChild(mount);
+// Create a new Vue instance and mount it to our modal container
+const CustomReminderModal = new View({
+  name: 'SetCustomReminderModal',
+  el: mount
+});
+const pickCustomDate = async node => {
+  CustomReminderModal.open(node);
+  // Wait for the modal to close
+  return new Promise(resolve => {
+    CustomReminderModal.$on('close', resolve);
+  });
+};
+
+/***/ }),
+
+/***/ "./apps/files_reminders/src/services/reminderService.ts":
+/*!**************************************************************!*\
+  !*** ./apps/files_reminders/src/services/reminderService.ts ***!
+  \**************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   clearReminder: () => (/* binding */ clearReminder),
+/* harmony export */   getReminder: () => (/* binding */ getReminder),
+/* harmony export */   setReminder: () => (/* binding */ setReminder)
+/* harmony export */ });
+/* harmony import */ var _nextcloud_axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @nextcloud/axios */ "./node_modules/@nextcloud/axios/dist/index.es.mjs");
+/* harmony import */ var _nextcloud_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @nextcloud/router */ "./node_modules/@nextcloud/router/dist/index.js");
+/**
+ * @copyright 2023 Christopher Ng <chrng8@gmail.com>
+ *
+ * @author Christopher Ng <chrng8@gmail.com>
+ *
+ * @license AGPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+
+const getReminder = async fileId => {
+  const url = (0,_nextcloud_router__WEBPACK_IMPORTED_MODULE_1__.generateOcsUrl)('/apps/files_reminders/api/v1/{fileId}', {
+    fileId
+  });
+  const response = await _nextcloud_axios__WEBPACK_IMPORTED_MODULE_0__["default"].get(url);
+  const dueDate = response.data.ocs.data.dueDate ? new Date(response.data.ocs.data.dueDate) : null;
+  return {
+    dueDate
+  };
+};
+const setReminder = async (fileId, dueDate) => {
+  const url = (0,_nextcloud_router__WEBPACK_IMPORTED_MODULE_1__.generateOcsUrl)('/apps/files_reminders/api/v1/{fileId}', {
+    fileId
+  });
+  const response = await _nextcloud_axios__WEBPACK_IMPORTED_MODULE_0__["default"].put(url, {
+    dueDate: dueDate.toISOString() // timezone of string is always UTC
+  });
+
+  return response.data.ocs.data;
+};
+const clearReminder = async fileId => {
+  const url = (0,_nextcloud_router__WEBPACK_IMPORTED_MODULE_1__.generateOcsUrl)('/apps/files_reminders/api/v1/{fileId}', {
+    fileId
+  });
+  const response = await _nextcloud_axios__WEBPACK_IMPORTED_MODULE_0__["default"].delete(url);
+  return response.data.ocs.data;
+};
+
+/***/ }),
+
+/***/ "./apps/files_reminders/src/shared/logger.ts":
+/*!***************************************************!*\
+  !*** ./apps/files_reminders/src/shared/logger.ts ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   logger: () => (/* binding */ logger)
+/* harmony export */ });
+/* harmony import */ var _nextcloud_logger__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @nextcloud/logger */ "./node_modules/@nextcloud/logger/dist/index.js");
+/**
+ * @copyright 2023 Christopher Ng <chrng8@gmail.com>
+ *
+ * @author Christopher Ng <chrng8@gmail.com>
+ *
+ * @license AGPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+const logger = (0,_nextcloud_logger__WEBPACK_IMPORTED_MODULE_0__.getLoggerBuilder)().setApp('files_reminders').detectUser().build();
+
+/***/ }),
+
+/***/ "./apps/files_reminders/src/shared/utils.ts":
+/*!**************************************************!*\
+  !*** ./apps/files_reminders/src/shared/utils.ts ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DateTimePreset: () => (/* binding */ DateTimePreset),
+/* harmony export */   getDateString: () => (/* binding */ getDateString),
+/* harmony export */   getDateTime: () => (/* binding */ getDateTime),
+/* harmony export */   getInitialCustomDueDate: () => (/* binding */ getInitialCustomDueDate),
+/* harmony export */   getVerboseDateString: () => (/* binding */ getVerboseDateString)
+/* harmony export */ });
+/* harmony import */ var _nextcloud_moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @nextcloud/moment */ "./node_modules/@nextcloud/moment/dist/index.js");
+/* harmony import */ var _nextcloud_moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_nextcloud_moment__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _nextcloud_l10n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @nextcloud/l10n */ "./node_modules/@nextcloud/l10n/dist/index.mjs");
+/**
+ * @copyright 2023 Christopher Ng <chrng8@gmail.com>
+ *
+ * @author Christopher Ng <chrng8@gmail.com>
+ *
+ * @license AGPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+
+var DateTimePreset;
+(function (DateTimePreset) {
+  DateTimePreset["LaterToday"] = "later-today";
+  DateTimePreset["Tomorrow"] = "tomorrow";
+  DateTimePreset["ThisWeekend"] = "this-weekend";
+  DateTimePreset["NextWeek"] = "next-week";
+})(DateTimePreset || (DateTimePreset = {}));
+const getDateTime = dateTime => {
+  const matchPreset = {
+    [DateTimePreset.LaterToday]: () => {
+      const now = _nextcloud_moment__WEBPACK_IMPORTED_MODULE_0___default()();
+      const evening = _nextcloud_moment__WEBPACK_IMPORTED_MODULE_0___default()().startOf('day').add(18, 'hour');
+      const cutoff = evening.clone().subtract(1, 'hour');
+      if (now.isSameOrAfter(cutoff)) {
+        return null;
+      }
+      return evening.toDate();
+    },
+    [DateTimePreset.Tomorrow]: () => {
+      const day = _nextcloud_moment__WEBPACK_IMPORTED_MODULE_0___default()().add(1, 'day').startOf('day').add(8, 'hour');
+      return day.toDate();
+    },
+    [DateTimePreset.ThisWeekend]: () => {
+      const today = _nextcloud_moment__WEBPACK_IMPORTED_MODULE_0___default()();
+      if ([5, 6, 7 // Sunday
+      ].includes(today.isoWeekday())) {
+        return null;
+      }
+      const saturday = _nextcloud_moment__WEBPACK_IMPORTED_MODULE_0___default()().startOf('isoWeek').add(5, 'day').add(8, 'hour');
+      return saturday.toDate();
+    },
+    [DateTimePreset.NextWeek]: () => {
+      const today = _nextcloud_moment__WEBPACK_IMPORTED_MODULE_0___default()();
+      if (today.isoWeekday() === 7) {
+        // Sunday
+        return null;
+      }
+      const workday = _nextcloud_moment__WEBPACK_IMPORTED_MODULE_0___default()().startOf('isoWeek').add(1, 'week').add(8, 'hour');
+      return workday.toDate();
+    }
+  };
+  return matchPreset[dateTime]();
+};
+const getInitialCustomDueDate = () => {
+  const hour = _nextcloud_moment__WEBPACK_IMPORTED_MODULE_0___default()().get('hour');
+  const dueDate = _nextcloud_moment__WEBPACK_IMPORTED_MODULE_0___default()().startOf('day').add(hour + 2, 'hour');
+  return dueDate.toDate();
+};
+const getDateString = dueDate => {
+  let formatOptions = {
+    hour: 'numeric',
+    minute: '2-digit'
+  };
+  const dueDateMoment = _nextcloud_moment__WEBPACK_IMPORTED_MODULE_0___default()(dueDate);
+  const today = _nextcloud_moment__WEBPACK_IMPORTED_MODULE_0___default()();
+  if (!dueDateMoment.isSame(today, 'date')) {
+    formatOptions = {
+      ...formatOptions,
+      weekday: 'short'
+    };
+  }
+  if (!dueDateMoment.isSame(today, 'week')) {
+    formatOptions = {
+      ...formatOptions,
+      month: 'short',
+      day: 'numeric'
+    };
+  }
+  return dueDate.toLocaleString((0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_1__.getCanonicalLocale)(), formatOptions);
+};
+const getVerboseDateString = dueDate => {
+  const formatOptions = {
+    weekday: 'long',
+    hour: 'numeric',
+    minute: '2-digit',
+    month: 'long',
+    day: 'numeric'
+  };
+  return dueDate.toLocaleString((0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_1__.getCanonicalLocale)(), formatOptions);
+};
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js!./node_modules/ts-loader/index.js??clonedRuleSet-4.use[1]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=script&lang=ts":
+/*!**************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js!./node_modules/ts-loader/index.js??clonedRuleSet-4.use[1]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=script&lang=ts ***!
+  \**************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _nextcloud_dialogs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @nextcloud/dialogs */ "./node_modules/@nextcloud/dialogs/dist/index.mjs");
+/* harmony import */ var _nextcloud_l10n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @nextcloud/l10n */ "./node_modules/@nextcloud/l10n/dist/index.mjs");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.runtime.esm.js");
+/* harmony import */ var _nextcloud_vue_dist_Components_NcButton_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @nextcloud/vue/dist/Components/NcButton.js */ "./node_modules/@nextcloud/vue/dist/Components/NcButton.mjs");
+/* harmony import */ var _nextcloud_vue_dist_Components_NcDateTime_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @nextcloud/vue/dist/Components/NcDateTime.js */ "./node_modules/@nextcloud/vue/dist/Components/NcDateTime.mjs");
+/* harmony import */ var _nextcloud_vue_dist_Components_NcDateTimePickerNative_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @nextcloud/vue/dist/Components/NcDateTimePickerNative.js */ "./node_modules/@nextcloud/vue/dist/Components/NcDateTimePickerNative.mjs");
+/* harmony import */ var _nextcloud_vue_dist_Components_NcModal_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @nextcloud/vue/dist/Components/NcModal.js */ "./node_modules/@nextcloud/vue/dist/Components/NcModal.mjs");
+/* harmony import */ var _nextcloud_vue_dist_Components_NcNoteCard_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @nextcloud/vue/dist/Components/NcNoteCard.js */ "./node_modules/@nextcloud/vue/dist/Components/NcNoteCard.mjs");
+/* harmony import */ var _shared_utils_ts__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../shared/utils.ts */ "./apps/files_reminders/src/shared/utils.ts");
+/* harmony import */ var _shared_logger_ts__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../shared/logger.ts */ "./apps/files_reminders/src/shared/logger.ts");
+/* harmony import */ var _services_reminderService_ts__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../services/reminderService.ts */ "./apps/files_reminders/src/services/reminderService.ts");
+
+
+
+
+
+
+
+
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (vue__WEBPACK_IMPORTED_MODULE_10__["default"].extend({
+  name: 'SetCustomReminderModal',
+  components: {
+    NcButton: _nextcloud_vue_dist_Components_NcButton_js__WEBPACK_IMPORTED_MODULE_2__["default"],
+    NcDateTime: _nextcloud_vue_dist_Components_NcDateTime_js__WEBPACK_IMPORTED_MODULE_3__["default"],
+    NcDateTimePickerNative: _nextcloud_vue_dist_Components_NcDateTimePickerNative_js__WEBPACK_IMPORTED_MODULE_4__["default"],
+    NcModal: _nextcloud_vue_dist_Components_NcModal_js__WEBPACK_IMPORTED_MODULE_5__["default"],
+    NcNoteCard: _nextcloud_vue_dist_Components_NcNoteCard_js__WEBPACK_IMPORTED_MODULE_6__["default"]
+  },
+  data() {
+    return {
+      node: undefined,
+      opened: false,
+      isValid: true,
+      customDueDate: (0,_shared_utils_ts__WEBPACK_IMPORTED_MODULE_7__.getInitialCustomDueDate)(),
+      nowDate: new Date()
+    };
+  },
+  computed: {
+    fileId() {
+      return this.node.fileid;
+    },
+    fileName() {
+      return this.node.basename;
+    },
+    title() {
+      return (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_1__.translate)('files_reminders', 'Set reminder for "{fileName}"', {
+        fileName: this.fileName
+      });
+    },
+    label() {
+      return (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_1__.translate)('files_reminders', 'Set reminder at custom date & time');
+    },
+    clearAriaLabel() {
+      return (0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_1__.translate)('files_reminders', 'Clear reminder');
+    }
+  },
+  methods: {
+    t: _nextcloud_l10n__WEBPACK_IMPORTED_MODULE_1__.translate,
+    getDateString: _shared_utils_ts__WEBPACK_IMPORTED_MODULE_7__.getDateString,
+    /**
+     * Open the modal to set a custom reminder
+     * and reset the state.
+     * @param node The node to set a reminder for
+     */
+    async open(node) {
+      this.node = node;
+      this.isValid = true;
+      this.opened = true;
+      this.customDueDate = (0,_shared_utils_ts__WEBPACK_IMPORTED_MODULE_7__.getInitialCustomDueDate)();
+      this.nowDate = new Date();
+      // Focus the input and show the picker after the animation
+      setTimeout(() => {
+        const input = document.getElementById('set-custom-reminder');
+        input.focus();
+        input.showPicker();
+      }, 300);
+    },
+    async setCustom() {
+      // Handle input cleared or invalid date
+      if (!(this.customDueDate instanceof Date) || isNaN(this.customDueDate)) {
+        (0,_nextcloud_dialogs__WEBPACK_IMPORTED_MODULE_0__.showError)((0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_1__.translate)('files_reminders', 'Please choose a valid date & time'));
+        return;
+      }
+      try {
+        await (0,_services_reminderService_ts__WEBPACK_IMPORTED_MODULE_9__.setReminder)(this.fileId, this.customDueDate);
+        (0,_nextcloud_dialogs__WEBPACK_IMPORTED_MODULE_0__.showSuccess)((0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_1__.translate)('files_reminders', 'Reminder set for "{fileName}"', {
+          fileName: this.fileName
+        }));
+        this.onClose();
+      } catch (error) {
+        _shared_logger_ts__WEBPACK_IMPORTED_MODULE_8__.logger.error('Failed to set reminder', {
+          error
+        });
+        (0,_nextcloud_dialogs__WEBPACK_IMPORTED_MODULE_0__.showError)((0,_nextcloud_l10n__WEBPACK_IMPORTED_MODULE_1__.translate)('files_reminders', 'Failed to set reminder'));
+      }
+    },
+    onClose() {
+      this.opened = false;
+      this.$emit('close');
+    },
+    onInput() {
+      const input = document.getElementById('set-custom-reminder');
+      this.isValid = input.checkValidity();
+    }
+  }
+}));
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[3]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=template&id=553ca1de&scoped=true":
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[3]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=template&id=553ca1de&scoped=true ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   render: () => (/* binding */ render),
+/* harmony export */   staticRenderFns: () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function render() {
+  var _vm = this,
+    _c = _vm._self._c,
+    _setup = _vm._self._setupProxy;
+  return _vm.opened ? _c("NcModal", {
+    attrs: {
+      "out-transition": true,
+      size: "small"
+    },
+    on: {
+      close: _vm.onClose
+    }
+  }, [_c("form", {
+    staticClass: "custom-reminder-modal",
+    on: {
+      submit: function ($event) {
+        $event.preventDefault();
+        return _vm.setCustom.apply(null, arguments);
+      }
+    }
+  }, [_c("h2", {
+    staticClass: "custom-reminder-modal__title"
+  }, [_vm._v("\n\t\t\t" + _vm._s(_vm.title) + "\n\t\t")]), _vm._v(" "), _c("NcDateTimePickerNative", {
+    attrs: {
+      id: "set-custom-reminder",
+      label: _vm.label,
+      min: _vm.nowDate,
+      required: true,
+      type: "datetime-local"
+    },
+    on: {
+      input: _vm.onInput
+    },
+    model: {
+      value: _vm.customDueDate,
+      callback: function ($$v) {
+        _vm.customDueDate = $$v;
+      },
+      expression: "customDueDate"
+    }
+  }), _vm._v(" "), _vm.isValid ? _c("NcNoteCard", {
+    attrs: {
+      type: "info"
+    }
+  }, [_vm._v("\n\t\t\t" + _vm._s(_vm.t("files_reminders", "We will remind you of this file")) + "\n\t\t\t"), _c("NcDateTime", {
+    attrs: {
+      timestamp: _vm.customDueDate
+    }
+  })], 1) : _c("NcNoteCard", {
+    attrs: {
+      type: "error"
+    }
+  }, [_vm._v("\n\t\t\t" + _vm._s(_vm.t("files_reminders", "Please choose a valid date & time")) + "\n\t\t")]), _vm._v(" "), _c("div", {
+    staticClass: "custom-reminder-modal__buttons"
+  }, [_c("NcButton", {
+    on: {
+      click: _vm.onClose
+    }
+  }, [_vm._v("\n\t\t\t\t" + _vm._s(_vm.t("files_reminders", "Cancel")) + "\n\t\t\t")]), _vm._v(" "), _c("NcButton", {
+    attrs: {
+      disabled: !_vm.isValid,
+      "native-type": "submit",
+      type: "primary"
+    }
+  }, [_vm._v("\n\t\t\t\t" + _vm._s(_vm.t("files_reminders", "Set reminder")) + "\n\t\t\t")])], 1)], 1)]) : _vm._e();
+};
+var staticRenderFns = [];
+render._withStripped = true;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./apps/files_reminders/src/actions/setReminderSuggestionActions.scss":
+/*!*********************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./apps/files_reminders/src/actions/setReminderSuggestionActions.scss ***!
+  \*********************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/noSourceMaps.js */ "./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `@charset "UTF-8";
+/**
+ * @copyright Copyright (c) 2023 John Molakvoæ <skjnldsv@protonmail.com>
+ *
+ * @author John Molakvoæ <skjnldsv@protonmail.com>
+ *
+ * @license AGPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+.files-list__row-action-set-reminder-custom {
+  margin-top: 13px;
+  position: relative;
+}
+.files-list__row-action-set-reminder-custom::before {
+  content: "";
+  margin: 3px 10px 3px 15px;
+  border-bottom: 1px solid var(--color-border-dark);
+  cursor: default;
+  display: flex;
+  height: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -10px;
+}`, ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=style&index=0&id=553ca1de&lang=scss&scoped=true":
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=style&index=0&id=553ca1de&lang=scss&scoped=true ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/noSourceMaps.js */ "./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.custom-reminder-modal[data-v-553ca1de] {
+  margin: 30px;
+}
+.custom-reminder-modal__title[data-v-553ca1de] {
+  font-size: 16px;
+  line-height: 2em;
+}
+.custom-reminder-modal__buttons[data-v-553ca1de] {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 30px;
+}
+.custom-reminder-modal__buttons button[data-v-553ca1de] {
+  margin-left: 10px;
+}`, ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/moment/locale sync recursive ^\\.\\/.*$":
+/*!***************************************************!*\
+  !*** ./node_modules/moment/locale/ sync ^\.\/.*$ ***!
+  \***************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var map = {
+	"./af": "./node_modules/moment/locale/af.js",
+	"./af.js": "./node_modules/moment/locale/af.js",
+	"./ar": "./node_modules/moment/locale/ar.js",
+	"./ar-dz": "./node_modules/moment/locale/ar-dz.js",
+	"./ar-dz.js": "./node_modules/moment/locale/ar-dz.js",
+	"./ar-kw": "./node_modules/moment/locale/ar-kw.js",
+	"./ar-kw.js": "./node_modules/moment/locale/ar-kw.js",
+	"./ar-ly": "./node_modules/moment/locale/ar-ly.js",
+	"./ar-ly.js": "./node_modules/moment/locale/ar-ly.js",
+	"./ar-ma": "./node_modules/moment/locale/ar-ma.js",
+	"./ar-ma.js": "./node_modules/moment/locale/ar-ma.js",
+	"./ar-sa": "./node_modules/moment/locale/ar-sa.js",
+	"./ar-sa.js": "./node_modules/moment/locale/ar-sa.js",
+	"./ar-tn": "./node_modules/moment/locale/ar-tn.js",
+	"./ar-tn.js": "./node_modules/moment/locale/ar-tn.js",
+	"./ar.js": "./node_modules/moment/locale/ar.js",
+	"./az": "./node_modules/moment/locale/az.js",
+	"./az.js": "./node_modules/moment/locale/az.js",
+	"./be": "./node_modules/moment/locale/be.js",
+	"./be.js": "./node_modules/moment/locale/be.js",
+	"./bg": "./node_modules/moment/locale/bg.js",
+	"./bg.js": "./node_modules/moment/locale/bg.js",
+	"./bm": "./node_modules/moment/locale/bm.js",
+	"./bm.js": "./node_modules/moment/locale/bm.js",
+	"./bn": "./node_modules/moment/locale/bn.js",
+	"./bn-bd": "./node_modules/moment/locale/bn-bd.js",
+	"./bn-bd.js": "./node_modules/moment/locale/bn-bd.js",
+	"./bn.js": "./node_modules/moment/locale/bn.js",
+	"./bo": "./node_modules/moment/locale/bo.js",
+	"./bo.js": "./node_modules/moment/locale/bo.js",
+	"./br": "./node_modules/moment/locale/br.js",
+	"./br.js": "./node_modules/moment/locale/br.js",
+	"./bs": "./node_modules/moment/locale/bs.js",
+	"./bs.js": "./node_modules/moment/locale/bs.js",
+	"./ca": "./node_modules/moment/locale/ca.js",
+	"./ca.js": "./node_modules/moment/locale/ca.js",
+	"./cs": "./node_modules/moment/locale/cs.js",
+	"./cs.js": "./node_modules/moment/locale/cs.js",
+	"./cv": "./node_modules/moment/locale/cv.js",
+	"./cv.js": "./node_modules/moment/locale/cv.js",
+	"./cy": "./node_modules/moment/locale/cy.js",
+	"./cy.js": "./node_modules/moment/locale/cy.js",
+	"./da": "./node_modules/moment/locale/da.js",
+	"./da.js": "./node_modules/moment/locale/da.js",
+	"./de": "./node_modules/moment/locale/de.js",
+	"./de-at": "./node_modules/moment/locale/de-at.js",
+	"./de-at.js": "./node_modules/moment/locale/de-at.js",
+	"./de-ch": "./node_modules/moment/locale/de-ch.js",
+	"./de-ch.js": "./node_modules/moment/locale/de-ch.js",
+	"./de.js": "./node_modules/moment/locale/de.js",
+	"./dv": "./node_modules/moment/locale/dv.js",
+	"./dv.js": "./node_modules/moment/locale/dv.js",
+	"./el": "./node_modules/moment/locale/el.js",
+	"./el.js": "./node_modules/moment/locale/el.js",
+	"./en-au": "./node_modules/moment/locale/en-au.js",
+	"./en-au.js": "./node_modules/moment/locale/en-au.js",
+	"./en-ca": "./node_modules/moment/locale/en-ca.js",
+	"./en-ca.js": "./node_modules/moment/locale/en-ca.js",
+	"./en-gb": "./node_modules/moment/locale/en-gb.js",
+	"./en-gb.js": "./node_modules/moment/locale/en-gb.js",
+	"./en-ie": "./node_modules/moment/locale/en-ie.js",
+	"./en-ie.js": "./node_modules/moment/locale/en-ie.js",
+	"./en-il": "./node_modules/moment/locale/en-il.js",
+	"./en-il.js": "./node_modules/moment/locale/en-il.js",
+	"./en-in": "./node_modules/moment/locale/en-in.js",
+	"./en-in.js": "./node_modules/moment/locale/en-in.js",
+	"./en-nz": "./node_modules/moment/locale/en-nz.js",
+	"./en-nz.js": "./node_modules/moment/locale/en-nz.js",
+	"./en-sg": "./node_modules/moment/locale/en-sg.js",
+	"./en-sg.js": "./node_modules/moment/locale/en-sg.js",
+	"./eo": "./node_modules/moment/locale/eo.js",
+	"./eo.js": "./node_modules/moment/locale/eo.js",
+	"./es": "./node_modules/moment/locale/es.js",
+	"./es-do": "./node_modules/moment/locale/es-do.js",
+	"./es-do.js": "./node_modules/moment/locale/es-do.js",
+	"./es-mx": "./node_modules/moment/locale/es-mx.js",
+	"./es-mx.js": "./node_modules/moment/locale/es-mx.js",
+	"./es-us": "./node_modules/moment/locale/es-us.js",
+	"./es-us.js": "./node_modules/moment/locale/es-us.js",
+	"./es.js": "./node_modules/moment/locale/es.js",
+	"./et": "./node_modules/moment/locale/et.js",
+	"./et.js": "./node_modules/moment/locale/et.js",
+	"./eu": "./node_modules/moment/locale/eu.js",
+	"./eu.js": "./node_modules/moment/locale/eu.js",
+	"./fa": "./node_modules/moment/locale/fa.js",
+	"./fa.js": "./node_modules/moment/locale/fa.js",
+	"./fi": "./node_modules/moment/locale/fi.js",
+	"./fi.js": "./node_modules/moment/locale/fi.js",
+	"./fil": "./node_modules/moment/locale/fil.js",
+	"./fil.js": "./node_modules/moment/locale/fil.js",
+	"./fo": "./node_modules/moment/locale/fo.js",
+	"./fo.js": "./node_modules/moment/locale/fo.js",
+	"./fr": "./node_modules/moment/locale/fr.js",
+	"./fr-ca": "./node_modules/moment/locale/fr-ca.js",
+	"./fr-ca.js": "./node_modules/moment/locale/fr-ca.js",
+	"./fr-ch": "./node_modules/moment/locale/fr-ch.js",
+	"./fr-ch.js": "./node_modules/moment/locale/fr-ch.js",
+	"./fr.js": "./node_modules/moment/locale/fr.js",
+	"./fy": "./node_modules/moment/locale/fy.js",
+	"./fy.js": "./node_modules/moment/locale/fy.js",
+	"./ga": "./node_modules/moment/locale/ga.js",
+	"./ga.js": "./node_modules/moment/locale/ga.js",
+	"./gd": "./node_modules/moment/locale/gd.js",
+	"./gd.js": "./node_modules/moment/locale/gd.js",
+	"./gl": "./node_modules/moment/locale/gl.js",
+	"./gl.js": "./node_modules/moment/locale/gl.js",
+	"./gom-deva": "./node_modules/moment/locale/gom-deva.js",
+	"./gom-deva.js": "./node_modules/moment/locale/gom-deva.js",
+	"./gom-latn": "./node_modules/moment/locale/gom-latn.js",
+	"./gom-latn.js": "./node_modules/moment/locale/gom-latn.js",
+	"./gu": "./node_modules/moment/locale/gu.js",
+	"./gu.js": "./node_modules/moment/locale/gu.js",
+	"./he": "./node_modules/moment/locale/he.js",
+	"./he.js": "./node_modules/moment/locale/he.js",
+	"./hi": "./node_modules/moment/locale/hi.js",
+	"./hi.js": "./node_modules/moment/locale/hi.js",
+	"./hr": "./node_modules/moment/locale/hr.js",
+	"./hr.js": "./node_modules/moment/locale/hr.js",
+	"./hu": "./node_modules/moment/locale/hu.js",
+	"./hu.js": "./node_modules/moment/locale/hu.js",
+	"./hy-am": "./node_modules/moment/locale/hy-am.js",
+	"./hy-am.js": "./node_modules/moment/locale/hy-am.js",
+	"./id": "./node_modules/moment/locale/id.js",
+	"./id.js": "./node_modules/moment/locale/id.js",
+	"./is": "./node_modules/moment/locale/is.js",
+	"./is.js": "./node_modules/moment/locale/is.js",
+	"./it": "./node_modules/moment/locale/it.js",
+	"./it-ch": "./node_modules/moment/locale/it-ch.js",
+	"./it-ch.js": "./node_modules/moment/locale/it-ch.js",
+	"./it.js": "./node_modules/moment/locale/it.js",
+	"./ja": "./node_modules/moment/locale/ja.js",
+	"./ja.js": "./node_modules/moment/locale/ja.js",
+	"./jv": "./node_modules/moment/locale/jv.js",
+	"./jv.js": "./node_modules/moment/locale/jv.js",
+	"./ka": "./node_modules/moment/locale/ka.js",
+	"./ka.js": "./node_modules/moment/locale/ka.js",
+	"./kk": "./node_modules/moment/locale/kk.js",
+	"./kk.js": "./node_modules/moment/locale/kk.js",
+	"./km": "./node_modules/moment/locale/km.js",
+	"./km.js": "./node_modules/moment/locale/km.js",
+	"./kn": "./node_modules/moment/locale/kn.js",
+	"./kn.js": "./node_modules/moment/locale/kn.js",
+	"./ko": "./node_modules/moment/locale/ko.js",
+	"./ko.js": "./node_modules/moment/locale/ko.js",
+	"./ku": "./node_modules/moment/locale/ku.js",
+	"./ku.js": "./node_modules/moment/locale/ku.js",
+	"./ky": "./node_modules/moment/locale/ky.js",
+	"./ky.js": "./node_modules/moment/locale/ky.js",
+	"./lb": "./node_modules/moment/locale/lb.js",
+	"./lb.js": "./node_modules/moment/locale/lb.js",
+	"./lo": "./node_modules/moment/locale/lo.js",
+	"./lo.js": "./node_modules/moment/locale/lo.js",
+	"./lt": "./node_modules/moment/locale/lt.js",
+	"./lt.js": "./node_modules/moment/locale/lt.js",
+	"./lv": "./node_modules/moment/locale/lv.js",
+	"./lv.js": "./node_modules/moment/locale/lv.js",
+	"./me": "./node_modules/moment/locale/me.js",
+	"./me.js": "./node_modules/moment/locale/me.js",
+	"./mi": "./node_modules/moment/locale/mi.js",
+	"./mi.js": "./node_modules/moment/locale/mi.js",
+	"./mk": "./node_modules/moment/locale/mk.js",
+	"./mk.js": "./node_modules/moment/locale/mk.js",
+	"./ml": "./node_modules/moment/locale/ml.js",
+	"./ml.js": "./node_modules/moment/locale/ml.js",
+	"./mn": "./node_modules/moment/locale/mn.js",
+	"./mn.js": "./node_modules/moment/locale/mn.js",
+	"./mr": "./node_modules/moment/locale/mr.js",
+	"./mr.js": "./node_modules/moment/locale/mr.js",
+	"./ms": "./node_modules/moment/locale/ms.js",
+	"./ms-my": "./node_modules/moment/locale/ms-my.js",
+	"./ms-my.js": "./node_modules/moment/locale/ms-my.js",
+	"./ms.js": "./node_modules/moment/locale/ms.js",
+	"./mt": "./node_modules/moment/locale/mt.js",
+	"./mt.js": "./node_modules/moment/locale/mt.js",
+	"./my": "./node_modules/moment/locale/my.js",
+	"./my.js": "./node_modules/moment/locale/my.js",
+	"./nb": "./node_modules/moment/locale/nb.js",
+	"./nb.js": "./node_modules/moment/locale/nb.js",
+	"./ne": "./node_modules/moment/locale/ne.js",
+	"./ne.js": "./node_modules/moment/locale/ne.js",
+	"./nl": "./node_modules/moment/locale/nl.js",
+	"./nl-be": "./node_modules/moment/locale/nl-be.js",
+	"./nl-be.js": "./node_modules/moment/locale/nl-be.js",
+	"./nl.js": "./node_modules/moment/locale/nl.js",
+	"./nn": "./node_modules/moment/locale/nn.js",
+	"./nn.js": "./node_modules/moment/locale/nn.js",
+	"./oc-lnc": "./node_modules/moment/locale/oc-lnc.js",
+	"./oc-lnc.js": "./node_modules/moment/locale/oc-lnc.js",
+	"./pa-in": "./node_modules/moment/locale/pa-in.js",
+	"./pa-in.js": "./node_modules/moment/locale/pa-in.js",
+	"./pl": "./node_modules/moment/locale/pl.js",
+	"./pl.js": "./node_modules/moment/locale/pl.js",
+	"./pt": "./node_modules/moment/locale/pt.js",
+	"./pt-br": "./node_modules/moment/locale/pt-br.js",
+	"./pt-br.js": "./node_modules/moment/locale/pt-br.js",
+	"./pt.js": "./node_modules/moment/locale/pt.js",
+	"./ro": "./node_modules/moment/locale/ro.js",
+	"./ro.js": "./node_modules/moment/locale/ro.js",
+	"./ru": "./node_modules/moment/locale/ru.js",
+	"./ru.js": "./node_modules/moment/locale/ru.js",
+	"./sd": "./node_modules/moment/locale/sd.js",
+	"./sd.js": "./node_modules/moment/locale/sd.js",
+	"./se": "./node_modules/moment/locale/se.js",
+	"./se.js": "./node_modules/moment/locale/se.js",
+	"./si": "./node_modules/moment/locale/si.js",
+	"./si.js": "./node_modules/moment/locale/si.js",
+	"./sk": "./node_modules/moment/locale/sk.js",
+	"./sk.js": "./node_modules/moment/locale/sk.js",
+	"./sl": "./node_modules/moment/locale/sl.js",
+	"./sl.js": "./node_modules/moment/locale/sl.js",
+	"./sq": "./node_modules/moment/locale/sq.js",
+	"./sq.js": "./node_modules/moment/locale/sq.js",
+	"./sr": "./node_modules/moment/locale/sr.js",
+	"./sr-cyrl": "./node_modules/moment/locale/sr-cyrl.js",
+	"./sr-cyrl.js": "./node_modules/moment/locale/sr-cyrl.js",
+	"./sr.js": "./node_modules/moment/locale/sr.js",
+	"./ss": "./node_modules/moment/locale/ss.js",
+	"./ss.js": "./node_modules/moment/locale/ss.js",
+	"./sv": "./node_modules/moment/locale/sv.js",
+	"./sv.js": "./node_modules/moment/locale/sv.js",
+	"./sw": "./node_modules/moment/locale/sw.js",
+	"./sw.js": "./node_modules/moment/locale/sw.js",
+	"./ta": "./node_modules/moment/locale/ta.js",
+	"./ta.js": "./node_modules/moment/locale/ta.js",
+	"./te": "./node_modules/moment/locale/te.js",
+	"./te.js": "./node_modules/moment/locale/te.js",
+	"./tet": "./node_modules/moment/locale/tet.js",
+	"./tet.js": "./node_modules/moment/locale/tet.js",
+	"./tg": "./node_modules/moment/locale/tg.js",
+	"./tg.js": "./node_modules/moment/locale/tg.js",
+	"./th": "./node_modules/moment/locale/th.js",
+	"./th.js": "./node_modules/moment/locale/th.js",
+	"./tk": "./node_modules/moment/locale/tk.js",
+	"./tk.js": "./node_modules/moment/locale/tk.js",
+	"./tl-ph": "./node_modules/moment/locale/tl-ph.js",
+	"./tl-ph.js": "./node_modules/moment/locale/tl-ph.js",
+	"./tlh": "./node_modules/moment/locale/tlh.js",
+	"./tlh.js": "./node_modules/moment/locale/tlh.js",
+	"./tr": "./node_modules/moment/locale/tr.js",
+	"./tr.js": "./node_modules/moment/locale/tr.js",
+	"./tzl": "./node_modules/moment/locale/tzl.js",
+	"./tzl.js": "./node_modules/moment/locale/tzl.js",
+	"./tzm": "./node_modules/moment/locale/tzm.js",
+	"./tzm-latn": "./node_modules/moment/locale/tzm-latn.js",
+	"./tzm-latn.js": "./node_modules/moment/locale/tzm-latn.js",
+	"./tzm.js": "./node_modules/moment/locale/tzm.js",
+	"./ug-cn": "./node_modules/moment/locale/ug-cn.js",
+	"./ug-cn.js": "./node_modules/moment/locale/ug-cn.js",
+	"./uk": "./node_modules/moment/locale/uk.js",
+	"./uk.js": "./node_modules/moment/locale/uk.js",
+	"./ur": "./node_modules/moment/locale/ur.js",
+	"./ur.js": "./node_modules/moment/locale/ur.js",
+	"./uz": "./node_modules/moment/locale/uz.js",
+	"./uz-latn": "./node_modules/moment/locale/uz-latn.js",
+	"./uz-latn.js": "./node_modules/moment/locale/uz-latn.js",
+	"./uz.js": "./node_modules/moment/locale/uz.js",
+	"./vi": "./node_modules/moment/locale/vi.js",
+	"./vi.js": "./node_modules/moment/locale/vi.js",
+	"./x-pseudo": "./node_modules/moment/locale/x-pseudo.js",
+	"./x-pseudo.js": "./node_modules/moment/locale/x-pseudo.js",
+	"./yo": "./node_modules/moment/locale/yo.js",
+	"./yo.js": "./node_modules/moment/locale/yo.js",
+	"./zh-cn": "./node_modules/moment/locale/zh-cn.js",
+	"./zh-cn.js": "./node_modules/moment/locale/zh-cn.js",
+	"./zh-hk": "./node_modules/moment/locale/zh-hk.js",
+	"./zh-hk.js": "./node_modules/moment/locale/zh-hk.js",
+	"./zh-mo": "./node_modules/moment/locale/zh-mo.js",
+	"./zh-mo.js": "./node_modules/moment/locale/zh-mo.js",
+	"./zh-tw": "./node_modules/moment/locale/zh-tw.js",
+	"./zh-tw.js": "./node_modules/moment/locale/zh-tw.js"
+};
+
+
+function webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+function webpackContextResolve(req) {
+	if(!__webpack_require__.o(map, req)) {
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	}
+	return map[req];
+}
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = "./node_modules/moment/locale sync recursive ^\\.\\/.*$";
+
+/***/ }),
+
+/***/ "./apps/files_reminders/src/actions/setReminderSuggestionActions.scss":
+/*!****************************************************************************!*\
+  !*** ./apps/files_reminders/src/actions/setReminderSuggestionActions.scss ***!
+  \****************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_setReminderSuggestionActions_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/sass-loader/dist/cjs.js!./setReminderSuggestionActions.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./apps/files_reminders/src/actions/setReminderSuggestionActions.scss");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+
+      options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+    
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_setReminderSuggestionActions_scss__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_setReminderSuggestionActions_scss__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_setReminderSuggestionActions_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_setReminderSuggestionActions_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=style&index=0&id=553ca1de&lang=scss&scoped=true":
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=style&index=0&id=553ca1de&lang=scss&scoped=true ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_SetCustomReminderModal_vue_vue_type_style_index_0_id_553ca1de_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/sass-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./SetCustomReminderModal.vue?vue&type=style&index=0&id=553ca1de&lang=scss&scoped=true */ "./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=style&index=0&id=553ca1de&lang=scss&scoped=true");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+
+      options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+    
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_SetCustomReminderModal_vue_vue_type_style_index_0_id_553ca1de_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_SetCustomReminderModal_vue_vue_type_style_index_0_id_553ca1de_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_SetCustomReminderModal_vue_vue_type_style_index_0_id_553ca1de_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_SetCustomReminderModal_vue_vue_type_style_index_0_id_553ca1de_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./apps/files_reminders/src/components/SetCustomReminderModal.vue":
+/*!************************************************************************!*\
+  !*** ./apps/files_reminders/src/components/SetCustomReminderModal.vue ***!
+  \************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _SetCustomReminderModal_vue_vue_type_template_id_553ca1de_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SetCustomReminderModal.vue?vue&type=template&id=553ca1de&scoped=true */ "./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=template&id=553ca1de&scoped=true");
+/* harmony import */ var _SetCustomReminderModal_vue_vue_type_script_lang_ts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SetCustomReminderModal.vue?vue&type=script&lang=ts */ "./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=script&lang=ts");
+/* harmony import */ var _SetCustomReminderModal_vue_vue_type_style_index_0_id_553ca1de_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./SetCustomReminderModal.vue?vue&type=style&index=0&id=553ca1de&lang=scss&scoped=true */ "./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=style&index=0&id=553ca1de&lang=scss&scoped=true");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+;
+
+
+/* normalize component */
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _SetCustomReminderModal_vue_vue_type_script_lang_ts__WEBPACK_IMPORTED_MODULE_1__["default"],
+  _SetCustomReminderModal_vue_vue_type_template_id_553ca1de_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render,
+  _SetCustomReminderModal_vue_vue_type_template_id_553ca1de_scoped_true__WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  "553ca1de",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "apps/files_reminders/src/components/SetCustomReminderModal.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
+/***/ "./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=script&lang=ts":
+/*!************************************************************************************************!*\
+  !*** ./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=script&lang=ts ***!
+  \************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_node_modules_ts_loader_index_js_clonedRuleSet_4_use_1_node_modules_vue_loader_lib_index_js_vue_loader_options_SetCustomReminderModal_vue_vue_type_script_lang_ts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js!../../../../node_modules/ts-loader/index.js??clonedRuleSet-4.use[1]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./SetCustomReminderModal.vue?vue&type=script&lang=ts */ "./node_modules/babel-loader/lib/index.js!./node_modules/ts-loader/index.js??clonedRuleSet-4.use[1]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=script&lang=ts");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_node_modules_ts_loader_index_js_clonedRuleSet_4_use_1_node_modules_vue_loader_lib_index_js_vue_loader_options_SetCustomReminderModal_vue_vue_type_script_lang_ts__WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=template&id=553ca1de&scoped=true":
+/*!******************************************************************************************************************!*\
+  !*** ./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=template&id=553ca1de&scoped=true ***!
+  \******************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   render: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_3_node_modules_vue_loader_lib_index_js_vue_loader_options_SetCustomReminderModal_vue_vue_type_template_id_553ca1de_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   staticRenderFns: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_3_node_modules_vue_loader_lib_index_js_vue_loader_options_SetCustomReminderModal_vue_vue_type_template_id_553ca1de_scoped_true__WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_3_node_modules_vue_loader_lib_index_js_vue_loader_options_SetCustomReminderModal_vue_vue_type_template_id_553ca1de_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[3]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./SetCustomReminderModal.vue?vue&type=template&id=553ca1de&scoped=true */ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[3]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=template&id=553ca1de&scoped=true");
+
+
+/***/ }),
+
+/***/ "./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=style&index=0&id=553ca1de&lang=scss&scoped=true":
+/*!*********************************************************************************************************************************!*\
+  !*** ./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=style&index=0&id=553ca1de&lang=scss&scoped=true ***!
+  \*********************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_SetCustomReminderModal_vue_vue_type_style_index_0_id_553ca1de_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader/dist/cjs.js!../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/sass-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./SetCustomReminderModal.vue?vue&type=style&index=0&id=553ca1de&lang=scss&scoped=true */ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./apps/files_reminders/src/components/SetCustomReminderModal.vue?vue&type=style&index=0&id=553ca1de&lang=scss&scoped=true");
+
+
+/***/ }),
+
+/***/ "./node_modules/@mdi/svg/svg/alarm.svg?raw":
+/*!*************************************************!*\
+  !*** ./node_modules/@mdi/svg/svg/alarm.svg?raw ***!
+  \*************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" id=\"mdi-alarm\" viewBox=\"0 0 24 24\"><path d=\"M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22A9,9 0 0,0 21,13A9,9 0 0,0 12,4M12.5,8H11V14L15.75,16.85L16.5,15.62L12.5,13.25V8M7.88,3.39L6.6,1.86L2,5.71L3.29,7.24L7.88,3.39M22,5.72L17.4,1.86L16.11,3.39L20.71,7.25L22,5.72Z\" /></svg>";
+
+/***/ }),
+
+/***/ "./node_modules/@mdi/svg/svg/calendar-clock.svg?raw":
+/*!**********************************************************!*\
+  !*** ./node_modules/@mdi/svg/svg/calendar-clock.svg?raw ***!
+  \**********************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" id=\"mdi-calendar-clock\" viewBox=\"0 0 24 24\"><path d=\"M15,13H16.5V15.82L18.94,17.23L18.19,18.53L15,16.69V13M19,8H5V19H9.67C9.24,18.09 9,17.07 9,16A7,7 0 0,1 16,9C17.07,9 18.09,9.24 19,9.67V8M5,21C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H6V1H8V3H16V1H18V3H19A2,2 0 0,1 21,5V11.1C22.24,12.36 23,14.09 23,16A7,7 0 0,1 16,23C14.09,23 12.36,22.24 11.1,21H5M16,11.15A4.85,4.85 0 0,0 11.15,16C11.15,18.68 13.32,20.85 16,20.85A4.85,4.85 0 0,0 20.85,16C20.85,13.32 18.68,11.15 16,11.15Z\" /></svg>";
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			id: moduleId,
+/******/ 			loaded: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = __webpack_modules__;
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/chunk loaded */
+/******/ 	(() => {
+/******/ 		var deferred = [];
+/******/ 		__webpack_require__.O = (result, chunkIds, fn, priority) => {
+/******/ 			if(chunkIds) {
+/******/ 				priority = priority || 0;
+/******/ 				for(var i = deferred.length; i > 0 && deferred[i - 1][2] > priority; i--) deferred[i] = deferred[i - 1];
+/******/ 				deferred[i] = [chunkIds, fn, priority];
+/******/ 				return;
+/******/ 			}
+/******/ 			var notFulfilled = Infinity;
+/******/ 			for (var i = 0; i < deferred.length; i++) {
+/******/ 				var chunkIds = deferred[i][0];
+/******/ 				var fn = deferred[i][1];
+/******/ 				var priority = deferred[i][2];
+/******/ 				var fulfilled = true;
+/******/ 				for (var j = 0; j < chunkIds.length; j++) {
+/******/ 					if ((priority & 1 === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
+/******/ 						chunkIds.splice(j--, 1);
+/******/ 					} else {
+/******/ 						fulfilled = false;
+/******/ 						if(priority < notFulfilled) notFulfilled = priority;
+/******/ 					}
+/******/ 				}
+/******/ 				if(fulfilled) {
+/******/ 					deferred.splice(i--, 1)
+/******/ 					var r = fn();
+/******/ 					if (r !== undefined) result = r;
+/******/ 				}
+/******/ 			}
+/******/ 			return result;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/ensure chunk */
+/******/ 	(() => {
+/******/ 		__webpack_require__.f = {};
+/******/ 		// This file contains only the entry chunk.
+/******/ 		// The chunk loading function for additional chunks
+/******/ 		__webpack_require__.e = (chunkId) => {
+/******/ 			return Promise.all(Object.keys(__webpack_require__.f).reduce((promises, key) => {
+/******/ 				__webpack_require__.f[key](chunkId, promises);
+/******/ 				return promises;
+/******/ 			}, []));
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/get javascript chunk filename */
+/******/ 	(() => {
+/******/ 		// This function allow to reference async chunks
+/******/ 		__webpack_require__.u = (chunkId) => {
+/******/ 			// return url for filenames based on template
+/******/ 			return "" + chunkId + "-" + chunkId + ".js?v=" + {"node_modules_nextcloud_dialogs_dist_chunks_index-27e9ea0a_mjs":"f098494fd65ef942c7b1","data_image_svg_xml_base64_PCEtLSBUaGlzIGljb24gaXMgcGFydCBvZiBNYXRlcmlhbCBVSSBJY29ucy4gQ29weXJ-a6b278":"a48550cd83d7aad22499"}[chunkId] + "";
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/global */
+/******/ 	(() => {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/load script */
+/******/ 	(() => {
+/******/ 		var inProgress = {};
+/******/ 		var dataWebpackPrefix = "nextcloud:";
+/******/ 		// loadScript function to load a script via script tag
+/******/ 		__webpack_require__.l = (url, done, key, chunkId) => {
+/******/ 			if(inProgress[url]) { inProgress[url].push(done); return; }
+/******/ 			var script, needAttach;
+/******/ 			if(key !== undefined) {
+/******/ 				var scripts = document.getElementsByTagName("script");
+/******/ 				for(var i = 0; i < scripts.length; i++) {
+/******/ 					var s = scripts[i];
+/******/ 					if(s.getAttribute("src") == url || s.getAttribute("data-webpack") == dataWebpackPrefix + key) { script = s; break; }
+/******/ 				}
+/******/ 			}
+/******/ 			if(!script) {
+/******/ 				needAttach = true;
+/******/ 				script = document.createElement('script');
+/******/ 		
+/******/ 				script.charset = 'utf-8';
+/******/ 				script.timeout = 120;
+/******/ 				if (__webpack_require__.nc) {
+/******/ 					script.setAttribute("nonce", __webpack_require__.nc);
+/******/ 				}
+/******/ 				script.setAttribute("data-webpack", dataWebpackPrefix + key);
+/******/ 		
+/******/ 				script.src = url;
+/******/ 			}
+/******/ 			inProgress[url] = [done];
+/******/ 			var onScriptComplete = (prev, event) => {
+/******/ 				// avoid mem leaks in IE.
+/******/ 				script.onerror = script.onload = null;
+/******/ 				clearTimeout(timeout);
+/******/ 				var doneFns = inProgress[url];
+/******/ 				delete inProgress[url];
+/******/ 				script.parentNode && script.parentNode.removeChild(script);
+/******/ 				doneFns && doneFns.forEach((fn) => (fn(event)));
+/******/ 				if(prev) return prev(event);
+/******/ 			}
+/******/ 			var timeout = setTimeout(onScriptComplete.bind(null, undefined, { type: 'timeout', target: script }), 120000);
+/******/ 			script.onerror = onScriptComplete.bind(null, script.onerror);
+/******/ 			script.onload = onScriptComplete.bind(null, script.onload);
+/******/ 			needAttach && document.head.appendChild(script);
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/node module decorator */
+/******/ 	(() => {
+/******/ 		__webpack_require__.nmd = (module) => {
+/******/ 			module.paths = [];
+/******/ 			if (!module.children) module.children = [];
+/******/ 			return module;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/publicPath */
+/******/ 	(() => {
+/******/ 		var scriptUrl;
+/******/ 		if (__webpack_require__.g.importScripts) scriptUrl = __webpack_require__.g.location + "";
+/******/ 		var document = __webpack_require__.g.document;
+/******/ 		if (!scriptUrl && document) {
+/******/ 			if (document.currentScript)
+/******/ 				scriptUrl = document.currentScript.src;
+/******/ 			if (!scriptUrl) {
+/******/ 				var scripts = document.getElementsByTagName("script");
+/******/ 				if(scripts.length) {
+/******/ 					var i = scripts.length - 1;
+/******/ 					while (i > -1 && !scriptUrl) scriptUrl = scripts[i--].src;
+/******/ 				}
+/******/ 			}
+/******/ 		}
+/******/ 		// When supporting browsers where an automatic publicPath is not supported you must specify an output.publicPath manually via configuration
+/******/ 		// or pass an empty string ("") and set the __webpack_public_path__ variable from your code to use your own logic.
+/******/ 		if (!scriptUrl) throw new Error("Automatic publicPath is not supported in this browser");
+/******/ 		scriptUrl = scriptUrl.replace(/#.*$/, "").replace(/\?.*$/, "").replace(/\/[^\/]+$/, "/");
+/******/ 		__webpack_require__.p = scriptUrl;
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/jsonp chunk loading */
+/******/ 	(() => {
+/******/ 		__webpack_require__.b = document.baseURI || self.location.href;
+/******/ 		
+/******/ 		// object to store loaded and loading chunks
+/******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
+/******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
+/******/ 		var installedChunks = {
+/******/ 			"files_reminders-init": 0
+/******/ 		};
+/******/ 		
+/******/ 		__webpack_require__.f.j = (chunkId, promises) => {
+/******/ 				// JSONP chunk loading for javascript
+/******/ 				var installedChunkData = __webpack_require__.o(installedChunks, chunkId) ? installedChunks[chunkId] : undefined;
+/******/ 				if(installedChunkData !== 0) { // 0 means "already installed".
+/******/ 		
+/******/ 					// a Promise means "currently loading".
+/******/ 					if(installedChunkData) {
+/******/ 						promises.push(installedChunkData[2]);
+/******/ 					} else {
+/******/ 						if(true) { // all chunks have JS
+/******/ 							// setup Promise in chunk cache
+/******/ 							var promise = new Promise((resolve, reject) => (installedChunkData = installedChunks[chunkId] = [resolve, reject]));
+/******/ 							promises.push(installedChunkData[2] = promise);
+/******/ 		
+/******/ 							// start chunk loading
+/******/ 							var url = __webpack_require__.p + __webpack_require__.u(chunkId);
+/******/ 							// create error before stack unwound to get useful stacktrace later
+/******/ 							var error = new Error();
+/******/ 							var loadingEnded = (event) => {
+/******/ 								if(__webpack_require__.o(installedChunks, chunkId)) {
+/******/ 									installedChunkData = installedChunks[chunkId];
+/******/ 									if(installedChunkData !== 0) installedChunks[chunkId] = undefined;
+/******/ 									if(installedChunkData) {
+/******/ 										var errorType = event && (event.type === 'load' ? 'missing' : event.type);
+/******/ 										var realSrc = event && event.target && event.target.src;
+/******/ 										error.message = 'Loading chunk ' + chunkId + ' failed.\n(' + errorType + ': ' + realSrc + ')';
+/******/ 										error.name = 'ChunkLoadError';
+/******/ 										error.type = errorType;
+/******/ 										error.request = realSrc;
+/******/ 										installedChunkData[1](error);
+/******/ 									}
+/******/ 								}
+/******/ 							};
+/******/ 							__webpack_require__.l(url, loadingEnded, "chunk-" + chunkId, chunkId);
+/******/ 						}
+/******/ 					}
+/******/ 				}
+/******/ 		};
+/******/ 		
+/******/ 		// no prefetching
+/******/ 		
+/******/ 		// no preloaded
+/******/ 		
+/******/ 		// no HMR
+/******/ 		
+/******/ 		// no HMR manifest
+/******/ 		
+/******/ 		__webpack_require__.O.j = (chunkId) => (installedChunks[chunkId] === 0);
+/******/ 		
+/******/ 		// install a JSONP callback for chunk loading
+/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
+/******/ 			var chunkIds = data[0];
+/******/ 			var moreModules = data[1];
+/******/ 			var runtime = data[2];
+/******/ 			// add "moreModules" to the modules object,
+/******/ 			// then flag all "chunkIds" as loaded and fire callback
+/******/ 			var moduleId, chunkId, i = 0;
+/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
+/******/ 				for(moduleId in moreModules) {
+/******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
+/******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
+/******/ 					}
+/******/ 				}
+/******/ 				if(runtime) var result = runtime(__webpack_require__);
+/******/ 			}
+/******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
+/******/ 			for(;i < chunkIds.length; i++) {
+/******/ 				chunkId = chunkIds[i];
+/******/ 				if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
+/******/ 					installedChunks[chunkId][0]();
+/******/ 				}
+/******/ 				installedChunks[chunkId] = 0;
+/******/ 			}
+/******/ 			return __webpack_require__.O(result);
+/******/ 		}
+/******/ 		
+/******/ 		var chunkLoadingGlobal = self["webpackChunknextcloud"] = self["webpackChunknextcloud"] || [];
+/******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
+/******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/nonce */
+/******/ 	(() => {
+/******/ 		__webpack_require__.nc = undefined;
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["core-common"], () => (__webpack_require__("./apps/files_reminders/src/init.ts")))
+/******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
+/******/ 	
+/******/ })()
+;
+//# sourceMappingURL=files_reminders-init.js.map?v=c57455d0c7286ded4851
