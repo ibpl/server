@@ -8,7 +8,7 @@
 			v-bind="section"
 			dir="auto"
 			:to="section.to"
-			:title="titleForSection(section)"
+			:title="(index === 0) ? titleForSection(section) : null"
 			@click.native="onClick(section.to)">
 			<template v-if="index === 0" #icon>
 				<Home :size="20"/>
