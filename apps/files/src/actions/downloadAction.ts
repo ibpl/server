@@ -20,7 +20,7 @@
  *
  */
 import { generateUrl } from '@nextcloud/router'
-import { FileAction, Permission, Node, FileType, View } from '@nextcloud/files'
+import { FileAction, Permission, Node, FileType, View, DefaultType } from '@nextcloud/files'
 import { translate as t } from '@nextcloud/l10n'
 import ArrowDownSvg from '@mdi/svg/svg/arrow-down.svg?raw'
 
@@ -61,6 +61,7 @@ export const action = new FileAction({
 	id: 'download',
 	displayName: () => t('files', 'Download'),
 	iconSvgInline: () => ArrowDownSvg,
+	default: DefaultType.DEFAULT,
 
 	enabled(nodes: Node[]) {
 		if (nodes.length === 0) {
