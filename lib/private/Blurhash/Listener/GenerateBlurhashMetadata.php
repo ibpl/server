@@ -87,6 +87,10 @@ class GenerateBlurhashMetadata implements IEventListener {
 			$image = $this->resizedImageFromFile($file);
 		}
 
+		if ($image === false) {
+			return;
+		}
+
 		$metadata = $event->getMetadata();
 		$metadata->setString('blurhash', $this->generateBlurHash($image));
 	}
@@ -94,13 +98,17 @@ class GenerateBlurhashMetadata implements IEventListener {
 	/**
 	 * @param File $file
 	 *
-	 * @return GdImage
+	 * @return GdImage|false
 	 * @throws GenericFileException
 	 * @throws NotPermittedException
 	 * @throws LockedException
 	 */
-	private function resizedImageFromFile(File $file): GdImage {
+	private function resizedImageFromFile(File $file): GdImage|false {
 		$image = imagecreatefromstring($file->getContent());
+		if ($image === false) {
+			return false;
+		}
+
 		$currX = imagesx($image);
 		$currY = imagesy($image);
 
