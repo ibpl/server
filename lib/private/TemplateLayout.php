@@ -43,6 +43,7 @@
 namespace OC;
 
 use bantu\IniGetWrapper\IniGetWrapper;
+use OC\Authentication\Token\IProvider;
 use OC\Search\SearchQuery;
 use OC\Template\CSSResourceLocator;
 use OC\Template\JSConfigHelper;
