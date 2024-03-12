@@ -24,9 +24,7 @@ declare(strict_types=1);
 
 namespace OCA\Files\Listener;
 
-use OCA\Files_Trashbin\Events\BeforeNodeRestoredEvent;
-use OCA\Files_Trashbin\Trash\ITrashItem;
-use OCA\Files_Trashbin\Trash\ITrashManager;
+use OCA\Files\Service\LivePhotosService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Files\Cache\CacheEntryRemovedEvent;
@@ -35,10 +33,7 @@ use OCP\Files\Events\Node\BeforeNodeRenamedEvent;
 use OCP\Files\Folder;
 use OCP\Files\Node;
 use OCP\Files\NotFoundException;
-use OCP\Files\NotPermittedException;
-use OCP\FilesMetadata\Exceptions\FilesMetadataNotFoundException;
 use OCP\FilesMetadata\IFilesMetadataManager;
-use OCP\IUserSession;
 
 /**
  * @template-implements IEventListener<Event>
@@ -48,36 +43,38 @@ class SyncLivePhotosListener implements IEventListener {
 	private array $pendingRenames = [];
 	/** @var Array<int, bool> */
 	private array $pendingDeletion = [];
-	/** @var Array<int, bool> */
-	private array $pendingRestores = [];
 
 	public function __construct(
 		private ?Folder $userFolder,
-		private ?IUserSession $userSession,
-		private ITrashManager $trashManager,
 		private IFilesMetadataManager $filesMetadataManager,
+		private LivePhotosService $livePhotosService,
 	) {
 	}
 
 	public function handle(Event $event): void {
-		if ($this->userFolder === null || $this->userSession === null) {
+		if ($this->userFolder === null) {
 			return;
 		}
 
 		$peerFile = null;
 
 		if ($event instanceof BeforeNodeRenamedEvent) {
-			$peerFile = $this->getLivePhotoPeer($event->getSource()->getId());
-		} elseif ($event instanceof BeforeNodeRestoredEvent) {
-			$peerFile = $this->getLivePhotoPeer($event->getSource()->getId());
+			$peerFileId = $this->livePhotosService->getLivePhotoPeerId($event->getSource()->getId());
 		} elseif ($event instanceof BeforeNodeDeletedEvent) {
-			$peerFile = $this->getLivePhotoPeer($event->getNode()->getId());
+			$peerFileId = $this->livePhotosService->getLivePhotoPeerId($event->getNode()->getId());
 		} elseif ($event instanceof CacheEntryRemovedEvent) {
 			$peerFile = $this->getLivePhotoPeer($event->getFileId());
 		}
 
+		if ($peerFileId === null) {
+			return; // Not a live photo.
+		}
+
+		// Check the user's folder.
+		$peerFile = $this->userFolder->getFirstNodeById($peerFileId);
+
 		if ($peerFile === null) {
-			return; // not a Live Photo
+			return; // Peer file not found.
 		}
 
 		if ($event instanceof BeforeNodeRenamedEvent) {
