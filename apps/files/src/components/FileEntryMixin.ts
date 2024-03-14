@@ -37,6 +37,7 @@ import { handleCopyMoveNodeTo } from '../actions/moveOrCopyAction.ts'
 import { hashCode } from '../utils/hashUtils.ts'
 import { MoveCopyAction } from '../actions/moveOrCopyActionUtils.ts'
 import logger from '../logger.js'
+import { onDropExternalFiles } from '../services/DropService.ts'
 
 Vue.directive('onClickOutside', vOnClickOutside)
 
@@ -316,8 +317,8 @@ export default defineComponent({
 			event.preventDefault()
 			event.stopPropagation()
 
-			// If another button is pressed, cancel it
-			// This allows cancelling the drag with the right click
+			// If another button is pressed, cancel it. This
+			// allows cancelling the drag with the right click.
 			if (!this.canDrop || event.button !== 0) {
 				return
 			}
@@ -330,34 +331,7 @@ export default defineComponent({
 			// Check whether we're uploading files
 			if (event.dataTransfer?.files
 				&& event.dataTransfer.files.length > 0) {
-				const uploader = getUploader()
-
-				// Check whether the uploader is in the same folder
-				// This should never happen™
-				if (!uploader.destination.path.startsWith(uploader.destination.path)) {
-					logger.error('The current uploader destination is not the same as the current folder')
-					showError(t('files', 'An error occurred while uploading. Please try again later.'))
-					return
-				}
-
-				logger.debug(`Uploading files to ${this.source.path}`)
-				const queue = [] as Promise<Upload>[]
-				for (const file of event.dataTransfer.files) {
-					// Because the uploader destination is properly set to the current folder
-					// we can just use the basename as the relative path.
-					queue.push(uploader.upload(join(this.source.basename, file.name), file))
-				}
-
-				const results = await Promise.allSettled(queue)
-				const errors = results.filter(result => result.status === 'rejected')
-				if (errors.length > 0) {
-					logger.error('Error while uploading files', { errors })
-					showError(t('files', 'Some files could not be uploaded'))
-					return
-				}
-
-				logger.debug('Files uploaded successfully')
-				showSuccess(t('files', 'Files uploaded successfully'))
+				await onDropExternalFiles(this.source as Folder, event.dataTransfer)
 				return
 			}
 
@@ -366,7 +340,7 @@ export default defineComponent({
 				Vue.set(node, 'status', NodeStatus.LOADING)
 				try {
 					// TODO: resolve potential conflicts prior and force overwrite
-					await handleCopyMoveNodeTo(node, this.source, isCopy ? MoveCopyAction.COPY : MoveCopyAction.MOVE)
+					await handleCopyMoveNodeTo(node, this.source as Folder, isCopy ? MoveCopyAction.COPY : MoveCopyAction.MOVE)
 				} catch (error) {
 					logger.error('Error while moving file', { error })
 					if (isCopy) {

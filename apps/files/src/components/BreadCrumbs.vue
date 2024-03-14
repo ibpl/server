@@ -34,7 +34,8 @@
 			:force-icon-text="true"
 			:title="titleForSection(index, section)"
 			:aria-description="ariaForSection(section)"
-			@click.native="onClick(section.to)">
+			@click.native="onClick(section.to)"
+			@dropped="onDrop($event, section.dir)">
 			<template v-if="index === 0" #icon>
 				<NcIconSvgWrapper :size="20"
 					:svg="viewIcon" />
@@ -51,18 +52,21 @@
 <script lang="ts">
 import type { Node } from '@nextcloud/files'
 
-import { translate as t} from '@nextcloud/l10n'
 import { basename } from 'path'
-import homeSvg from '@mdi/svg/svg/home.svg?raw'
+import { defineComponent } from 'vue'
+import { translate as t} from '@nextcloud/l10n'
+import HomeSvg from '@mdi/svg/svg/home.svg?raw'
 import NcBreadcrumb from '@nextcloud/vue/dist/Components/NcBreadcrumb.js'
 import NcBreadcrumbs from '@nextcloud/vue/dist/Components/NcBreadcrumbs.js'
 import NcIconSvgWrapper from '@nextcloud/vue/dist/Components/NcIconSvgWrapper.js'
-import { defineComponent } from 'vue'
 
+import { onDropExternalFiles } from '../services/DropService'
+import { showError } from '@nextcloud/dialogs'
 import { useFilesStore } from '../store/files.ts'
 import { usePathsStore } from '../store/paths.ts'
 import { useUploaderStore } from '../store/uploader.ts'
 import filesListWidthMixin from '../mixins/filesListWidth.ts'
+import logger from '../logger'
 
 export default defineComponent({
 	name: 'BreadCrumbs',
@@ -73,16 +77,16 @@ export default defineComponent({
 		NcIconSvgWrapper,
 	},
 
+	mixins: [
+		filesListWidthMixin,
+	],
+
 	props: {
 		path: {
 			type: String,
 			default: '/',
 		},
 	},
-
-	mixins: [
-		filesListWidthMixin,
-	],
 
 	setup() {
 		const filesStore = useFilesStore()
@@ -110,7 +114,7 @@ export default defineComponent({
 		},
 
 		sections() {
-			return this.dirs.map((dir: string) => {
+			return this.dirs.map((dir: string, index: number) => {
 				const fileid = this.getFileIdFromPath(dir)
 				const to = { ...this.$route, params: { fileid }, query: { dir } }
 				return {
@@ -118,6 +122,8 @@ export default defineComponent({
 					exact: true,
 					name: this.getDirDisplayName(dir),
 					to,
+					// disable drop on current directory
+					disableDrop: index === this.dirs.length - 1,
 				}
 			})
 		},
@@ -133,8 +139,8 @@ export default defineComponent({
 
 		// used to show the views icon for the first breadcrumb
 		viewIcon(): string {
-			return this.currentView?.icon ?? homeSvg
-		}
+			return this.currentView?.icon ?? HomeSvg
+		},
 	},
 
 	methods: {
@@ -157,6 +163,40 @@ export default defineComponent({
 		onClick(to) {
 			if (to?.query?.dir === this.$route.query.dir) {
 				this.$emit('reload')
+			}
+		},
+
+		/**
+		 * Handle the drop event
+		 * A lot of this logic also comes from the FileEntry component
+		 * 
+		 * We can ignore the selection of files as we
+		 * would be only dropping files on parent directories.
+		 */
+		async onDrop(event: DragEvent, path: string) {
+			event.preventDefault()
+			event.stopPropagation()
+
+			const contents = await this.currentView?.getContents(path)
+			const folder = contents?.folder
+			if (!folder) {
+				showError(this.t('files', 'Target folder does not exist any more'))
+				return
+			}
+
+			// If another button is pressed, cancel it. This
+			// allows cancelling the drag with the right click.
+			if (event.button !== 0) {
+				return
+			}
+
+			logger.debug('Dropped', { event })
+
+			// Check whether we're uploading files
+			if (event.dataTransfer?.files
+				&& event.dataTransfer.files.length > 0) {
+				debugger
+				await onDropExternalFiles(folder, event.dataTransfer)
 			}
 		},
 

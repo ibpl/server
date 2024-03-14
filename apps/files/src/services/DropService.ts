@@ -2,6 +2,7 @@
  * @copyright Copyright (c) 2023 Ferdinand Thiessen <opensource@fthiessen.de>
  *
  * @author Ferdinand Thiessen <opensource@fthiessen.de>
+ * @author John Molakvoæ <skjnldsv@protonmail.com>
  *
  * @license AGPL-3.0-or-later
  *
@@ -23,11 +24,12 @@
 import type { Upload } from '@nextcloud/upload'
 import type { FileStat, ResponseDataDetailed } from 'webdav'
 
-import { davGetClient, davGetDefaultPropfind, davResultToNode, davRootPath } from '@nextcloud/files'
 import { emit } from '@nextcloud/event-bus'
+import { Folder, davGetClient, davGetDefaultPropfind, davResultToNode, davRootPath } from '@nextcloud/files'
 import { getUploader } from '@nextcloud/upload'
+import { join } from 'path'
 import { joinPaths } from '@nextcloud/paths'
-import { showError } from '@nextcloud/dialogs'
+import { showError, showSuccess } from '@nextcloud/dialogs'
 import { translate as t } from '@nextcloud/l10n'
 
 import logger from '../logger.js'
@@ -140,4 +142,35 @@ function readDirectory(directory: FileSystemDirectoryEntry) {
 
 		getEntries()
 	})
+}
+
+export const onDropExternalFiles = async (destination: Folder, dataTransfer: DataTransfer) => {
+	const uploader = getUploader()
+
+	// Check whether the uploader is in the same folder
+	// This should never happen™
+	if (!uploader.destination.path.startsWith(uploader.destination.path)) {
+		logger.error('The current uploader destination is not the same as the current folder')
+		showError(t('files', 'An error occurred while uploading. Please try again later.'))
+		return
+	}
+
+	logger.debug(`Uploading files to ${destination.path}`)
+	const queue = [] as Promise<Upload>[]
+	for (const file of dataTransfer.files) {
+		// Because the uploader destination is properly set to the current folder
+		// we can just use the basename as the relative path.
+		queue.push(uploader.upload(join(destination.basename, file.name), file))
+	}
+
+	const results = await Promise.allSettled(queue)
+	const errors = results.filter(result => result.status === 'rejected')
+	if (errors.length > 0) {
+		logger.error('Error while uploading files', { errors })
+		showError(t('files', 'Some files could not be uploaded'))
+		return
+	}
+
+	logger.debug('Files uploaded successfully')
+	showSuccess(t('files', 'Files uploaded successfully'))
 }
