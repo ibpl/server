@@ -22,22 +22,18 @@
 
 import type { PropType } from 'vue'
 
-import { extname, join } from 'path'
+import { extname } from 'path'
 import { FileType, Permission, Folder, File as NcFile, NodeStatus, Node, View } from '@nextcloud/files'
 import { generateUrl } from '@nextcloud/router'
-import { showError, showSuccess } from '@nextcloud/dialogs'
 import { translate as t } from '@nextcloud/l10n'
-import { Upload, getUploader } from '@nextcloud/upload'
 import { vOnClickOutside } from '@vueuse/components'
 import Vue, { defineComponent } from 'vue'
 
 import { action as sidebarAction } from '../actions/sidebarAction.ts'
 import { getDragAndDropPreview } from '../utils/dragUtils.ts'
-import { handleCopyMoveNodeTo } from '../actions/moveOrCopyAction.ts'
 import { hashCode } from '../utils/hashUtils.ts'
-import { MoveCopyAction } from '../actions/moveOrCopyActionUtils.ts'
+import { onDropExternalFiles, onDropInternalFiles } from '../services/DropService.ts'
 import logger from '../logger.js'
-import { onDropExternalFiles } from '../services/DropService.ts'
 
 Vue.directive('onClickOutside', vOnClickOutside)
 
@@ -314,6 +310,10 @@ export default defineComponent({
 				return
 			}
 
+			// Caching the selection
+			const selection = this.draggingFiles
+			const files = event.dataTransfer?.files || new FileList()
+
 			event.preventDefault()
 			event.stopPropagation()
 
@@ -326,36 +326,21 @@ export default defineComponent({
 			const isCopy = event.ctrlKey
 			this.dragover = false
 
-			logger.debug('Dropped', { event, selection: this.draggingFiles })
+			logger.debug('Dropped', { event, selection })
 
 			// Check whether we're uploading files
-			if (event.dataTransfer?.files
-				&& event.dataTransfer.files.length > 0) {
-				await onDropExternalFiles(this.source as Folder, event.dataTransfer)
+			if (files.length > 0) {
+				await onDropExternalFiles(this.source as Folder, files)
 				return
 			}
 
-			const nodes = this.draggingFiles.map(fileid => this.filesStore.getNode(fileid)) as Node[]
-			nodes.forEach(async (node: Node) => {
-				Vue.set(node, 'status', NodeStatus.LOADING)
-				try {
-					// TODO: resolve potential conflicts prior and force overwrite
-					await handleCopyMoveNodeTo(node, this.source as Folder, isCopy ? MoveCopyAction.COPY : MoveCopyAction.MOVE)
-				} catch (error) {
-					logger.error('Error while moving file', { error })
-					if (isCopy) {
-						showError(t('files', 'Could not copy {file}. {message}', { file: node.basename, message: error.message || '' }))
-					} else {
-						showError(t('files', 'Could not move {file}. {message}', { file: node.basename, message: error.message || '' }))
-					}
-				} finally {
-					Vue.set(node, 'status', undefined)
-				}
-			})
+			// Else we're moving/copying files
+			const nodes = selection.map(fileid => this.filesStore.getNode(fileid)) as Node[]
+			await onDropInternalFiles(this.source as Folder, nodes, isCopy)
 
 			// Reset selection after we dropped the files
 			// if the dropped files are within the selection
-			if (this.draggingFiles.some(fileid => this.selectedFiles.includes(fileid))) {
+			if (selection.some(fileid => this.selectedFiles.includes(fileid))) {
 				logger.debug('Dropped selection, resetting select store...')
 				this.selectionStore.reset()
 			}
