@@ -141,7 +141,13 @@ export default defineComponent({
 
 		// Hide breadcrumbs if an upload is ongoing
 		shouldShowBreadcrumbs(): boolean {
-			return this.filesListWidth > 400 && !this.isUploadInProgress
+			// If we're uploading files, only show the breadcrumbs
+			// if the files list is greater than 768px wide
+			if (this.isUploadInProgress) {
+				return this.filesListWidth > 768
+			}
+			// If we're not uploading, we have enough space from 400px
+			return this.filesListWidth > 400
 		},
 
 		// used to show the views icon for the first breadcrumb
@@ -240,7 +246,7 @@ export default defineComponent({
 
 			// Else we're moving/copying files
 			const nodes = selection.map(fileid => this.filesStore.getNode(fileid)) as Node[]
-			await onDropInternalFiles(folder, nodes, isCopy)
+			await onDropInternalFiles(nodes, folder, contents.contents, isCopy)
 
 			// Reset selection after we dropped the files
 			// if the dropped files are within the selection
