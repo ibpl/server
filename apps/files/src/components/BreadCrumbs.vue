@@ -36,7 +36,7 @@
 			:aria-description="ariaForSection(section)"
 			@click.native="onClick(section.to)"
 			@dragover.native="onDragOver($event, section.dir)"
-			@dropped="onDrop($event, section.dir)">
+			@drop.native="onDrop($event, section.dir)">
 			<template v-if="index === 0" #icon>
 				<NcIconSvgWrapper :size="20"
 					:svg="viewIcon" />
@@ -61,7 +61,7 @@ import NcBreadcrumb from '@nextcloud/vue/dist/Components/NcBreadcrumb.js'
 import NcBreadcrumbs from '@nextcloud/vue/dist/Components/NcBreadcrumbs.js'
 import NcIconSvgWrapper from '@nextcloud/vue/dist/Components/NcIconSvgWrapper.js'
 
-import { onDropExternalFiles, onDropInternalFiles } from '../services/DropService'
+import { onDropInternalFiles, dataTransferToFileTree, onDropExternalFiles } from '../services/DropService'
 import { showError } from '@nextcloud/dialogs'
 import { useDragAndDropStore } from '../store/dragging.ts'
 import { useFilesStore } from '../store/files.ts'
@@ -70,8 +70,6 @@ import { useSelectionStore } from '../store/selection.ts'
 import { useUploaderStore } from '../store/uploader.ts'
 import filesListWidthMixin from '../mixins/filesListWidth.ts'
 import logger from '../logger'
-import { debug } from '../../../../core/src/OC/debug.js'
-import { F } from 'lodash/fp'
 
 export default defineComponent({
 	name: 'BreadCrumbs',
@@ -199,17 +197,21 @@ export default defineComponent({
 		},
 
 		async onDrop(event: DragEvent, path: string) {
-			// skip if native drop like text drag and drop from files names
-			if (!this.draggingFiles && !event.dataTransfer?.files?.length) {
-				return
-			}
-
-			// Caching the selection
-			const selection = this.draggingFiles
-			const files = event.dataTransfer?.files || new FileList()
+			// // skip if native drop like text drag and drop from files names
+			// if (!this.draggingFiles && !event.dataTransfer?.items?.length) {
+			// 	return
+			// }
 
 			event.preventDefault()
 			event.stopPropagation()
+
+			// Caching the selection
+			const selection = this.draggingFiles
+			const items = [...event.dataTransfer?.items || []] as DataTransferItem[]
+
+			// We need to process the dataTransfer ASAP before the
+			// browser clears it. This is why we cache the items too.
+			const fileTree = await dataTransferToFileTree(items)
 
 			// We might not have the target directory fetched yet
 			const contents = await this.currentView?.getContents(path)
@@ -228,11 +230,11 @@ export default defineComponent({
 				return
 			}
 
-			logger.debug('Dropped', { event, folder, selection })
+			logger.debug('Dropped', { event, folder, selection, fileTree })
 
 			// Check whether we're uploading files
-			if (files.length > 0) {
-				await onDropExternalFiles(folder, files)
+			if (fileTree.contents.length > 0) {
+				await onDropExternalFiles(fileTree, folder, contents.contents)
 				return
 			}
 
