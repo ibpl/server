@@ -23,10 +23,10 @@
 <template>
 	<NcBreadcrumbs 
 		data-cy-files-content-breadcrumbs
-		:aria-label="t('files', 'Current directory path')">
+		:aria-label="t('files', 'Current directory path')"
+		:class="{ breadcrumb__progress: wrapUploadProgressBar }">
 		<!-- Current path sections -->
 		<NcBreadcrumb v-for="(section, index) in sections"
-			v-show="shouldShowBreadcrumbs"
 			:key="section.dir"
 			v-bind="section"
 			dir="auto"
@@ -127,8 +127,10 @@ export default defineComponent({
 		},
 
 		// Hide breadcrumbs if an upload is ongoing
-		shouldShowBreadcrumbs(): boolean {
-			return this.filesListWidth > 400 && !this.isUploadInProgress
+		wrapUploadProgressBar(): boolean {
+			// if an upload is ongoing, and on small screens / mobile, then
+			// show the progress bar for the upload below breadcrumbs
+			return this.isUploadInProgress && this.filesListWidth < 512
 		},
 
 		// used to show the views icon for the first breadcrumb
@@ -186,11 +188,18 @@ export default defineComponent({
 	// Take as much space as possible
 	flex: 1 1 100% !important;
 	width: 100%;
+	height: 100%;
 	margin-inline: 0px 10px 0px 10px;
 
-	::v-deep a {
-		cursor: pointer !important;
+	& :deep() {
+		a {
+			cursor: pointer !important;
+		}
+	}
+
+	&__progress {
+		flex-direction: column !important;
+		align-items: flex-start !important;
 	}
 }
-
 </style>
