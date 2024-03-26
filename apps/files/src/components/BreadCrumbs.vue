@@ -21,9 +21,9 @@
   -->
 
 <template>
-	<NcBreadcrumbs 
-		data-cy-files-content-breadcrumbs
+	<NcBreadcrumbs data-cy-files-content-breadcrumbs
 		:aria-label="t('files', 'Current directory path')"
+		class="breadcrumb"
 		:class="{ breadcrumb__progress: wrapUploadProgressBar }">
 		<!-- Current path sections -->
 		<NcBreadcrumb v-for="(section, index) in sections"
@@ -31,7 +31,7 @@
 			v-bind="section"
 			dir="auto"
 			:to="section.to"
-			:force-icon-text="true"
+			:force-icon-text="index > 0 || filesListWidth >= 486"
 			:title="titleForSection(index, section)"
 			:aria-description="ariaForSection(section)"
 			@click.native="onClick(section.to)">
@@ -51,13 +51,13 @@
 <script lang="ts">
 import type { Node } from '@nextcloud/files'
 
-import { translate as t} from '@nextcloud/l10n'
+import { translate as t } from '@nextcloud/l10n'
 import { basename } from 'path'
+import { defineComponent } from 'vue'
 import homeSvg from '@mdi/svg/svg/home.svg?raw'
 import NcBreadcrumb from '@nextcloud/vue/dist/Components/NcBreadcrumb.js'
 import NcBreadcrumbs from '@nextcloud/vue/dist/Components/NcBreadcrumbs.js'
 import NcIconSvgWrapper from '@nextcloud/vue/dist/Components/NcIconSvgWrapper.js'
-import { defineComponent } from 'vue'
 
 import { useFilesStore } from '../store/files.ts'
 import { usePathsStore } from '../store/paths.ts'
@@ -73,16 +73,16 @@ export default defineComponent({
 		NcIconSvgWrapper,
 	},
 
+	mixins: [
+		filesListWidthMixin,
+	],
+
 	props: {
 		path: {
 			type: String,
 			default: '/',
 		},
 	},
-
-	mixins: [
-		filesListWidthMixin,
-	],
 
 	setup() {
 		const filesStore = useFilesStore()
@@ -136,7 +136,7 @@ export default defineComponent({
 		// used to show the views icon for the first breadcrumb
 		viewIcon(): string {
 			return this.currentView?.icon ?? homeSvg
-		}
+		},
 	},
 
 	methods: {
@@ -144,7 +144,7 @@ export default defineComponent({
 			return this.filesStore.getNode(id)
 		},
 		getFileIdFromPath(path: string): number | undefined {
-			return this.pathsStore.getPath(this.currentView?.id, path)
+			return this.pathsStore.getPath(this.currentView!.id, path)
 		},
 		getDirDisplayName(path: string): string {
 			if (path === '/') {
