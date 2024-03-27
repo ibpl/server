@@ -203,13 +203,15 @@ export default defineComponent({
 		},
 
 		async onDrop(event: DragEvent, path: string) {
-			// // skip if native drop like text drag and drop from files names
-			// if (!this.draggingFiles && !event.dataTransfer?.items?.length) {
-			// 	return
-			// }
+			// skip if native drop like text drag and drop from files names
+			if (!this.draggingFiles && !event.dataTransfer?.items?.length) {
+				return
+			}
 
+			// Do not stop propagation, so the main content
+			// drop event can be triggered too and clear the
+			// dragover state on the DragAndDropNotice component.
 			event.preventDefault()
-			event.stopPropagation()
 
 			// Caching the selection
 			const selection = this.draggingFiles

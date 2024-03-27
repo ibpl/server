@@ -224,24 +224,34 @@ export const dataTransferToFileTree = async (items: DataTransferItem[]): Promise
 			return true
 		}).map((item) => {
 			// MDN recommends to try both, as it might be renamed in the future
-			return (item as unknown as { getAsEntry?: () => FileSystemEntry|undefined})?.getAsEntry?.() ?? item.webkitGetAsEntry() ?? item
-		})
+			return (item as unknown as { getAsEntry?: () => FileSystemEntry|undefined })?.getAsEntry?.()
+				?? item.webkitGetAsEntry()
+				?? item
+		}) as (FileSystemEntry | DataTransferItem)[]
 
 	let warned = false
 	const fileTree = new Directory('root') as RootDirectory
+
+	// Traverse the file tree
 	for (const entry of entries) {
 		// Handle browser issues if Filesystem API is not available. Fallback to File API
 		if (entry instanceof DataTransferItem) {
 			logger.warn('Could not get FilesystemEntry of item, falling back to file')
-			if (!warned) {
-				showWarning(t('files', 'Your browser does not support the Filesystem API. Please use a different browser.'))
-				warned = true
-			}
 
 			const file = entry.getAsFile()
 			if (file === null) {
 				logger.warn('Could not process DataTransferItem', { type: entry.type, kind: entry.kind })
 				showError(t('files', 'One of the dropped files could not be processed'))
+				continue
+			}
+
+			// Warn the user that the browser does not support the Filesystem API
+			// we therefore cannot upload directories recursively.
+			if (file.type === 'httpd/unix-directory' || !file.type) {
+				if (!warned) {
+					showWarning(t('files', 'Your browser does not support the Filesystem API. Directories will not be uploaded.'))
+					warned = true
+				}
 				continue
 			}
 
@@ -301,7 +311,7 @@ export const onDropExternalFiles = async (root: RootDirectory, destination: Fold
 			}
 
 			// If we've reached a file, we can upload it
-			logger.debug('Uploading file to ' + relativePath, { file })
+			logger.debug('Uploading file to ' + join(destination.path, relativePath), { file })
 
 			// Overriding the root to avoid changing the current uploader context
 			queue.push(uploader.upload(relativePath, file, destination.source))

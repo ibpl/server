@@ -46,14 +46,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { Folder, Permission } from '@nextcloud/files'
-import { showError, showSuccess } from '@nextcloud/dialogs'
+import { showError } from '@nextcloud/dialogs'
 import { translate as t } from '@nextcloud/l10n'
 import { UploadStatus } from '@nextcloud/upload'
 
 import TrayArrowDownIcon from 'vue-material-design-icons/TrayArrowDown.vue'
 
 import logger from '../logger.js'
-import { dataTransferToFileTree, handleDrop, onDropExternalFiles } from '../services/DropService'
+import { dataTransferToFileTree, onDropExternalFiles } from '../services/DropService'
 
 export default defineComponent({
 	name: 'DragAndDropNotice',
