@@ -38,6 +38,14 @@ interface IManager {
 	public function getProviders(): array;
 
 	/**
+	 * @param string $taskType
+	 * @return IProvider
+	 * @throws \OCP\TaskProcessing\Exception\Exception
+	 * @since 30.0.0
+	 */
+	public function getPreferredProvider(string $taskType);
+
+	/**
 	 * @return array<string,array{name: string, description: string, inputShape: ShapeDescriptor[], optionalInputShape: ShapeDescriptor[], outputShape: ShapeDescriptor[], optionalOutputShape: ShapeDescriptor[]}>
 	 * @since 30.0.0
 	 */
@@ -107,7 +115,7 @@ interface IManager {
 	 * @throws NotFoundException If no task could not be found
 	 * @since 30.0.0
 	 */
-	public function getNextScheduledTask(array $taskTypeIds = [], bool $markAsRunning = false): Task;
+	public function getNextScheduledTask(array $taskTypeIds = []): Task;
 
 	/**
 	 * @param int $id The id of the task

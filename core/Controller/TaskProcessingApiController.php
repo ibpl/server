@@ -14,6 +14,7 @@ use OCA\Core\ResponseDefinitions;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\AnonRateLimit;
 use OCP\AppFramework\Http\Attribute\ApiRoute;
+use OCP\AppFramework\Http\Attribute\ExAppRequired;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\Http\Attribute\UserRateLimit;
@@ -348,15 +349,16 @@ class TaskProcessingApiController extends \OCP\AppFramework\OCSController {
 	 *  200: Result updated successfully
 	 *  404: Task not found
 	 */
-	#[NoAdminRequired]
+	#[PublicPage]
+	#[ExAppRequired]
 	#[ApiRoute(verb: 'POST', url: '/tasks/{taskId}/result', root: '/taskprocessing')]
 	public function setResult(int $taskId, ?array $output = null, ?string $errorMessage = null): DataResponse {
 		try {
 			// Check if the current user can access the task
-			$this->taskProcessingManager->getUserTask($taskId, $this->userId);
+			$this->taskProcessingManager->getTask($taskId);
 			// set result
 			$this->taskProcessingManager->setTaskResult($taskId, $errorMessage, $output);
-			$task = $this->taskProcessingManager->getUserTask($taskId, $this->userId);
+			$task = $this->taskProcessingManager->getTask($taskId);
 
 			/** @var CoreTaskProcessingTask $json */
 			$json = $task->jsonSerialize();
@@ -406,17 +408,26 @@ class TaskProcessingApiController extends \OCP\AppFramework\OCSController {
 	/**
 	 * Returns the next scheduled task for the taskTypeId
 	 *
+	 * @param list<string> $providerIds The ids of the providers
 	 * @param list<string> $taskTypeIds The ids of the task types
 	 * @return DataResponse<Http::STATUS_OK, array{task: CoreTaskProcessingTask, provider: array{name: string}}, array{}>|DataResponse<Http::STATUS_NO_CONTENT, null, array{}>|DataResponse<Http::STATUS_INTERNAL_SERVER_ERROR, array{message: string}, array{}>
 	 *
 	 *  200: Task returned
 	 *  204: No task found
 	 */
-	#[NoAdminRequired]
+	#[PublicPage]
+	#[ExAppRequired]
 	#[ApiRoute(verb: 'GET', url: '/tasks/next', root: '/taskprocessing')]
-	public function getNextScheduledTask(array $taskTypeIds): DataResponse {
+	public function getNextScheduledTask(array $providerIds, array $taskTypeIds): DataResponse {
 		try {
-			$task = $this->taskProcessingManager->getNextScheduledTask($taskTypeIds, true);
+			$task = $this->taskProcessingManager->getNextScheduledTask($taskTypeIds);
+
+			$provider = $this->taskProcessingManager->getPreferredProvider($task->getTaskTypeId());
+			if ($provider === null || !in_array($provider->getId(), $providerIds, true)) {
+				throw new \OCP\TaskProcessing\Exception\NotFoundException();
+			}
+
+			$task->setStatus(Task::STATUS_RUNNING);
 
 			/** @var CoreTaskProcessingTask $json */
 			$json = $task->jsonSerialize();
@@ -424,8 +435,7 @@ class TaskProcessingApiController extends \OCP\AppFramework\OCSController {
 			return new DataResponse([
 				'task' => $json,
 				'provider' => [
-					// TODO: Fetch provider name from DB
-					'name' => 'llm2:tinyllama-1.1b-chat-v1.0.Q4_0:summary',
+					'name' => $provider->getId(),
 				],
 			]);
 		} catch (\OCP\TaskProcessing\Exception\NotFoundException $e) {

@@ -419,21 +419,6 @@ class Manager implements IManager {
 	}
 
 	/**
-	 * @param string $taskType
-	 * @return IProvider
-	 * @throws \OCP\TaskProcessing\Exception\Exception
-	 */
-	private function _getPreferredProvider(string $taskType) {
-		$providers = $this->getProviders();
-		foreach ($providers as $provider) {
-			if ($provider->getTaskTypeId() === $taskType) {
-				return $provider;
-			}
-		}
-		throw new \OCP\TaskProcessing\Exception\Exception('No matching provider found');
-	}
-
-	/**
 	 * @param ShapeDescriptor[] $spec
 	 * @param array $io
 	 * @return void
@@ -502,6 +487,16 @@ class Manager implements IManager {
 		}
 
 		return $this->providers;
+	}
+
+	public function getPreferredProvider(string $taskType) {
+		$providers = $this->getProviders();
+		foreach ($providers as $provider) {
+			if ($provider->getTaskTypeId() === $taskType) {
+				return $provider;
+			}
+		}
+		throw new \OCP\TaskProcessing\Exception\Exception('No matching provider found');
 	}
 
 	public function getAvailableTaskTypes(): array {
@@ -695,13 +690,9 @@ class Manager implements IManager {
 		$this->dispatcher->dispatchTyped($event);
 	}
 
-	public function getNextScheduledTask(array $taskTypeIds = [], bool $markAsRunning = false): Task {
+	public function getNextScheduledTask(array $taskTypeIds = []): Task {
 		try {
 			$taskEntity = $this->taskMapper->findOldestScheduledByType($taskTypeIds);
-			if ($markAsRunning) {
-				$taskEntity->setStatus(Task::STATUS_RUNNING);
-				$this->taskMapper->update($taskEntity);
-			}
 			return $taskEntity->toPublicTask();
 		} catch (DoesNotExistException $e) {
 			throw new \OCP\TaskProcessing\Exception\NotFoundException('Could not find the task', 0, $e);
