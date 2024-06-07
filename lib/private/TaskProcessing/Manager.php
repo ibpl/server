@@ -571,7 +571,7 @@ class Manager implements IManager {
 		// remove superfluous keys and set input
 		$task->setInput($this->removeSuperfluousArrayKeys($task->getInput(), $inputShape, $optionalInputShape));
 		$task->setStatus(Task::STATUS_SCHEDULED);
-		$provider = $this->_getPreferredProvider($task->getTaskTypeId());
+		$provider = $this->getPreferredProvider($task->getTaskTypeId());
 		// calculate expected completion time
 		$completionExpectedAt = new \DateTime('now');
 		$completionExpectedAt->add(new \DateInterval('PT'.$provider->getExpectedRuntime().'S'));

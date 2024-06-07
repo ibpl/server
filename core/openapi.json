@@ -4504,6 +4504,7 @@
                     "task_processing_api"
                 ],
                 "security": [
+                    {},
                     {
                         "bearer_auth": []
                     },
@@ -4832,6 +4833,7 @@
                     "task_processing_api"
                 ],
                 "security": [
+                    {},
                     {
                         "bearer_auth": []
                     },
@@ -4840,6 +4842,18 @@
                     }
                 ],
                 "parameters": [
+                    {
+                        "name": "providerIds[]",
+                        "in": "query",
+                        "description": "The ids of the providers",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
                     {
                         "name": "taskTypeIds[]",
                         "in": "query",
