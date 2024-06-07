@@ -101,13 +101,13 @@ interface IManager {
 	public function setTaskProgress(int $id, float $progress): bool;
 
 	/**
-	 * @param string|null $taskTypeId
+	 * @param list<string> $taskTypeIds
 	 * @return Task
 	 * @throws Exception If the query failed
 	 * @throws NotFoundException If no task could not be found
 	 * @since 30.0.0
 	 */
-	public function getNextScheduledTask(?string $taskTypeId = null): Task;
+	public function getNextScheduledTask(array $taskTypeIds = [], bool $markAsRunning = false): Task;
 
 	/**
 	 * @param int $id The id of the task

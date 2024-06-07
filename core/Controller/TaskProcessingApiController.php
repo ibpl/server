@@ -406,23 +406,27 @@ class TaskProcessingApiController extends \OCP\AppFramework\OCSController {
 	/**
 	 * Returns the next scheduled task for the taskTypeId
 	 *
-	 * @param string $taskTypeId The id of the task type
-	 * @return DataResponse<Http::STATUS_OK, array{task: CoreTaskProcessingTask}, array{}>|DataResponse<Http::STATUS_NO_CONTENT, null, array{}>|DataResponse<Http::STATUS_INTERNAL_SERVER_ERROR, array{message: string}, array{}>
+	 * @param list<string> $taskTypeIds The ids of the task types
+	 * @return DataResponse<Http::STATUS_OK, array{task: CoreTaskProcessingTask, provider: array{name: string}}, array{}>|DataResponse<Http::STATUS_NO_CONTENT, null, array{}>|DataResponse<Http::STATUS_INTERNAL_SERVER_ERROR, array{message: string}, array{}>
 	 *
 	 *  200: Task returned
 	 *  204: No task found
 	 */
 	#[NoAdminRequired]
 	#[ApiRoute(verb: 'GET', url: '/tasks/next', root: '/taskprocessing')]
-	public function getNextScheduledTask(string $taskTypeId): DataResponse {
+	public function getNextScheduledTask(array $taskTypeIds): DataResponse {
 		try {
-			$task = $this->taskProcessingManager->getNextScheduledTask($taskTypeId);
+			$task = $this->taskProcessingManager->getNextScheduledTask($taskTypeIds, true);
 
 			/** @var CoreTaskProcessingTask $json */
 			$json = $task->jsonSerialize();
 
 			return new DataResponse([
 				'task' => $json,
+				'provider' => [
+					// TODO: Fetch provider name from DB
+					'name' => 'llm2:tinyllama-1.1b-chat-v1.0.Q4_0:summary',
+				],
 			]);
 		} catch (\OCP\TaskProcessing\Exception\NotFoundException $e) {
 			return new DataResponse(null, Http::STATUS_NO_CONTENT);

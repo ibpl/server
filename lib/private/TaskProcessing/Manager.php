@@ -695,11 +695,13 @@ class Manager implements IManager {
 		$this->dispatcher->dispatchTyped($event);
 	}
 
-	public function getNextScheduledTask(?string $taskTypeId = null): Task {
+	public function getNextScheduledTask(array $taskTypeIds = [], bool $markAsRunning = false): Task {
 		try {
-			$taskEntity = $this->taskMapper->findOldestScheduledByType($taskTypeId);
-			$taskEntity->setStatus(Task::STATUS_RUNNING);
-			$this->taskMapper->update($taskEntity);
+			$taskEntity = $this->taskMapper->findOldestScheduledByType($taskTypeIds);
+			if ($markAsRunning) {
+				$taskEntity->setStatus(Task::STATUS_RUNNING);
+				$this->taskMapper->update($taskEntity);
+			}
 			return $taskEntity->toPublicTask();
 		} catch (DoesNotExistException $e) {
 			throw new \OCP\TaskProcessing\Exception\NotFoundException('Could not find the task', 0, $e);

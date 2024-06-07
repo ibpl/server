@@ -17,6 +17,7 @@ use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\DB\Exception;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
+use function PHPUnit\Framework\countOf;
 
 /**
  * @extends QBMapper<Task>
@@ -45,21 +46,28 @@ class TaskMapper extends QBMapper {
 	}
 
 	/**
-	 * @param string|null $taskType
+	 * @param list<string> $taskTypes
 	 * @return Task
 	 * @throws DoesNotExistException
 	 * @throws Exception
 	 */
-	public function findOldestScheduledByType(?string $taskType): Task {
+	public function findOldestScheduledByType(array $taskTypes): Task {
 		$qb = $this->db->getQueryBuilder();
 		$qb->select(Task::$columns)
 			->from($this->tableName)
 			->where($qb->expr()->eq('status', $qb->createPositionalParameter(\OCP\TaskProcessing\Task::STATUS_SCHEDULED, IQueryBuilder::PARAM_INT)))
 			->setMaxResults(1)
 			->orderBy('last_updated', 'ASC');
-		if ($taskType !== null) {
-			$qb->andWhere($qb->expr()->eq('type', $qb->createPositionalParameter($taskType)));
+
+		if (count($taskTypes) > 0) {
+			$filter = $qb->expr()->orX();
+			foreach ($taskTypes as $taskType) {
+				$filter->add($qb->expr()->eq('type', $qb->createPositionalParameter($taskType)));
+			}
+
+			$qb->andWhere($filter);
 		}
+
 		return $this->findEntity($qb);
 	}
 
