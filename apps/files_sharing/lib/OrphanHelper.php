@@ -111,7 +111,7 @@ class OrphanHelper {
 		$query = $this->connection->getQueryBuilder();
 		$query->update('share')
 			->set('uid_owner', $query->createNamedParameter($owner))
-			->where($query->expr()->eq('id', $query->createNamedParameter($shareId)));
+			->where($query->expr()->eq('id', $query->createNamedParameter($shareId, IQueryBuilder::PARAM_INT)));
 		$query->executeStatement();
 	}
 }

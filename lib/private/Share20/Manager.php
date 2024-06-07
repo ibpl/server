@@ -17,6 +17,7 @@ use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\Files\Mount\IMountManager;
 use OCP\Files\Node;
+use OCP\Files\NotFoundException;
 use OCP\HintException;
 use OCP\IConfig;
 use OCP\IDateTimeZone;
@@ -360,7 +361,7 @@ class Manager implements IManager {
 			if ($expirationDate !== null) {
 				$expirationDate->setTimezone($this->dateTimeZone->getTimeZone());
 				$expirationDate->setTime(0, 0, 0);
-	
+
 				$date = new \DateTime('now', $this->dateTimeZone->getTimeZone());
 				$date->setTime(0, 0, 0);
 				if ($date >= $expirationDate) {
@@ -376,24 +377,24 @@ class Manager implements IManager {
 			} catch (\UnexpectedValueException $e) {
 				// This is a new share
 			}
-	
+
 			if ($fullId === null && $expirationDate === null && $this->shareApiLinkDefaultExpireDate()) {
 				$expirationDate = new \DateTime('now', $this->dateTimeZone->getTimeZone());
 				$expirationDate->setTime(0, 0, 0);
-	
+
 				$days = (int)$this->config->getAppValue('core', 'link_defaultExpDays', (string)$this->shareApiLinkDefaultExpireDays());
 				if ($days > $this->shareApiLinkDefaultExpireDays()) {
 					$days = $this->shareApiLinkDefaultExpireDays();
 				}
 				$expirationDate->add(new \DateInterval('P' . $days . 'D'));
 			}
-	
+
 			// If we enforce the expiration date check that is does not exceed
 			if ($isEnforced) {
 				if (empty($expirationDate)) {
 					throw new \InvalidArgumentException('Expiration date is enforced');
 				}
-	
+
 				$date = new \DateTime('now', $this->dateTimeZone->getTimeZone());
 				$date->setTime(0, 0, 0);
 				$date->add(new \DateInterval('P' . $this->shareApiLinkDefaultExpireDays() . 'D'));
@@ -1117,7 +1118,7 @@ class Manager implements IManager {
 		return $deletedShares;
 	}
 
-	protected function deleteReshare(IShare $share) {
+	public function deleteReshare(IShare $share) {
 		// If the user has another shares, we don't delete the shares by this user
 		if ($share->getShareType() === IShare::TYPE_USER) {
 			$groupShares = $this->getSharedWith($share->getSharedWith(), IShare::TYPE_GROUP, $share->getNode(), -1, 0);
@@ -1125,13 +1126,29 @@ class Manager implements IManager {
 			if (count($groupShares) !== 0) {
 				return;
 			}
+
+			// Check shares of parent folders
+			try {
+				$parentNode = $share->getNode()->getParent();
+				while ($parentNode) {
+					$groupShares = $this->getSharedWith($share->getSharedWith(), IShare::TYPE_GROUP, $parentNode, -1, 0);
+					$userShares = $this->getSharedWith($share->getSharedWith(), IShare::TYPE_USER, $parentNode, -1, 0);
+
+					if (count($groupShares) !== 0 || count($userShares) !== 0) {
+						return;
+					}
+
+					$parentNode = $parentNode->getParent();
+				}
+			} catch (NotFoundException) {
+			}
 		}
 
 		// Delete re-share records (shared by "share with user") inside folder
 		if ($share->getNodeType() === 'folder' && $share->getShareType() === IShare::TYPE_USER) {
-			$sharesInFolder = $this->getSharesInFolder($share->getSharedWith(), $share->getNode(), true, false);
+			$sharesInFolder = $this->getSharesInFolder($share->getSharedWith(), $share->getNode(), true);
 
-			foreach ($sharesInFolder as $nodeId => $shares) {
+			foreach ($sharesInFolder as $shares) {
 				foreach ($shares as $child) {
 					$this->deleteShare($child);
 				}
@@ -1171,11 +1188,21 @@ class Manager implements IManager {
 					continue;
 				}
 
-				foreach ($shareTypes as $shareType) {
-					$provider = $this->factory->getProviderForType($shareType);
-					$shares = $provider->getSharesBy($user->getUID(), $shareType, $share->getNode(), false, -1, 0);
-					foreach ($shares as $child) {
-						$this->deleteShare($child);
+				if ($share->getNodeType() === 'folder') {
+					$sharesInFolder = $this->getSharesInFolder($user->getUID(), $share->getNode(), true);
+
+					foreach ($sharesInFolder as $shares) {
+						foreach ($shares as $child) {
+							$this->deleteShare($child);
+						}
+					}
+				} else {
+					foreach ($shareTypes as $shareType) {
+						$provider = $this->factory->getProviderForType($shareType);
+						$shares = $provider->getSharesBy($user->getUID(), $shareType, $share->getNode(), false, -1, 0);
+						foreach ($shares as $child) {
+							$this->deleteShare($child);
+						}
 					}
 				}
 			}

@@ -44,7 +44,7 @@ class FixBrokenShares extends Base {
 
 			$owner = $this->orphanHelper->findOwner($share['fileid']);
 
-			if (!empty($owner)) {
+			if ($owner !== null) {
 				if ($dryRun) {
 					$output->writeln("Share {$share['id']} can be updated to owner $owner");
 				} else {
