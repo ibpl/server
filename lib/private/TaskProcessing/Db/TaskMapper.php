@@ -17,7 +17,6 @@ use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\DB\Exception;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
-use function PHPUnit\Framework\countOf;
 
 /**
  * @extends QBMapper<Task>

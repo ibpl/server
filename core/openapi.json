@@ -4841,12 +4841,15 @@
                 ],
                 "parameters": [
                     {
-                        "name": "taskTypeId",
+                        "name": "taskTypeIds[]",
                         "in": "query",
-                        "description": "The id of the task type",
+                        "description": "The ids of the task types",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     },
                     {
@@ -4884,11 +4887,23 @@
                                                 "data": {
                                                     "type": "object",
                                                     "required": [
-                                                        "task"
+                                                        "task",
+                                                        "provider"
                                                     ],
                                                     "properties": {
                                                         "task": {
                                                             "$ref": "#/components/schemas/TaskProcessingTask"
+                                                        },
+                                                        "provider": {
+                                                            "type": "object",
+                                                            "required": [
+                                                                "name"
+                                                            ],
+                                                            "properties": {
+                                                                "name": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                 }
