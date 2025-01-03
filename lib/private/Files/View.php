@@ -728,11 +728,14 @@ class View {
 	 *
 	 * @param string $source source path
 	 * @param string $target target path
+	 * @param array $options
 	 *
 	 * @return bool|mixed
 	 * @throws LockedException
 	 */
-	public function rename($source, $target) {
+	public function rename($source, $target, array $options = []) {
+		$checkSubMounts = $options['checkSubMounts'] ?? true;
+
 		$absolutePath1 = Filesystem::normalizePath($this->getAbsolutePath($source));
 		$absolutePath2 = Filesystem::normalizePath($this->getAbsolutePath($target));
 
@@ -791,7 +794,11 @@ class View {
 					try {
 						$this->changeLock($target, ILockingProvider::LOCK_EXCLUSIVE, true);
 
-						$movedMounts = $mountManager->findIn($this->getAbsolutePath($source));
+						if ($checkSubMounts) {
+							$movedMounts = $mountManager->findIn($this->getAbsolutePath($source));
+						} else {
+							$movedMounts = [];
+						}
 
 						if ($internalPath1 === '') {
 							if ($mount1 instanceof MoveableMount) {
