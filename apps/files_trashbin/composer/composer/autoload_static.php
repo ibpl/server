@@ -55,6 +55,7 @@ class ComposerStaticInitFiles_Trashbin
         'OCA\\Files_Trashbin\\Sabre\\TrashHome' => __DIR__ . '/..' . '/../lib/Sabre/TrashHome.php',
         'OCA\\Files_Trashbin\\Sabre\\TrashRoot' => __DIR__ . '/..' . '/../lib/Sabre/TrashRoot.php',
         'OCA\\Files_Trashbin\\Sabre\\TrashbinPlugin' => __DIR__ . '/..' . '/../lib/Sabre/TrashbinPlugin.php',
+        'OCA\\Files_Trashbin\\Service\\ConfigService' => __DIR__ . '/..' . '/../lib/Service/ConfigService.php',
         'OCA\\Files_Trashbin\\Storage' => __DIR__ . '/..' . '/../lib/Storage.php',
         'OCA\\Files_Trashbin\\Trash\\BackendNotFoundException' => __DIR__ . '/..' . '/../lib/Trash/BackendNotFoundException.php',
         'OCA\\Files_Trashbin\\Trash\\ITrashBackend' => __DIR__ . '/..' . '/../lib/Trash/ITrashBackend.php',

@@ -40,6 +40,7 @@ return array(
     'OCA\\Files_Trashbin\\Sabre\\TrashHome' => $baseDir . '/../lib/Sabre/TrashHome.php',
     'OCA\\Files_Trashbin\\Sabre\\TrashRoot' => $baseDir . '/../lib/Sabre/TrashRoot.php',
     'OCA\\Files_Trashbin\\Sabre\\TrashbinPlugin' => $baseDir . '/../lib/Sabre/TrashbinPlugin.php',
+    'OCA\\Files_Trashbin\\Service\\ConfigService' => $baseDir . '/../lib/Service/ConfigService.php',
     'OCA\\Files_Trashbin\\Storage' => $baseDir . '/../lib/Storage.php',
     'OCA\\Files_Trashbin\\Trash\\BackendNotFoundException' => $baseDir . '/../lib/Trash/BackendNotFoundException.php',
     'OCA\\Files_Trashbin\\Trash\\ITrashBackend' => $baseDir . '/../lib/Trash/ITrashBackend.php',
