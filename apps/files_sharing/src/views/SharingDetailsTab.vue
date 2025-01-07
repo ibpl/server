@@ -84,6 +84,12 @@
 					</NcCheckboxRadioSwitch>
 				</div>
 			</div>
+			<div v-if="isNewShare && isUserShare" class="sharingTabDetailsView__general-control">
+				<NcCheckboxRadioSwitch type="switch"
+					:checked.sync="sendNotificationMailOnCreation">
+					{{ t('settings', 'Send email notification') }}
+				</NcCheckboxRadioSwitch>
+			</div>
 			<div class="sharingTabDetailsView__advanced-control">
 				<NcButton id="advancedSectionAccordionAdvancedControl"
 					type="tertiary"
@@ -329,8 +335,8 @@ export default {
 	data() {
 		return {
 			writeNoteToRecipientIsChecked: false,
+			sendNotificationMailOnCreation: true,
 			sharingPermission: BUNDLED_PERMISSIONS.ALL.toString(),
-			revertSharingPermission: BUNDLED_PERMISSIONS.ALL.toString(),
 			setCustomPermissions: false,
 			passwordError: false,
 			advancedSectionAccordionExpanded: false,
@@ -923,6 +929,10 @@ export default {
 					incomingShare.password = this.share.password
 				}
 
+				if (this.sendNotificationMailOnCreation) {
+					incomingShare.sendMail = 'true'
+				}
+
 				this.creating = true
 				const share = await this.addShare(incomingShare)
 				this.creating = false
@@ -965,6 +975,7 @@ export default {
 					attributes: JSON.stringify(share.attributes),
 					...(share.note ? { note: share.note } : {}),
 					...(share.password ? { password: share.password } : {}),
+					...(share.sendMail ? { sendMail: share.sendMail } : {}),
 				})
 				return resultingShare
 			} catch (error) {
@@ -1125,13 +1136,9 @@ export default {
 		}
 	}
 
-	&__advanced-control {
+	&__advanced-control, &__general-control {
 		width: 100%;
-
-		button {
-			margin-top: 0.5em;
-		}
-
+		margin-top: 0.5em;
 	}
 
 	&__advanced {
