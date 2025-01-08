@@ -16,4 +16,8 @@ class ServerFactory {
 	public function createInviationResponseServer(bool $public): InvitationResponseServer {
 		return new InvitationResponseServer(false);
 	}
+
+	public function createAttendeeAvailabilityServer(): \OCA\DAV\Connector\Sabre\Server {
+		return (new InvitationResponseServer(false))->getServer();
+	}
 }

@@ -165,4 +165,14 @@ interface IManager {
 	 * @since 31.0.0
 	 */
 	public function createEventBuilder(): ICalendarEventBuilder;
+
+	/**
+	 * Check the availability of the given attendees in the given time range.
+	 *
+	 * @since 31.0.0
+	 *
+	 * @param string[] $attendees Email addresses of attendees to check for. Only users on this instance can be checked. The rest will be ignored.
+	 * @return IAvailabilityResult[]
+	 */
+	public function checkAvailability(\DateTimeInterface $start, \DateTimeInterface $end, array $attendees): array;
 }

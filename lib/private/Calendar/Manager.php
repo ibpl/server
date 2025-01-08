@@ -8,7 +8,10 @@ declare(strict_types=1);
  */
 namespace OC\Calendar;
 
+use DateTimeInterface;
 use OC\AppFramework\Bootstrap\Coordinator;
+use OCA\DAV\CalDAV\Auth\CustomPrincipalPlugin;
+use OCA\DAV\ServerFactory;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\Calendar\Exceptions\CalendarException;
 use OCP\Calendar\ICalendar;
@@ -21,8 +24,13 @@ use OCP\Calendar\ICreateFromString;
 use OCP\Calendar\IHandleImipMessage;
 use OCP\Calendar\IManager;
 use OCP\Security\ISecureRandom;
+use OCP\IUserManager;
+use OCP\IUserSession;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Sabre\DAV\Exception\Forbidden;
+use Sabre\HTTP\Request;
+use Sabre\HTTP\Response;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VEvent;
 use Sabre\VObject\Property\VCard\DateTime;
@@ -48,6 +56,9 @@ class Manager implements IManager {
 		private LoggerInterface $logger,
 		private ITimeFactory $timeFactory,
 		private ISecureRandom $random,
+		private IUserSession $userSession,
+		private IUserManager $userManager,
+		private ServerFactory $serverFactory,
 	) {
 	}
 
@@ -471,5 +482,82 @@ class Manager implements IManager {
 	public function createEventBuilder(): ICalendarEventBuilder {
 		$uid = $this->random->generate(32, ISecureRandom::CHAR_ALPHANUMERIC);
 		return new CalendarEventBuilder($uid, $this->timeFactory);
+	}
+
+	public function checkAvailability(
+		DateTimeInterface $start,
+		DateTimeInterface $end,
+		array $attendees,
+	): array {
+		$user = $this->userSession->getUser();
+		if ($user === null) {
+			// Should never happen but just to be sure
+			throw new Forbidden();
+		}
+
+		$organizer = $user->getEMailAddress();
+
+		$request = new VCalendar();
+		$request->METHOD = 'REQUEST';
+		$request->add('VFREEBUSY', [
+			'DTSTART' => $start,
+			'DTEND' => $end,
+			'ORGANIZER' => "mailto:$organizer"
+		]);
+
+		foreach ($attendees as $attendee) {
+			$attendeeUsers = $this->userManager->getByEmail($attendee);
+			if ($attendeeUsers === []) {
+				continue;
+			}
+
+			$request->VFREEBUSY->add('ATTENDEE', "mailto:$attendee");
+		}
+
+		$userId = $user->getUID();
+		$server = $this->serverFactory->createAttendeeAvailabilityServer();
+		/** @var CustomPrincipalPlugin $plugin */
+		$plugin = $server->getPlugin('auth');
+		$plugin->setCurrentPrincipal("principals/users/$userId");
+
+		$request = new Request(
+			'POST',
+			"/calendars/$userId/outbox/",
+			[
+				'Content-Type' => 'text/calendar',
+				'Depth' => 0,
+			],
+			$request->serialize(),
+		);
+		$response = new Response();
+		$server->invokeMethod($request, $response, false);
+
+		$xmlService = new \Sabre\Xml\Service();
+		$xmlService->elementMap = [
+			'{urn:ietf:params:xml:ns:caldav}response' => 'Sabre\Xml\Deserializer\keyValue',
+		];
+		$parsedResponse = $xmlService->parse($response->getBody());
+
+		$result = [];
+		$mailtoLen = strlen('mailto:');
+		foreach ($parsedResponse as $freeBusyResponse) {
+			$freeBusyResponse = $freeBusyResponse['value'];
+			if ($freeBusyResponse['{urn:ietf:params:xml:ns:caldav}request-status'] !== '2.0;Success') {
+				continue;
+			}
+
+			$freeBusyResponseData = \Sabre\VObject\Reader::read(
+				$freeBusyResponse['{urn:ietf:params:xml:ns:caldav}calendar-data']
+			);
+
+			$attendee = substr((string)$freeBusyResponseData->VFREEBUSY->ATTENDEE, $mailtoLen);
+			/** @var DateTimeInterface $attendeeFreeStarting */
+			$attendeeFreeStarting = $freeBusyResponseData->VFREEBUSY->DTSTART->getDateTime();
+			// TODO: use DTSTART and DTEND to get the next free slot
+			$isAvailable = $attendeeFreeStarting->getTimestamp() <= $start->getTimestamp();
+			$result[] = new AvailabilityResult($attendee, $isAvailable);
+		}
+
+		return $result;
 	}
 }
