@@ -81,6 +81,7 @@ class FavoriteWidget implements IIconWidget, IAPIWidgetV2, IButtonWidget {
 		}
 		$favoriteNodes = [];
 		$userFolder = $this->rootFolder->getUserFolder($userId);
+		$count = 0;
 		foreach ($favorites as $favorite) {
 			$node = $userFolder->getFirstNodeById($favorite);
 			if ($node) {
@@ -99,17 +100,22 @@ class FavoriteWidget implements IIconWidget, IAPIWidgetV2, IButtonWidget {
 						$this->mimeTypeDetector->mimeTypeIcon($node->getMimetype())
 					);
 				}
-				$favoriteNodes[] = new WidgetItem(
-					$node->getName(),
-					'',
-					$url,
-					$icon,
-					(string)$node->getCreationTime()
-				);
+				if($count < $limit) {
+					$favoriteNodes[] = new WidgetItem(
+						$node->getName(),
+						'',
+						$url,
+						$icon,
+						(string)$node->getCreationTime()
+					);
+					$count++;
+				} else {
+					break;
+				}
 			}
 		}
 
-		return array_slice($favoriteNodes, 0, $limit);
+		return $favoriteNodes;
 	}
 
 	public function getItemsV2(string $userId, ?string $since = null, int $limit = 7): WidgetItems {
