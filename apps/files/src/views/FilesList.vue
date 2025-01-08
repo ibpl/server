@@ -277,7 +277,12 @@ export default defineComponent({
 		},
 
 		pageHeading(): string {
-			return this.currentView?.name ?? t('files', 'Files')
+			const title = this.currentView?.name ?? t('files', 'Files')
+
+			if (this.currentFolder === undefined || this.directory === '/') {
+				return title
+			}
+			return `${this.currentFolder.displayname} - ${title}`
 		},
 
 		/**
@@ -422,10 +427,17 @@ export default defineComponent({
 
 		showCustomEmptyView() {
 			return !this.loading && this.isEmptyDir && this.currentView?.emptyView !== undefined
-		}
+		},
 	},
 
 	watch: {
+		/**
+		 * Update the window title to match the page heading
+		 */
+		pageHeading() {
+			document.title = `${this.pageHeading} - ${getCapabilities().theming?.productName ?? 'Nextcloud'}`
+		},
+
 		/**
 		 * Handle rendering the custom empty view
 		 * @param show The current state if the custom empty view should be rendered

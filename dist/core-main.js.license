@@ -20,7 +20,6 @@ SPDX-FileCopyrightText: Roman Shtylman <shtylman@gmail.com>
 SPDX-FileCopyrightText: Roeland Jago Douma
 SPDX-FileCopyrightText: Rob Cresswell <robcresswell@pm.me>
 SPDX-FileCopyrightText: Raynos <raynos2@gmail.com>
-SPDX-FileCopyrightText: Perry Mitchell <perry@perrymitchell.net>
 SPDX-FileCopyrightText: Paul Vorbach <paul@vorba.ch> (http://paul.vorba.ch)
 SPDX-FileCopyrightText: Paul Vorbach <paul@vorb.de> (http://vorb.de)
 SPDX-FileCopyrightText: OpenJS Foundation and other contributors
@@ -58,7 +57,6 @@ SPDX-FileCopyrightText: Anthony Fu <https://github.com/antfu>
 SPDX-FileCopyrightText: Anthony Fu <anthonyfu117@hotmail.com>
 SPDX-FileCopyrightText: Andris Reinman
 SPDX-FileCopyrightText: Alkemics
-SPDX-FileCopyrightText: @nextcloud/password-confirmation developers
 SPDX-FileCopyrightText: @nextcloud/dialogs developers
 
 
@@ -88,7 +86,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 3.3.1
 	- license: GPL-3.0-or-later
 - @nextcloud/files
-	- version: 3.9.2
+	- version: 3.10.0
 	- license: AGPL-3.0-or-later
 - @nextcloud/initial-state
 	- version: 2.2.0
@@ -100,7 +98,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 3.0.2
 	- license: GPL-3.0-or-later
 - @nextcloud/password-confirmation
-	- version: 5.1.1
+	- version: 5.3.0
 	- license: MIT
 - @nextcloud/paths
 	- version: 2.2.1
@@ -109,7 +107,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 3.0.1
 	- license: GPL-3.0-or-later
 - @nextcloud/sharing
-	- version: 0.2.3
+	- version: 0.2.4
 	- license: GPL-3.0-or-later
 - @vueuse/components
 	- version: 11.0.1
@@ -142,7 +140,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 1.0.7
 	- license: MIT
 - axios
-	- version: 1.7.7
+	- version: 1.7.9
 	- license: MIT
 - backbone
 	- version: 1.6.0
@@ -361,13 +359,10 @@ This file is generated from multiple sources. Included packages:
 	- version: 15.11.1
 	- license: MIT
 - vue-material-design-icons
-	- version: 5.3.0
+	- version: 5.3.1
 	- license: MIT
 - vue
 	- version: 2.7.16
-	- license: MIT
-- webdav
-	- version: 5.7.1
 	- license: MIT
 - webpack
 	- version: 5.94.0

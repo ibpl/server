@@ -198,6 +198,7 @@ class Application extends App implements IBootstrap {
 		$context->registerSetupCheck(PhpDisabledFunctions::class);
 		$context->registerSetupCheck(PhpFreetypeSupport::class);
 		$context->registerSetupCheck(PhpGetEnv::class);
+		// Temporarily disabled $context->registerSetupCheck(PhpMaxFileSize::class);
 		$context->registerSetupCheck(PhpMemoryLimit::class);
 		$context->registerSetupCheck(PhpModules::class);
 		$context->registerSetupCheck(PhpOpcacheSetup::class);
