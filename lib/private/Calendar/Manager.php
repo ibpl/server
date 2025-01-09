@@ -33,6 +33,7 @@ use Sabre\HTTP\Request;
 use Sabre\HTTP\Response;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VEvent;
+use Sabre\VObject\Component\VFreeBusy;
 use Sabre\VObject\Property\VCard\DateTime;
 use Sabre\VObject\Reader;
 use Throwable;
@@ -560,11 +561,17 @@ class Manager implements IManager {
 				$mailtoLen,
 			);
 
+			$vfreebusy = $freeBusyResponseData->VFREEBUSY;
+			if (!($vfreebusy instanceof VFreeBusy)) {
+				continue;
+			}
+
 			// TODO: actually check values of FREEBUSY properties to find a free slot
 			$isAvailable = true;
-			$freeBusyProps = $freeBusyResponseData->VFREEBUSY->FREEBUSY;
+			$freeBusyProps = $vfreebusy->FREEBUSY;
 			if ($freeBusyProps !== null) {
 				foreach ($freeBusyProps as $prop) {
+					// BUSY is the default, in case FBTYPE is not present
 					if (isset($prop['FBTYPE']) && $prop['FBTYPE'] === 'FREE') {
 						continue;
 					}

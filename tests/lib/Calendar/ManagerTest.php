@@ -6,7 +6,6 @@
 
 namespace Test\Calendar;
 
-use AdvancedJsonRpc\Request;
 use DateTimeImmutable;
 use OC\AppFramework\Bootstrap\Coordinator;
 use OC\Calendar\AvailabilityResult;
@@ -28,7 +27,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Sabre\DAV\Exception\Forbidden;
 use Sabre\HTTP\RequestInterface;
-use Sabre\HTTP\Response;
 use Sabre\HTTP\ResponseInterface;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Document;
