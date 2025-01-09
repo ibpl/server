@@ -6,18 +6,30 @@
 
 namespace Test\Calendar;
 
+use AdvancedJsonRpc\Request;
+use DateTimeImmutable;
 use OC\AppFramework\Bootstrap\Coordinator;
+use OC\Calendar\AvailabilityResult;
 use OC\Calendar\Manager;
+use OCA\DAV\CalDAV\Auth\CustomPrincipalPlugin;
+use OCA\DAV\ServerFactory;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\Calendar\ICalendar;
 use OCP\Calendar\ICalendarIsShared;
 use OCP\Calendar\ICalendarIsWritable;
 use OCP\Calendar\ICreateFromString;
 use OCP\Calendar\IHandleImipMessage;
+use OCP\IUser;
+use OCP\IUserManager;
+use OCP\IUserSession;
 use OCP\Security\ISecureRandom;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Sabre\DAV\Exception\Forbidden;
+use Sabre\HTTP\RequestInterface;
+use Sabre\HTTP\Response;
+use Sabre\HTTP\ResponseInterface;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Document;
 use Sabre\VObject\Reader;
@@ -48,6 +60,10 @@ class ManagerTest extends TestCase {
 	/** @var ISecureRandom&MockObject */
 	private ISecureRandom $secureRandom;
 
+	private IUserSession&MockObject $userSession;
+	private IUserManager&MockObject $userManager;
+	private ServerFactory&MockObject $serverFactory;
+
 	private VCalendar $vCalendar1a;
 
 	protected function setUp(): void {
@@ -58,6 +74,9 @@ class ManagerTest extends TestCase {
 		$this->logger = $this->createMock(LoggerInterface::class);
 		$this->time = $this->createMock(ITimeFactory::class);
 		$this->secureRandom = $this->createMock(ISecureRandom::class);
+		$this->userSession = $this->createMock(IUserSession::class);
+		$this->userManager = $this->createMock(IUserManager::class);
+		$this->serverFactory = $this->createMock(ServerFactory::class);
 
 		$this->manager = new Manager(
 			$this->coordinator,
@@ -65,6 +84,9 @@ class ManagerTest extends TestCase {
 			$this->logger,
 			$this->time,
 			$this->secureRandom,
+			$this->userSession,
+			$this->userManager,
+			$this->serverFactory,
 		);
 
 		// construct calendar with a 1 hour event and same start/end time zones
@@ -268,6 +290,9 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
+				$this->userSession,
+				$this->userManager,
+				$this->serverFactory,
 			])
 			->onlyMethods(['getCalendarsForPrincipal'])
 			->getMock();
@@ -300,6 +325,9 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
+				$this->userSession,
+				$this->userManager,
+				$this->serverFactory,
 			])
 			->onlyMethods(['getCalendarsForPrincipal'])
 			->getMock();
@@ -331,6 +359,9 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
+				$this->userSession,
+				$this->userManager,
+				$this->serverFactory,
 			])
 			->onlyMethods(['getCalendarsForPrincipal'])
 			->getMock();
@@ -363,6 +394,9 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
+				$this->userSession,
+				$this->userManager,
+				$this->serverFactory,
 			])
 			->onlyMethods(['getCalendarsForPrincipal'])
 			->getMock();
@@ -396,6 +430,9 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
+				$this->userSession,
+				$this->userManager,
+				$this->serverFactory,
 			])
 			->onlyMethods(['getCalendarsForPrincipal'])
 			->getMock();
@@ -429,6 +466,9 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
+				$this->userSession,
+				$this->userManager,
+				$this->serverFactory,
 			])
 			->onlyMethods(['getCalendarsForPrincipal'])
 			->getMock();
@@ -462,6 +502,9 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
+				$this->userSession,
+				$this->userManager,
+				$this->serverFactory,
 			])
 			->onlyMethods(['getCalendarsForPrincipal'])
 			->getMock();
@@ -506,6 +549,9 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
+				$this->userSession,
+				$this->userManager,
+				$this->serverFactory,
 			])
 			->onlyMethods(['getCalendarsForPrincipal'])
 			->getMock();
@@ -550,6 +596,9 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
+				$this->userSession,
+				$this->userManager,
+				$this->serverFactory,
 			])
 			->onlyMethods(['getCalendarsForPrincipal'])
 			->getMock();
@@ -629,6 +678,9 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
+				$this->userSession,
+				$this->userManager,
+				$this->serverFactory,
 			])
 			->setMethods([
 				'getCalendarsForPrincipal'
@@ -661,6 +713,9 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
+				$this->userSession,
+				$this->userManager,
+				$this->serverFactory,
 			])
 			->setMethods([
 				'getCalendarsForPrincipal'
@@ -699,6 +754,9 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
+				$this->userSession,
+				$this->userManager,
+				$this->serverFactory,
 			])
 			->setMethods([
 				'getCalendarsForPrincipal'
@@ -787,6 +845,9 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
+				$this->userSession,
+				$this->userManager,
+				$this->serverFactory,
 			])
 			->setMethods([
 				'getCalendarsForPrincipal'
@@ -821,6 +882,9 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
+				$this->userSession,
+				$this->userManager,
+				$this->serverFactory,
 			])
 			->setMethods([
 				'getCalendarsForPrincipal'
@@ -859,6 +923,9 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
+				$this->userSession,
+				$this->userManager,
+				$this->serverFactory,
 			])
 			->setMethods([
 				'getCalendarsForPrincipal'
@@ -944,5 +1011,223 @@ END:VEVENT
 END:VCALENDAR
 EOF;
 		return Reader::read($data);
+	}
+
+	private function getFreeBusyResponse(): string {
+		return <<<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<cal:schedule-response xmlns:d="DAV:" xmlns:s="http://sabredav.org/ns" xmlns:cal="urn:ietf:params:xml:ns:caldav" xmlns:cs="http://calendarserver.org/ns/">
+  <cal:response>
+    <cal:recipient>
+      <d:href>mailto:user.1@domain.tld</d:href>
+    </cal:recipient>
+    <cal:request-status>2.0;Success</cal:request-status>
+    <cal:calendar-data>BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Sabre//Sabre VObject 4.5.6//EN
+CALSCALE:GREGORIAN
+METHOD:REPLY
+BEGIN:VFREEBUSY
+DTSTART:20250109T082136Z
+DTEND:20250109T102136Z
+DTSTAMP:20250109T082136Z
+FREEBUSY::20250109T084500Z/20250109T090000Z
+ATTENDEE:mailto:user.1@domain.tld
+UID:
+ORGANIZER:mailto:organizer@domain.tld
+END:VFREEBUSY
+END:VCALENDAR
+</cal:calendar-data>
+  </cal:response>
+  <cal:response>
+    <cal:recipient>
+      <d:href>mailto:user.2@domain.tld</d:href>
+    </cal:recipient>
+    <cal:request-status>2.0;Success</cal:request-status>
+    <cal:calendar-data>BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Sabre//Sabre VObject 4.5.6//EN
+CALSCALE:GREGORIAN
+METHOD:REPLY
+BEGIN:VFREEBUSY
+DTSTART:20250109T082136Z
+DTEND:20250109T102136Z
+DTSTAMP:20250109T082136Z
+ATTENDEE:mailto:user.2@domain.tld
+UID:
+ORGANIZER:mailto:organizer@domain.tld
+END:VFREEBUSY
+END:VCALENDAR
+</cal:calendar-data>
+  </cal:response>
+</cal:schedule-response>
+EOF;
+	}
+
+	public function testCheckAvailability(): void {
+		$organizer = $this->createMock(IUser::class);
+		$organizer->expects(self::once())
+			->method('getUID')
+			->willReturn('organizer');
+		$organizer->expects(self::once())
+			->method('getEMailAddress')
+			->willReturn('organizer@domain.tld');
+
+		$user1 = $this->createMock(IUser::class);
+		$user2 = $this->createMock(IUser::class);
+
+		$this->userSession->expects(self::once())
+			->method('getUser')
+			->willReturn($organizer);
+
+		$this->userManager->expects(self::exactly(2))
+			->method('getByEmail')
+			->willReturnMap([
+				['user.1@domain.tld', $user1],
+				['user.2@domain.tld', $user2],
+			]);
+
+		$authPlugin = $this->createMock(CustomPrincipalPlugin::class);
+		$authPlugin->expects(self::once())
+			->method('setCurrentPrincipal')
+			->with('principals/users/organizer');
+
+		$server = $this->createMock(\OCA\DAV\Connector\Sabre\Server::class);
+		$server->expects(self::once())
+			->method('getPlugin')
+			->with('auth')
+			->willReturn($authPlugin);
+		$server->expects(self::once())
+			->method('invokeMethod')
+			->willReturnCallback(function (
+				RequestInterface $request,
+				ResponseInterface $response,
+				bool $sendResponse,
+			) {
+				$requestBody = file_get_contents(__DIR__ . '/../../data/ics/free-busy-request.ics');
+				$this->assertEquals('POST', $request->getMethod());
+				$this->assertEquals('calendars/organizer/outbox', $request->getPath());
+				$this->assertEquals('text/calendar', $request->getHeader('Content-Type'));
+				$this->assertEquals('0', $request->getHeader('Depth'));
+				$this->assertEquals($requestBody, $request->getBodyAsString());
+				$this->assertFalse($sendResponse);
+				$response->setStatus(200);
+				$response->setBody($this->getFreeBusyResponse());
+			});
+
+		$this->serverFactory->expects(self::once())
+			->method('createAttendeeAvailabilityServer')
+			->willReturn($server);
+
+		$start = new DateTimeImmutable('2025-01-09T08:21:36Z');
+		$end = new DateTimeImmutable('2025-01-09T10:21:36Z');
+		$actual = $this->manager->checkAvailability($start, $end, [
+			'user.1@domain.tld',
+			'user.2@domain.tld',
+		]);
+		$expected = [
+			new AvailabilityResult('user.1@domain.tld', false),
+			new AvailabilityResult('user.2@domain.tld', true),
+		];
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testCheckAvailabilityWithoutUser(): void {
+		$this->userSession->expects(self::once())
+			->method('getUser')
+			->willReturn(null);
+
+		$this->userManager->expects(self::never())
+			->method('getByEmail');
+
+		$authPlugin = $this->createMock(CustomPrincipalPlugin::class);
+		$authPlugin->expects(self::never())
+			->method('setCurrentPrincipal');
+
+		$server = $this->createMock(\OCA\DAV\Connector\Sabre\Server::class);
+		$server->expects(self::never())
+			->method('getPlugin');
+		$server->expects(self::never())
+			->method('invokeMethod');
+
+		$this->serverFactory->expects(self::never())
+			->method('createAttendeeAvailabilityServer');
+
+		$this->expectException(Forbidden::class);
+
+		$start = new DateTimeImmutable('2025-01-09T08:21:36Z');
+		$end = new DateTimeImmutable('2025-01-09T10:21:36Z');
+		$this->manager->checkAvailability($start, $end, [
+			'user.1@domain.tld',
+			'user.2@domain.tld',
+		]);
+	}
+
+	public function testCheckAvailabilityWithMailtoPrefix(): void {
+		$organizer = $this->createMock(IUser::class);
+		$organizer->expects(self::once())
+			->method('getUID')
+			->willReturn('organizer');
+		$organizer->expects(self::once())
+			->method('getEMailAddress')
+			->willReturn('organizer@domain.tld');
+
+		$user1 = $this->createMock(IUser::class);
+		$user2 = $this->createMock(IUser::class);
+
+		$this->userSession->expects(self::once())
+			->method('getUser')
+			->willReturn($organizer);
+
+		$this->userManager->expects(self::exactly(2))
+			->method('getByEmail')
+			->willReturnMap([
+				['user.1@domain.tld', $user1],
+				['user.2@domain.tld', $user2],
+			]);
+
+		$authPlugin = $this->createMock(CustomPrincipalPlugin::class);
+		$authPlugin->expects(self::once())
+			->method('setCurrentPrincipal')
+			->with('principals/users/organizer');
+
+		$server = $this->createMock(\OCA\DAV\Connector\Sabre\Server::class);
+		$server->expects(self::once())
+			->method('getPlugin')
+			->with('auth')
+			->willReturn($authPlugin);
+		$server->expects(self::once())
+			->method('invokeMethod')
+			->willReturnCallback(function (
+				RequestInterface $request,
+				ResponseInterface $response,
+				bool $sendResponse,
+			) {
+				$requestBody = file_get_contents(__DIR__ . '/../../data/ics/free-busy-request.ics');
+				$this->assertEquals('POST', $request->getMethod());
+				$this->assertEquals('calendars/organizer/outbox', $request->getPath());
+				$this->assertEquals('text/calendar', $request->getHeader('Content-Type'));
+				$this->assertEquals('0', $request->getHeader('Depth'));
+				$this->assertEquals($requestBody, $request->getBodyAsString());
+				$this->assertFalse($sendResponse);
+				$response->setStatus(200);
+				$response->setBody($this->getFreeBusyResponse());
+			});
+
+		$this->serverFactory->expects(self::once())
+			->method('createAttendeeAvailabilityServer')
+			->willReturn($server);
+
+		$start = new DateTimeImmutable('2025-01-09T08:21:36Z');
+		$end = new DateTimeImmutable('2025-01-09T10:21:36Z');
+		$actual = $this->manager->checkAvailability($start, $end, [
+			'mailto:user.1@domain.tld',
+			'mailto:user.2@domain.tld',
+		]);
+		$expected = [
+			new AvailabilityResult('user.1@domain.tld', false),
+			new AvailabilityResult('user.2@domain.tld', true),
+		];
+		$this->assertEquals($expected, $actual);
 	}
 }

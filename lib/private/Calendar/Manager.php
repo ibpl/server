@@ -23,9 +23,9 @@ use OCP\Calendar\ICalendarQuery;
 use OCP\Calendar\ICreateFromString;
 use OCP\Calendar\IHandleImipMessage;
 use OCP\Calendar\IManager;
-use OCP\Security\ISecureRandom;
 use OCP\IUserManager;
 use OCP\IUserSession;
+use OCP\Security\ISecureRandom;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Sabre\DAV\Exception\Forbidden;
@@ -505,7 +505,12 @@ class Manager implements IManager {
 			'ORGANIZER' => "mailto:$organizer"
 		]);
 
+		$mailtoLen = strlen('mailto:');
 		foreach ($attendees as $attendee) {
+			if (str_starts_with($attendee, 'mailto:')) {
+				$attendee = substr($attendee, $mailtoLen);
+			}
+
 			$attendeeUsers = $this->userManager->getByEmail($attendee);
 			if ($attendeeUsers === []) {
 				continue;
@@ -535,11 +540,11 @@ class Manager implements IManager {
 		$xmlService = new \Sabre\Xml\Service();
 		$xmlService->elementMap = [
 			'{urn:ietf:params:xml:ns:caldav}response' => 'Sabre\Xml\Deserializer\keyValue',
+			'{urn:ietf:params:xml:ns:caldav}recipient' => 'Sabre\Xml\Deserializer\keyValue',
 		];
-		$parsedResponse = $xmlService->parse($response->getBody());
+		$parsedResponse = $xmlService->parse($response->getBodyAsString());
 
 		$result = [];
-		$mailtoLen = strlen('mailto:');
 		foreach ($parsedResponse as $freeBusyResponse) {
 			$freeBusyResponse = $freeBusyResponse['value'];
 			if ($freeBusyResponse['{urn:ietf:params:xml:ns:caldav}request-status'] !== '2.0;Success') {
@@ -550,11 +555,25 @@ class Manager implements IManager {
 				$freeBusyResponse['{urn:ietf:params:xml:ns:caldav}calendar-data']
 			);
 
-			$attendee = substr((string)$freeBusyResponseData->VFREEBUSY->ATTENDEE, $mailtoLen);
-			/** @var DateTimeInterface $attendeeFreeStarting */
-			$attendeeFreeStarting = $freeBusyResponseData->VFREEBUSY->DTSTART->getDateTime();
-			// TODO: use DTSTART and DTEND to get the next free slot
-			$isAvailable = $attendeeFreeStarting->getTimestamp() <= $start->getTimestamp();
+			$attendee = substr(
+				$freeBusyResponse['{urn:ietf:params:xml:ns:caldav}recipient']['{DAV:}href'],
+				$mailtoLen,
+			);
+
+			// TODO: actually check values of FREEBUSY properties to find a free slot
+			$isAvailable = true;
+			$freeBusyProps = $freeBusyResponseData->VFREEBUSY->FREEBUSY;
+			if ($freeBusyProps !== null) {
+				foreach ($freeBusyProps as $prop) {
+					if (isset($prop['FBTYPE']) && $prop['FBTYPE'] === 'FREE') {
+						continue;
+					}
+
+					$isAvailable = false;
+					break;
+				}
+			}
+
 			$result[] = new AvailabilityResult($attendee, $isAvailable);
 		}
 
