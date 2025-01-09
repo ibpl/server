@@ -114,7 +114,6 @@ import NcEmptyContent from '@nextcloud/vue/dist/Components/NcEmptyContent.js'
 import NcIconSvgWrapper from '@nextcloud/vue/dist/Components/NcIconSvgWrapper.js'
 import NcUserBubble from '@nextcloud/vue/dist/Components/NcUserBubble.js'
 
-import FileInfo from '../services/FileInfo.js'
 import LegacyView from '../components/LegacyView.vue'
 import SidebarTab from '../components/SidebarTab.vue'
 import SystemTags from '../../../systemtags/src/components/SystemTags.vue'
@@ -487,10 +486,31 @@ export default {
 			this.loading = true
 
 			try {
-				this.fileInfo = await FileInfo(this.davPath)
-				// adding this as fallback because other apps expect it
-				this.fileInfo.dir = this.file.split('/').slice(0, -1).join('/')
-				this.node = await fetchNode({ path: (this.fileInfo.path + '/' + this.fileInfo.name).replace('//', '/') })
+				this.node = await fetchNode({ path: this.file })
+				this.fileInfo = {
+					id: this.node.fileid,
+					path: this.node.dirname,
+					name: this.node.basename,
+					mtime: this.node.mtime.getTime(),
+					etag: this.node.attributes.etag,
+					size: this.node.size,
+					hasPreview: this.node.attributes.hasPreview,
+					isEncrypted: this.node.attributes.isEncrypted === 1,
+					isFavourited: this.node.attributes.favorite === 1,
+					mimetype: this.node.mime,
+					permissions: this.node.permissions,
+					mountType: this.node.attributes['mount-type'],
+					sharePermissions: this.node.attributes['share-permissions'],
+					shareAttributes: this.node.attributes['share-attributes'],
+					type: this.node.type,
+					// adding this as fallback because other apps expect it
+					dir: this.file.split('/').slice(0, -1).join('/'),
+				}
+
+				// TODO remove when no more legacy backbone is used
+				this.fileInfo.get = (key) => this.fileInfo[key]
+				this.fileInfo.isDirectory = () => this.fileInfo.mimetype === 'httpd/unix-directory'
+				this.fileInfo.canEdit = () => Boolean(this.fileInfo.permissions & OC.PERMISSION_UPDATE)
 
 				// DEPRECATED legacy views
 				// TODO: remove
