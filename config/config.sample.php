@@ -1432,7 +1432,7 @@ $CONFIG = [
  * Maximum file size for file conversion.
  * If a file exceeds this size, the file will not be converted.
  *
- * Default: 100 megabytes
+ * Default: 100 MiB
  */
 'max_conversion_filesize' => 100,
 
