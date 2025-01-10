@@ -45,7 +45,7 @@ export const registerConvertActions = () => {
 	// Register main action
 	registerFileAction(new FileAction({
 		id: ACTION_CONVERT,
-		displayName: () => t('files', 'Save as'),
+		displayName: () => t('files', 'Save as …'),
 		iconSvgInline: () => AutoRenewSvg,
 		enabled: (nodes: Node[], view: View) => {
 			return actions.some(action => action.enabled!(nodes, view))
