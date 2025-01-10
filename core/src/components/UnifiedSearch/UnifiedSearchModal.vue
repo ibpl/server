@@ -129,7 +129,7 @@
 						v-bind="result" />
 				</ul>
 				<div class="result-footer">
-					<NcButton type="tertiary-no-background" @click="loadMoreResultsForProvider(providerResult.id)">
+					<NcButton type="tertiary-no-background" @click="loadMoreResultsForProvider(providerResult.providerId || providerResult.id)">
 						{{ t('core', 'Load more results') }}
 						<template #icon>
 							<IconDotsHorizontal :size="20" />
@@ -372,8 +372,13 @@ export default defineComponent({
 			const newResults = []
 			const providersToSearch = this.filteredProviders.length > 0 ? this.filteredProviders : this.providers
 			const searchProvider = (provider, filters) => {
+				console.log('HMMMMMMM', provider)
 				const params = {
-					type: provider.id,
+					// Some filters such as In folder have identical id's with other providers such as Files
+					// To differentiate such in the UI we use an id that is different from the providerId.
+					// So, if providerId is present, use it, otherwise use the id, it indicates a plugin filter which has an id
+					// that might not match a valid search provider.
+					type: provider.providerId || provider.id,
 					query,
 					cursor: null,
 					extraQueries: provider.extraParams,
@@ -396,6 +401,7 @@ export default defineComponent({
 
 				if (this.providerResultLimit > 5) {
 					params.limit = this.providerResultLimit
+					console.log('Limiting search to', params.limit)
 				}
 
 				const request = unifiedSearch(params).request
@@ -403,6 +409,7 @@ export default defineComponent({
 				request().then((response) => {
 					newResults.push({
 						id: provider.id,
+						providerId: provider.providerId ?? provider.id,
 						provider: provider.name,
 						inAppSearch: provider.inAppSearch,
 						results: response.data.ocs.data.entries,
@@ -499,11 +506,13 @@ export default defineComponent({
 		},
 		loadMoreResultsForProvider(providerId) {
 			this.providerResultLimit += 5
-			this.filters = this.filters.filter(filter => filter.type !== 'provider')
+			// If user wants more result for a particular filter remove other filters???
+			this.filters = this.filters.filter(filter => filter.id === providerId)
 			const provider = this.providers.find(provider => provider.id === providerId)
 			this.addProviderFilter(provider, true)
 		},
 		addProviderFilter(providerFilter, loadMoreResultsForProvider = false) {
+			unifiedSearchLogger.info('Applying provider filter', { providerFilter, loadMoreResultsForProvider })
 			if (!providerFilter.id) return
 			if (providerFilter.isPluginFilter) {
 				providerFilter.callback()
@@ -652,6 +661,9 @@ export default defineComponent({
 				const provider = this.filteredProviders[i]
 				if (provider.id === addFilterEvent.id) {
 					provider.name = addFilterEvent.filterUpdateText
+					if (addFilterEvent.providerId) {
+						provider.providerId = addFilterEvent.providerId
+					}
 					// Filters attached may only make sense with certain providers,
 					// So, find the provider attached, add apply the extra parameters to those providers only
 					const compatibleProviderIndex = this.providers.findIndex(provider => provider.id === addFilterEvent.id)
