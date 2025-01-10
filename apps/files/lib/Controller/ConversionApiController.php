@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OCA\Files\Controller;
 
+use OC\Files\Utils\PathHelper;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\ApiRoute;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -16,11 +17,13 @@ use OCP\AppFramework\Http\Attribute\OpenAPI;
 use OCP\AppFramework\Http\Attribute\UserRateLimit;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCS\OCSException;
+use OCP\AppFramework\OCS\OCSForbiddenException;
 use OCP\AppFramework\OCS\OCSNotFoundException;
 use OCP\AppFramework\OCSController;
 use OCP\Files\Conversion\IConversionManager;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
+use OCP\IL10N;
 use OCP\IRequest;
 
 class ConversionApiController extends OCSController {
@@ -29,6 +32,7 @@ class ConversionApiController extends OCSController {
 		IRequest $request,
 		private IConversionManager $fileConversionManager,
 		private IRootFolder $rootFolder,
+		private IL10N $l10n,
 		private ?string $userId,
 	) {
 		parent::__construct($appName, $request);
@@ -57,14 +61,25 @@ class ConversionApiController extends OCSController {
 		$file = $userFolder->getFirstNodeById($fileId);
 
 		if (!($file instanceof File)) {
-			throw new OCSNotFoundException();
+			throw new OCSNotFoundException($this->l10n->t('The file cannot be found'));
+		}
+
+		if ($destination !== null) {
+			$destination = PathHelper::normalizePath($destination);
+			$parentDir = dirname($destination);
+
+			if (!$userFolder->nodeExists($parentDir)) {
+				throw new OCSNotFoundException($this->l10n->t('The destination path does not exist: %1$s', [$parentDir]));
+			}
+
+			if (!$userFolder->get($parentDir)->isCreatable()) {
+				throw new OCSForbiddenException();
+			}
+
+			$destination = $userFolder->getFullPath($destination);
 		}
 
 		try {
-			if ($destination !== null) {
-				$destination = $userFolder->getFullpath($destination);
-			}
-
 			$convertedFile = $this->fileConversionManager->convert($file, $targetMimeType, $destination);
 		} catch (\Exception $e) {
 			throw new OCSException($e->getMessage());
