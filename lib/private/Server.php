@@ -34,7 +34,6 @@ use OC\Command\CronBus;
 use OC\Comments\ManagerFactory as CommentsManagerFactory;
 use OC\Contacts\ContactsMenu\ActionFactory;
 use OC\Contacts\ContactsMenu\ContactsStore;
-use OC\Conversion\ConversionManager;
 use OC\DB\Connection;
 use OC\DB\ConnectionAdapter;
 use OC\Diagnostics\EventLogger;
@@ -46,6 +45,7 @@ use OC\Files\Cache\FileAccess;
 use OC\Files\Config\MountProviderCollection;
 use OC\Files\Config\UserMountCache;
 use OC\Files\Config\UserMountCacheListener;
+use OC\Files\Conversion\ConversionManager;
 use OC\Files\Lock\LockManager;
 use OC\Files\Mount\CacheMountProvider;
 use OC\Files\Mount\LocalHomeMountProvider;
@@ -144,7 +144,6 @@ use OCP\Command\IBus;
 use OCP\Comments\ICommentsManager;
 use OCP\Contacts\ContactsMenu\IActionFactory;
 use OCP\Contacts\ContactsMenu\IContactsStore;
-use OCP\Conversion\IConversionManager;
 use OCP\Defaults;
 use OCP\Diagnostics\IEventLogger;
 use OCP\Diagnostics\IQueryLogger;
@@ -157,6 +156,7 @@ use OCP\Federation\ICloudIdManager;
 use OCP\Files\Cache\IFileAccess;
 use OCP\Files\Config\IMountProviderCollection;
 use OCP\Files\Config\IUserMountCache;
+use OCP\Files\Conversion\IConversionManager;
 use OCP\Files\IMimeTypeDetector;
 use OCP\Files\IMimeTypeLoader;
 use OCP\Files\IRootFolder;
@@ -1008,10 +1008,7 @@ class Server extends ServerContainer implements IServerContainer {
 		$this->registerService(CapabilitiesManager::class, function (ContainerInterface $c) {
 			$manager = new CapabilitiesManager($c->get(LoggerInterface::class));
 			$manager->registerCapability(function () use ($c) {
-				return new \OC\OCS\CoreCapabilities(
-					$c->get(\OCP\IConfig::class),
-					$c->get(\OCP\Conversion\IConversionManager::class)
-				);
+				return new \OC\OCS\CoreCapabilities($c->get(\OCP\IConfig::class));
 			});
 			$manager->registerCapability(function () use ($c) {
 				return $c->get(\OC\Security\Bruteforce\Capabilities::class);

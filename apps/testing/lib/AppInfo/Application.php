@@ -50,7 +50,7 @@ class Application extends App implements IBootstrap {
 		$context->registerTaskProcessingProvider(FakeTranscribeProvider::class);
 		$context->registerTaskProcessingProvider(FakeContextWriteProvider::class);
 
-		$context->registerConversionProvider(ConversionProvider::class);
+		$context->registerFileConversionProvider(ConversionProvider::class);
 
 		$context->registerDeclarativeSettings(DeclarativeSettingsForm::class);
 		$context->registerEventListener(DeclarativeSettingsRegisterFormEvent::class, RegisterDeclarativeSettingsListener::class);

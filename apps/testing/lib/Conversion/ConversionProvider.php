@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace OCA\Testing\Conversion;
 
-use OCP\Conversion\ConversionMimeTuple;
-use OCP\Conversion\IConversionProvider;
+use OCP\Files\Conversion\ConversionMimeTuple;
+use OCP\Files\Conversion\IConversionProvider;
 use OCP\Files\File;
 
 class ConversionProvider implements IConversionProvider {

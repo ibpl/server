@@ -7,44 +7,42 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCP\Conversion;
+namespace OCP\Files\Conversion;
 
 use OCP\Files\File;
 
 /**
- * This interface is implemented by apps that provide
- * a file conversion provider
- *
  * @since 31.0.0
  */
-interface IConversionProvider {
+interface IConversionManager {
 	/**
-	 * Get the name of the provider
+	 * Determines whether or not conversion providers are available
 	 *
-	 * @return string
+	 * @return bool
 	 *
 	 * @since 31.0.0
 	 */
-	public function getName(): string;
+	public function hasProviders(): bool;
 
 	/**
-	 * Get an array of MIME types which are available for conversion
+	 * Gets all supported MIME type conversions
 	 *
 	 * @return array<ConversionMimeTuple>
 	 *
 	 * @since 31.0.0
 	 */
-	public function getSupportedMimeTypes(): array;
+	public function getMimeTypes(): array;
 
 	/**
 	 * Convert a file to a given MIME type
 	 *
 	 * @param File $file The file to be converted
 	 * @param string $targetMimeType The MIME type to convert the file to
+	 * @param ?string $destination The destination to save the converted file
 	 *
-	 * @return resource|string Resource or string content of the file
+	 * @return string Path to the converted file
 	 *
 	 * @since 31.0.0
 	 */
-	public function convertFile(File $file, string $targetMimeType): mixed;
+	public function convert(File $file, string $targetMimeType, ?string $destination = null): string;
 }

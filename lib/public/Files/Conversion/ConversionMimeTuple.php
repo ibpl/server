@@ -7,7 +7,7 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCP\Conversion;
+namespace OCP\Files\Conversion;
 
 use JsonSerializable;
 
@@ -30,6 +30,9 @@ class ConversionMimeTuple implements JsonSerializable {
 	) {
 	}
 
+	/**
+	 * @since 31.0.0
+	 */
 	public function jsonSerialize(): array {
 		return [
 			'from' => $this->from,

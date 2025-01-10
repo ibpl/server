@@ -7,13 +7,13 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OC\Conversion;
+namespace OC\Files\Conversion;
 
 use OC\AppFramework\Bootstrap\Coordinator;
 use OC\SystemConfig;
-use OCP\Conversion\ConversionMimeTuple;
-use OCP\Conversion\IConversionManager;
-use OCP\Conversion\IConversionProvider;
+use OCP\Files\Conversion\ConversionMimeTuple;
+use OCP\Files\Conversion\IConversionManager;
+use OCP\Files\Conversion\IConversionProvider;
 use OCP\Files\File;
 use OCP\Files\GenericFileException;
 use OCP\Files\IRootFolder;
@@ -42,7 +42,7 @@ class ConversionManager implements IConversionManager {
 
 	public function hasProviders(): bool {
 		$context = $this->coordinator->getRegistrationContext();
-		return !empty($context->getConversionProviders());
+		return !empty($context->getFileConversionProviders());
 	}
 
 	public function getMimeTypes(): array {
@@ -52,14 +52,15 @@ class ConversionManager implements IConversionManager {
 			$mimeTypes[] = $provider->getSupportedMimeTypes();
 		}
 
-		return $mimeTypes;
+		return array_merge([], ...$mimeTypes);
 	}
 
 	public function convert(File $file, string $targetMimeType, ?string $destination = null): string {
 		if (!$this->hasProviders()) {
-			throw new PreConditionNotMetException('No conversion providers available');
+			throw new PreConditionNotMetException('No file conversion providers available');
 		}
 
+		// Operate in mebibytes
 		$fileSize = $file->getSize() / (1024 * 1024);
 		$threshold = $this->config->getValue('max_conversion_filesize', 100);
 		if ($fileSize > $threshold) {
@@ -103,13 +104,13 @@ class ConversionManager implements IConversionManager {
 		$context = $this->coordinator->getRegistrationContext();
 		$this->providers = [];
 
-		foreach ($context->getConversionProviders() as $providerRegistration) {
+		foreach ($context->getFileConversionProviders() as $providerRegistration) {
 			$class = $providerRegistration->getService();
 
 			try {
 				$this->providers[$class] = $this->serverContainer->get($class);
 			} catch (NotFoundExceptionInterface|ContainerExceptionInterface|Throwable $e) {
-				$this->logger->error('Failed to load conversion provider ' . $class, [
+				$this->logger->error('Failed to load file conversion provider ' . $class, [
 					'exception' => $e,
 				]);
 			}

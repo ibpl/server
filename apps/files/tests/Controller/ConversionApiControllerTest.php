@@ -5,14 +5,13 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace Core\Controller;
+namespace OCA\Files\Controller;
 
-use OC\Core\Controller\ConversionApiController;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCS\OCSException;
 use OCP\AppFramework\OCS\OCSNotFoundException;
-use OCP\Conversion\IConversionManager;
+use OCP\Files\Conversion\IConversionManager;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
@@ -20,15 +19,23 @@ use OCP\IRequest;
 use PHPUnit\Framework\MockObject\MockObject;
 use Test\TestCase;
 
+/**
+ * Class ConversionApiController
+ *
+ * @package OCA\Files\Controller
+ */
 class ConversionApiControllerTest extends TestCase {
 	/** @var ConversionApiController */
 	private $conversionApiController;
+
+	/** @var string */
+	private $appName = 'files';
 
 	/** @var IRequest|MockObject */
 	private $request;
 
 	/** @var IConversionManager|MockObject */
-	private $conversionManager;
+	private $fileConversionManager;
 
 	/** @var IRootFolder|MockObject */
 	private $rootFolder;
@@ -46,7 +53,7 @@ class ConversionApiControllerTest extends TestCase {
 		parent::setUp();
 
 		$this->request = $this->createMock(IRequest::class);
-		$this->conversionManager = $this->createMock(IConversionManager::class);
+		$this->fileConversionManager = $this->createMock(IConversionManager::class);
 		$this->file = $this->createMock(File::class);
 		$this->user = 'userid';
 
@@ -55,9 +62,9 @@ class ConversionApiControllerTest extends TestCase {
 		$this->rootFolder->method('getUserFolder')->with($this->user)->willReturn($this->userFolder);
 
 		$this->conversionApiController = new ConversionApiController(
-			'core',
+			$this->appName,
 			$this->request,
-			$this->conversionManager,
+			$this->fileConversionManager,
 			$this->rootFolder,
 			$this->user,
 		);
@@ -70,7 +77,7 @@ class ConversionApiControllerTest extends TestCase {
 
 	public function testThrowsOcsException() {
 		$this->userFolder->method('getFirstNodeById')->with(42)->willReturn($this->file);
-		$this->conversionManager->method('convert')->willThrowException(new \Exception());
+		$this->fileConversionManager->method('convert')->willThrowException(new \Exception());
 
 		$this->expectException(OCSException::class);
 		$this->conversionApiController->convert(42, 'image/png');
@@ -78,7 +85,7 @@ class ConversionApiControllerTest extends TestCase {
 
 	public function testConvert() {
 		$this->userFolder->method('getFirstNodeById')->with(42)->willReturn($this->file);
-		$this->conversionManager->method('convert')->with($this->file, 'image/png')->willReturn('files/test.png');
+		$this->fileConversionManager->method('convert')->with($this->file, 'image/png')->willReturn('files/test.png');
 
 		$actual = $this->conversionApiController->convert(42, 'image/png');
 		$expected = new DataResponse([
