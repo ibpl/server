@@ -86,7 +86,7 @@ class ConversionApiController extends OCSController {
 		}
 
 		return new DataResponse([
-			'path' => $convertedFile,
+			'path' => PathHelper::getRelativePath($userFolder->getInternalPath(), $convertedFile) ?? $convertedFile,
 		], Http::STATUS_CREATED);
 	}
 }
