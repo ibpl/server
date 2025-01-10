@@ -22,7 +22,7 @@ export const ACTION_CONVERT = 'convert'
 
 export const registerConvertActions = () => {
 	// Generate sub actions
-	const convertProviders = getCapabilities()?.core?.conversions as ConversionsProvider[]
+	const convertProviders = getCapabilities()?.core?.conversions as ConversionsProvider[] ?? []
 	const actions = convertProviders.map(provider => {
 		return provider.to.map(to => new FileAction({
 			id: `convert-${provider.from}-${to}`,
