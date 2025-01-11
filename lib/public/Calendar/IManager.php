@@ -170,13 +170,13 @@ interface IManager {
 	public function createEventBuilder(): ICalendarEventBuilder;
 
 	/**
-	 * Check the availability of the given attendees in the given time range.
+	 * Check the availability of the given organizer and attendees in the given time range.
 	 *
 	 * @since 31.0.0
 	 *
 	 * @param IUser $organizer The organizing user from whose perspective to do the availability check.
 	 * @param string[] $attendees Email addresses of attendees to check for (with or without a "mailto:" prefix). Only users on this instance can be checked. The rest will be silently ignored.
-	 * @return IAvailabilityResult[] Availabilities of all attendees which are also users on this instance. As such, the array might not contain an entry for each given attendee.
+	 * @return IAvailabilityResult[] Availabilities of the organizer and all attendees which are also users on this instance. As such, the array might not contain an entry for each given attendee.
 	 */
 	public function checkAvailability(
 		DateTimeInterface $start,

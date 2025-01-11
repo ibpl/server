@@ -27,7 +27,6 @@ use Psr\Log\LoggerInterface;
 use Sabre\HTTP\RequestInterface;
 use Sabre\HTTP\ResponseInterface;
 use Sabre\VObject\Component\VCalendar;
-use Sabre\VObject\Component\VFreeBusy;
 use Sabre\VObject\Document;
 use Sabre\VObject\Reader;
 use Test\TestCase;
