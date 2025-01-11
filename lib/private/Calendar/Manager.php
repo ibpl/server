@@ -486,17 +486,17 @@ class Manager implements IManager {
 	public function checkAvailability(
 		DateTimeInterface $start,
 		DateTimeInterface $end,
-		IUser $user,
+		IUser $organizer,
 		array $attendees,
 	): array {
-		$organizer = $user->getEMailAddress();
-
+		$organizerMailto = 'mailto:' . $organizer->getEMailAddress();
 		$request = new VCalendar();
 		$request->METHOD = 'REQUEST';
 		$request->add('VFREEBUSY', [
 			'DTSTART' => $start,
 			'DTEND' => $end,
-			'ORGANIZER' => "mailto:$organizer"
+			'ORGANIZER' => $organizerMailto,
+			'ATTENDEE' => $organizerMailto,
 		]);
 
 		$mailtoLen = strlen('mailto:');
@@ -513,15 +513,15 @@ class Manager implements IManager {
 			$request->VFREEBUSY->add('ATTENDEE', "mailto:$attendee");
 		}
 
-		$userId = $user->getUID();
+		$organizerUid = $organizer->getUID();
 		$server = $this->serverFactory->createAttendeeAvailabilityServer();
 		/** @var CustomPrincipalPlugin $plugin */
 		$plugin = $server->getPlugin('auth');
-		$plugin->setCurrentPrincipal("principals/users/$userId");
+		$plugin->setCurrentPrincipal("principals/users/$organizerUid");
 
 		$request = new Request(
 			'POST',
-			"/calendars/$userId/outbox/",
+			"/calendars/$organizerUid/outbox/",
 			[
 				'Content-Type' => 'text/calendar',
 				'Depth' => 0,
@@ -554,27 +554,13 @@ class Manager implements IManager {
 				$mailtoLen,
 			);
 
-			$vfreebusy = $freeBusyResponseData->VFREEBUSY;
-			if (!($vfreebusy instanceof VFreeBusy)) {
+			$vFreeBusy = $freeBusyResponseData->VFREEBUSY;
+			if (!($vFreeBusy instanceof VFreeBusy)) {
 				continue;
 			}
 
 			// TODO: actually check values of FREEBUSY properties to find a free slot
-			$isAvailable = true;
-			$freeBusyProps = $vfreebusy->FREEBUSY;
-			if ($freeBusyProps !== null) {
-				foreach ($freeBusyProps as $prop) {
-					// BUSY is the default, in case FBTYPE is not present
-					if (isset($prop['FBTYPE']) && $prop['FBTYPE'] === 'FREE') {
-						continue;
-					}
-
-					$isAvailable = false;
-					break;
-				}
-			}
-
-			$result[] = new AvailabilityResult($attendee, $isAvailable);
+			$result[] = new AvailabilityResult($attendee, $vFreeBusy->isFree($start, $end));
 		}
 
 		return $result;

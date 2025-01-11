@@ -4,10 +4,11 @@ PRODID:-//Sabre//Sabre VObject 4.5.6//EN
 CALSCALE:GREGORIAN
 METHOD:REQUEST
 BEGIN:VFREEBUSY
-DTSTART:20250109T082136Z
-DTEND:20250109T102136Z
-ORGANIZER:mailto:organizer@domain.tld
-ATTENDEE:mailto:user.1@domain.tld
-ATTENDEE:mailto:user.2@domain.tld
+DTSTART:20250116T060000Z
+DTEND:20250117T060000Z
+ORGANIZER:mailto:admin@imap.localhost
+ATTENDEE:mailto:admin@imap.localhost
+ATTENDEE:mailto:user@imap.localhost
+ATTENDEE:mailto:empty@imap.localhost
 END:VFREEBUSY
 END:VCALENDAR

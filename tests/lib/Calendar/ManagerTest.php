@@ -27,6 +27,7 @@ use Psr\Log\LoggerInterface;
 use Sabre\HTTP\RequestInterface;
 use Sabre\HTTP\ResponseInterface;
 use Sabre\VObject\Component\VCalendar;
+use Sabre\VObject\Component\VFreeBusy;
 use Sabre\VObject\Document;
 use Sabre\VObject\Reader;
 use Test\TestCase;
@@ -994,10 +995,10 @@ EOF;
 	private function getFreeBusyResponse(): string {
 		return <<<EOF
 <?xml version="1.0" encoding="utf-8"?>
-<cal:schedule-response xmlns:d="DAV:" xmlns:s="http://sabredav.org/ns" xmlns:cal="urn:ietf:params:xml:ns:caldav" xmlns:cs="http://calendarserver.org/ns/">
+<cal:schedule-response xmlns:d="DAV:" xmlns:s="http://sabredav.org/ns" xmlns:cal="urn:ietf:params:xml:ns:caldav" xmlns:cs="http://calendarserver.org/ns/" xmlns:oc="http://owncloud.org/ns" xmlns:nc="http://nextcloud.org/ns">
   <cal:response>
     <cal:recipient>
-      <d:href>mailto:user.1@domain.tld</d:href>
+      <d:href>mailto:admin@imap.localhost</d:href>
     </cal:recipient>
     <cal:request-status>2.0;Success</cal:request-status>
     <cal:calendar-data>BEGIN:VCALENDAR
@@ -1006,20 +1007,21 @@ PRODID:-//Sabre//Sabre VObject 4.5.6//EN
 CALSCALE:GREGORIAN
 METHOD:REPLY
 BEGIN:VFREEBUSY
-DTSTART:20250109T082136Z
-DTEND:20250109T102136Z
-DTSTAMP:20250109T082136Z
-FREEBUSY::20250109T084500Z/20250109T090000Z
-ATTENDEE:mailto:user.1@domain.tld
-UID:
-ORGANIZER:mailto:organizer@domain.tld
+DTSTART:20250116T060000Z
+DTEND:20250117T060000Z
+DTSTAMP:20250111T125634Z
+FREEBUSY:20250116T060000Z/20250116T230000Z
+FREEBUSY;FBTYPE=BUSY-UNAVAILABLE:20250116T230000Z/20250117T060000Z
+ATTENDEE:mailto:admin@imap.localhost
+UID:6099eab3-9bf1-4c7a-809e-4d46957cc372
+ORGANIZER;CN=admin:mailto:admin@imap.localhost
 END:VFREEBUSY
 END:VCALENDAR
 </cal:calendar-data>
   </cal:response>
   <cal:response>
     <cal:recipient>
-      <d:href>mailto:user.2@domain.tld</d:href>
+      <d:href>mailto:empty@imap.localhost</d:href>
     </cal:recipient>
     <cal:request-status>2.0;Success</cal:request-status>
     <cal:calendar-data>BEGIN:VCALENDAR
@@ -1028,15 +1030,44 @@ PRODID:-//Sabre//Sabre VObject 4.5.6//EN
 CALSCALE:GREGORIAN
 METHOD:REPLY
 BEGIN:VFREEBUSY
-DTSTART:20250109T082136Z
-DTEND:20250109T102136Z
-DTSTAMP:20250109T082136Z
-ATTENDEE:mailto:user.2@domain.tld
-UID:
-ORGANIZER:mailto:organizer@domain.tld
+DTSTART:20250116T060000Z
+DTEND:20250117T060000Z
+DTSTAMP:20250111T125634Z
+ATTENDEE:mailto:empty@imap.localhost
+UID:6099eab3-9bf1-4c7a-809e-4d46957cc372
+ORGANIZER;CN=admin:mailto:admin@imap.localhost
 END:VFREEBUSY
 END:VCALENDAR
 </cal:calendar-data>
+  </cal:response>
+  <cal:response>
+    <cal:recipient>
+      <d:href>mailto:user@imap.localhost</d:href>
+    </cal:recipient>
+    <cal:request-status>2.0;Success</cal:request-status>
+    <cal:calendar-data>BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Sabre//Sabre VObject 4.5.6//EN
+CALSCALE:GREGORIAN
+METHOD:REPLY
+BEGIN:VFREEBUSY
+DTSTART:20250116T060000Z
+DTEND:20250117T060000Z
+DTSTAMP:20250111T125634Z
+FREEBUSY:20250116T060000Z/20250116T230000Z
+FREEBUSY;FBTYPE=BUSY-UNAVAILABLE:20250116T230000Z/20250117T060000Z
+ATTENDEE:mailto:user@imap.localhost
+UID:6099eab3-9bf1-4c7a-809e-4d46957cc372
+ORGANIZER;CN=admin:mailto:admin@imap.localhost
+END:VFREEBUSY
+END:VCALENDAR
+</cal:calendar-data>
+  </cal:response>
+  <cal:response>
+    <cal:recipient>
+      <d:href>mailto:nouser@domain.tld</d:href>
+    </cal:recipient>
+    <cal:request-status>3.7;Could not find principal</cal:request-status>
   </cal:response>
 </cal:schedule-response>
 EOF;
@@ -1046,25 +1077,26 @@ EOF;
 		$organizer = $this->createMock(IUser::class);
 		$organizer->expects(self::once())
 			->method('getUID')
-			->willReturn('organizer');
+			->willReturn('admin');
 		$organizer->expects(self::once())
 			->method('getEMailAddress')
-			->willReturn('organizer@domain.tld');
+			->willReturn('admin@imap.localhost');
 
 		$user1 = $this->createMock(IUser::class);
 		$user2 = $this->createMock(IUser::class);
 
-		$this->userManager->expects(self::exactly(2))
+		$this->userManager->expects(self::exactly(3))
 			->method('getByEmail')
 			->willReturnMap([
-				['user.1@domain.tld', $user1],
-				['user.2@domain.tld', $user2],
+				['user@imap.localhost', [$user1]],
+				['empty@imap.localhost', [$user2]],
+				['nouser@domain.tld', []],
 			]);
 
 		$authPlugin = $this->createMock(CustomPrincipalPlugin::class);
 		$authPlugin->expects(self::once())
 			->method('setCurrentPrincipal')
-			->with('principals/users/organizer');
+			->with('principals/users/admin');
 
 		$server = $this->createMock(\OCA\DAV\Connector\Sabre\Server::class);
 		$server->expects(self::once())
@@ -1080,7 +1112,7 @@ EOF;
 			) {
 				$requestBody = file_get_contents(__DIR__ . '/../../data/ics/free-busy-request.ics');
 				$this->assertEquals('POST', $request->getMethod());
-				$this->assertEquals('calendars/organizer/outbox', $request->getPath());
+				$this->assertEquals('calendars/admin/outbox', $request->getPath());
 				$this->assertEquals('text/calendar', $request->getHeader('Content-Type'));
 				$this->assertEquals('0', $request->getHeader('Depth'));
 				$this->assertEquals($requestBody, $request->getBodyAsString());
@@ -1093,15 +1125,17 @@ EOF;
 			->method('createAttendeeAvailabilityServer')
 			->willReturn($server);
 
-		$start = new DateTimeImmutable('2025-01-09T08:21:36Z');
-		$end = new DateTimeImmutable('2025-01-09T10:21:36Z');
+		$start = new DateTimeImmutable('2025-01-16T06:00:00Z');
+		$end = new DateTimeImmutable('2025-01-17T06:00:00Z');
 		$actual = $this->manager->checkAvailability($start, $end, $organizer, [
-			'user.1@domain.tld',
-			'user.2@domain.tld',
+			'user@imap.localhost',
+			'empty@imap.localhost',
+			'nouser@domain.tld',
 		]);
 		$expected = [
-			new AvailabilityResult('user.1@domain.tld', false),
-			new AvailabilityResult('user.2@domain.tld', true),
+			new AvailabilityResult('admin@imap.localhost', false),
+			new AvailabilityResult('empty@imap.localhost', true),
+			new AvailabilityResult('user@imap.localhost', false),
 		];
 		$this->assertEquals($expected, $actual);
 	}
@@ -1110,25 +1144,26 @@ EOF;
 		$organizer = $this->createMock(IUser::class);
 		$organizer->expects(self::once())
 			->method('getUID')
-			->willReturn('organizer');
+			->willReturn('admin');
 		$organizer->expects(self::once())
 			->method('getEMailAddress')
-			->willReturn('organizer@domain.tld');
+			->willReturn('admin@imap.localhost');
 
 		$user1 = $this->createMock(IUser::class);
 		$user2 = $this->createMock(IUser::class);
 
-		$this->userManager->expects(self::exactly(2))
+		$this->userManager->expects(self::exactly(3))
 			->method('getByEmail')
 			->willReturnMap([
-				['user.1@domain.tld', $user1],
-				['user.2@domain.tld', $user2],
+				['user@imap.localhost', [$user1]],
+				['empty@imap.localhost', [$user2]],
+				['nouser@domain.tld', []],
 			]);
 
 		$authPlugin = $this->createMock(CustomPrincipalPlugin::class);
 		$authPlugin->expects(self::once())
 			->method('setCurrentPrincipal')
-			->with('principals/users/organizer');
+			->with('principals/users/admin');
 
 		$server = $this->createMock(\OCA\DAV\Connector\Sabre\Server::class);
 		$server->expects(self::once())
@@ -1144,7 +1179,7 @@ EOF;
 			) {
 				$requestBody = file_get_contents(__DIR__ . '/../../data/ics/free-busy-request.ics');
 				$this->assertEquals('POST', $request->getMethod());
-				$this->assertEquals('calendars/organizer/outbox', $request->getPath());
+				$this->assertEquals('calendars/admin/outbox', $request->getPath());
 				$this->assertEquals('text/calendar', $request->getHeader('Content-Type'));
 				$this->assertEquals('0', $request->getHeader('Depth'));
 				$this->assertEquals($requestBody, $request->getBodyAsString());
@@ -1157,15 +1192,17 @@ EOF;
 			->method('createAttendeeAvailabilityServer')
 			->willReturn($server);
 
-		$start = new DateTimeImmutable('2025-01-09T08:21:36Z');
-		$end = new DateTimeImmutable('2025-01-09T10:21:36Z');
+		$start = new DateTimeImmutable('2025-01-16T06:00:00Z');
+		$end = new DateTimeImmutable('2025-01-17T06:00:00Z');
 		$actual = $this->manager->checkAvailability($start, $end, $organizer, [
-			'mailto:user.1@domain.tld',
-			'mailto:user.2@domain.tld',
+			'mailto:user@imap.localhost',
+			'mailto:empty@imap.localhost',
+			'mailto:nouser@domain.tld',
 		]);
 		$expected = [
-			new AvailabilityResult('user.1@domain.tld', false),
-			new AvailabilityResult('user.2@domain.tld', true),
+			new AvailabilityResult('admin@imap.localhost', false),
+			new AvailabilityResult('empty@imap.localhost', true),
+			new AvailabilityResult('user@imap.localhost', false),
 		];
 		$this->assertEquals($expected, $actual);
 	}

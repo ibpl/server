@@ -174,14 +174,14 @@ interface IManager {
 	 *
 	 * @since 31.0.0
 	 *
-	 * @param IUser $user The organizing user as which to do the availability check.
-	 * @param string[] $attendees Email addresses of attendees to check for (with or without a "mailto:" prefix). Only users on this instance can be checked. The rest will be ignored.
+	 * @param IUser $organizer The organizing user from whose perspective to do the availability check.
+	 * @param string[] $attendees Email addresses of attendees to check for (with or without a "mailto:" prefix). Only users on this instance can be checked. The rest will be silently ignored.
 	 * @return IAvailabilityResult[] Availabilities of all attendees which are also users on this instance. As such, the array might not contain an entry for each given attendee.
 	 */
 	public function checkAvailability(
 		DateTimeInterface $start,
 		DateTimeInterface $end,
-		IUser $user,
+		IUser $organizer,
 		array $attendees,
 	): array;
 }
