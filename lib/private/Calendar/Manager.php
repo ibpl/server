@@ -23,12 +23,11 @@ use OCP\Calendar\ICalendarQuery;
 use OCP\Calendar\ICreateFromString;
 use OCP\Calendar\IHandleImipMessage;
 use OCP\Calendar\IManager;
+use OCP\IUser;
 use OCP\IUserManager;
-use OCP\IUserSession;
 use OCP\Security\ISecureRandom;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
-use Sabre\DAV\Exception\Forbidden;
 use Sabre\HTTP\Request;
 use Sabre\HTTP\Response;
 use Sabre\VObject\Component\VCalendar;
@@ -57,7 +56,6 @@ class Manager implements IManager {
 		private LoggerInterface $logger,
 		private ITimeFactory $timeFactory,
 		private ISecureRandom $random,
-		private IUserSession $userSession,
 		private IUserManager $userManager,
 		private ServerFactory $serverFactory,
 	) {
@@ -488,14 +486,9 @@ class Manager implements IManager {
 	public function checkAvailability(
 		DateTimeInterface $start,
 		DateTimeInterface $end,
+		IUser $user,
 		array $attendees,
 	): array {
-		$user = $this->userSession->getUser();
-		if ($user === null) {
-			// Should never happen but just to be sure
-			throw new Forbidden();
-		}
-
 		$organizer = $user->getEMailAddress();
 
 		$request = new VCalendar();

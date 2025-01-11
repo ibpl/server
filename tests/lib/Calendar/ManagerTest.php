@@ -20,12 +20,10 @@ use OCP\Calendar\ICreateFromString;
 use OCP\Calendar\IHandleImipMessage;
 use OCP\IUser;
 use OCP\IUserManager;
-use OCP\IUserSession;
 use OCP\Security\ISecureRandom;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
-use Sabre\DAV\Exception\Forbidden;
 use Sabre\HTTP\RequestInterface;
 use Sabre\HTTP\ResponseInterface;
 use Sabre\VObject\Component\VCalendar;
@@ -58,7 +56,6 @@ class ManagerTest extends TestCase {
 	/** @var ISecureRandom&MockObject */
 	private ISecureRandom $secureRandom;
 
-	private IUserSession&MockObject $userSession;
 	private IUserManager&MockObject $userManager;
 	private ServerFactory&MockObject $serverFactory;
 
@@ -72,7 +69,6 @@ class ManagerTest extends TestCase {
 		$this->logger = $this->createMock(LoggerInterface::class);
 		$this->time = $this->createMock(ITimeFactory::class);
 		$this->secureRandom = $this->createMock(ISecureRandom::class);
-		$this->userSession = $this->createMock(IUserSession::class);
 		$this->userManager = $this->createMock(IUserManager::class);
 		$this->serverFactory = $this->createMock(ServerFactory::class);
 
@@ -82,7 +78,6 @@ class ManagerTest extends TestCase {
 			$this->logger,
 			$this->time,
 			$this->secureRandom,
-			$this->userSession,
 			$this->userManager,
 			$this->serverFactory,
 		);
@@ -288,7 +283,6 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
-				$this->userSession,
 				$this->userManager,
 				$this->serverFactory,
 			])
@@ -323,7 +317,6 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
-				$this->userSession,
 				$this->userManager,
 				$this->serverFactory,
 			])
@@ -357,7 +350,6 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
-				$this->userSession,
 				$this->userManager,
 				$this->serverFactory,
 			])
@@ -392,7 +384,6 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
-				$this->userSession,
 				$this->userManager,
 				$this->serverFactory,
 			])
@@ -428,7 +419,6 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
-				$this->userSession,
 				$this->userManager,
 				$this->serverFactory,
 			])
@@ -464,7 +454,6 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
-				$this->userSession,
 				$this->userManager,
 				$this->serverFactory,
 			])
@@ -500,7 +489,6 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
-				$this->userSession,
 				$this->userManager,
 				$this->serverFactory,
 			])
@@ -547,7 +535,6 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
-				$this->userSession,
 				$this->userManager,
 				$this->serverFactory,
 			])
@@ -594,7 +581,6 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
-				$this->userSession,
 				$this->userManager,
 				$this->serverFactory,
 			])
@@ -676,7 +662,6 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
-				$this->userSession,
 				$this->userManager,
 				$this->serverFactory,
 			])
@@ -711,7 +696,6 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
-				$this->userSession,
 				$this->userManager,
 				$this->serverFactory,
 			])
@@ -752,7 +736,6 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
-				$this->userSession,
 				$this->userManager,
 				$this->serverFactory,
 			])
@@ -843,7 +826,6 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
-				$this->userSession,
 				$this->userManager,
 				$this->serverFactory,
 			])
@@ -880,7 +862,6 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
-				$this->userSession,
 				$this->userManager,
 				$this->serverFactory,
 			])
@@ -921,7 +902,6 @@ class ManagerTest extends TestCase {
 				$this->logger,
 				$this->time,
 				$this->secureRandom,
-				$this->userSession,
 				$this->userManager,
 				$this->serverFactory,
 			])
@@ -1074,10 +1054,6 @@ EOF;
 		$user1 = $this->createMock(IUser::class);
 		$user2 = $this->createMock(IUser::class);
 
-		$this->userSession->expects(self::once())
-			->method('getUser')
-			->willReturn($organizer);
-
 		$this->userManager->expects(self::exactly(2))
 			->method('getByEmail')
 			->willReturnMap([
@@ -1119,7 +1095,7 @@ EOF;
 
 		$start = new DateTimeImmutable('2025-01-09T08:21:36Z');
 		$end = new DateTimeImmutable('2025-01-09T10:21:36Z');
-		$actual = $this->manager->checkAvailability($start, $end, [
+		$actual = $this->manager->checkAvailability($start, $end, $organizer, [
 			'user.1@domain.tld',
 			'user.2@domain.tld',
 		]);
@@ -1128,37 +1104,6 @@ EOF;
 			new AvailabilityResult('user.2@domain.tld', true),
 		];
 		$this->assertEquals($expected, $actual);
-	}
-
-	public function testCheckAvailabilityWithoutUser(): void {
-		$this->userSession->expects(self::once())
-			->method('getUser')
-			->willReturn(null);
-
-		$this->userManager->expects(self::never())
-			->method('getByEmail');
-
-		$authPlugin = $this->createMock(CustomPrincipalPlugin::class);
-		$authPlugin->expects(self::never())
-			->method('setCurrentPrincipal');
-
-		$server = $this->createMock(\OCA\DAV\Connector\Sabre\Server::class);
-		$server->expects(self::never())
-			->method('getPlugin');
-		$server->expects(self::never())
-			->method('invokeMethod');
-
-		$this->serverFactory->expects(self::never())
-			->method('createAttendeeAvailabilityServer');
-
-		$this->expectException(Forbidden::class);
-
-		$start = new DateTimeImmutable('2025-01-09T08:21:36Z');
-		$end = new DateTimeImmutable('2025-01-09T10:21:36Z');
-		$this->manager->checkAvailability($start, $end, [
-			'user.1@domain.tld',
-			'user.2@domain.tld',
-		]);
 	}
 
 	public function testCheckAvailabilityWithMailtoPrefix(): void {
@@ -1173,10 +1118,6 @@ EOF;
 		$user1 = $this->createMock(IUser::class);
 		$user2 = $this->createMock(IUser::class);
 
-		$this->userSession->expects(self::once())
-			->method('getUser')
-			->willReturn($organizer);
-
 		$this->userManager->expects(self::exactly(2))
 			->method('getByEmail')
 			->willReturnMap([
@@ -1218,7 +1159,7 @@ EOF;
 
 		$start = new DateTimeImmutable('2025-01-09T08:21:36Z');
 		$end = new DateTimeImmutable('2025-01-09T10:21:36Z');
-		$actual = $this->manager->checkAvailability($start, $end, [
+		$actual = $this->manager->checkAvailability($start, $end, $organizer, [
 			'mailto:user.1@domain.tld',
 			'mailto:user.2@domain.tld',
 		]);
