@@ -11,7 +11,6 @@ use OCA\DAV\CalDAV\CalDavBackend;
 use OCA\DAV\CardDAV\CardDavBackend;
 use OCA\DAV\CardDAV\SyncService;
 use OCP\App\IAppManager;
-use Symfony\Component\Uid\Uuid; 
 use OCP\Defaults;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -38,8 +37,7 @@ class HookManager {
 		private CalDavBackend $calDav,
 		private CardDavBackend $cardDav,
 		private Defaults $themingDefaults,
-		private IAppManager $appManager,
-		private Uuid $uuid
+		private IAppManager $appManager
 	) {
 	}
 
@@ -159,7 +157,7 @@ class HookManager {
 				$cardData = 'BEGIN:VCARD' . PHP_EOL .
 				'VERSION:3.0' . PHP_EOL .
 				'PRODID:-//Nextcloud Contacts v' . $this->appManager->getAppVersion('contacts') . PHP_EOL .
-				'UID:'. $this->uuid->v4()->toRfc4122() . PHP_EOL .
+				'UID:'. \Symfony\Component\Uid\Uuid->uuid->v4()->toRfc4122() . PHP_EOL .
 				'FN:Jane Doe' . PHP_EOL .
 				'ADR;TYPE=HOME:;;123 Street Street;City;State;;Country' . PHP_EOL .
 				'EMAIL;TYPE=WORK:example@example.com' . PHP_EOL .
