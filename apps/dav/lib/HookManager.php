@@ -10,6 +10,8 @@ namespace OCA\DAV;
 use OCA\DAV\CalDAV\CalDavBackend;
 use OCA\DAV\CardDAV\CardDavBackend;
 use OCA\DAV\CardDAV\SyncService;
+use OCP\App\IAppManager;
+use Symfony\Component\Uid\Uuid; 
 use OCP\Defaults;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -36,6 +38,8 @@ class HookManager {
 		private CalDavBackend $calDav,
 		private CardDavBackend $cardDav,
 		private Defaults $themingDefaults,
+		private IAppManager $appManager,
+		private Uuid $uuid
 	) {
 	}
 
@@ -147,6 +151,29 @@ class HookManager {
 						'{DAV:}displayname' => CardDavBackend::PERSONAL_ADDRESSBOOK_NAME,
 					]);
 				} catch (\Exception $e) {
+					\OC::$server->get(LoggerInterface::class)->error($e->getMessage(), ['exception' => $e]);
+				}
+			}
+			$defaultAddressBook = $this->cardDav->getAddressBooksByUri($principal, CardDavBackend::PERSONAL_ADDRESSBOOK_URI);
+			if($defaultAddressBook != null) {
+				$cardData = 'BEGIN:VCARD' . PHP_EOL .
+				'VERSION:3.0' . PHP_EOL .
+				'PRODID:-//Nextcloud Contacts v' . $this->appManager->getAppVersion('contacts') . PHP_EOL .
+				'UID:'. $this->uuid->v4()->toRfc4122() . PHP_EOL .
+				'FN:Jane Doe' . PHP_EOL .
+				'ADR;TYPE=HOME:;;123 Street Street;City;State;;Country' . PHP_EOL .
+				'EMAIL;TYPE=WORK:example@example.com' . PHP_EOL .
+				'TEL;TYPE=HOME,VOICE:+999999999999' . PHP_EOL .
+				'TITLE:Manager' . PHP_EOL .
+				'ORG:Company' . PHP_EOL .
+				'BDAY;VALUE=DATE:20000101' . PHP_EOL .
+				'URL;VALUE=URI:https://example.com/' . PHP_EOL .
+				'REV;VALUE=DATE-AND-OR-TIME:20241227T144820Z' . PHP_EOL .
+				'END:VCARD';
+				try{
+					$this->cardDav->createCard($defaultAddressBook['id'], 'Jane', $cardData,false);
+				}
+				catch(Exception $e){
 					\OC::$server->get(LoggerInterface::class)->error($e->getMessage(), ['exception' => $e]);
 				}
 			}
