@@ -68,6 +68,7 @@ use OCP\IDBConnection;
 use OCP\Migration\IOutput;
 use OCP\Migration\IRepairStep;
 use OCP\Notification\IManager as INotificationManager;
+use OCP\Security\ICrypto;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -167,7 +168,7 @@ class Repair implements IOutput {
 				\OC::$server->getUserManager(),
 				\OC::$server->getConfig()
 			),
-			new MigrateOauthTables(\OC::$server->get(Connection::class)),
+			new MigrateOauthTables(\OC::$server->get(Connection::class), \OC::$server->get(ICrypto::class)),
 			new UpdateLanguageCodes(\OC::$server->getDatabaseConnection(), \OC::$server->getConfig()),
 			new AddLogRotateJob(\OC::$server->getJobList()),
 			new ClearFrontendCaches(\OC::$server->getMemCacheFactory(), \OCP\Server::get(JSCombiner::class)),
