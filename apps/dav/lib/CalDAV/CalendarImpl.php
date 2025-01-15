@@ -12,8 +12,10 @@ use Generator;
 use OCA\DAV\CalDAV\Auth\CustomPrincipalPlugin;
 use OCA\DAV\CalDAV\InvitationResponse\InvitationResponseServer;
 use OCP\Calendar\CalendarExportRange;
+use OCP\Calendar\CalendarImportSettings;
 use OCP\Calendar\Exceptions\CalendarException;
 use OCP\Calendar\ICalendarExport;
+use OCP\Calendar\ICalendarImport;
 use OCP\Calendar\ICalendarIsShared;
 use OCP\Calendar\ICalendarIsWritable;
 use OCP\Calendar\ICreateFromString;
@@ -29,7 +31,7 @@ use Sabre\VObject\Property;
 use Sabre\VObject\Reader;
 use function Sabre\Uri\split as uriSplit;
 
-class CalendarImpl implements ICreateFromString, IHandleImipMessage, ICalendarIsWritable, ICalendarIsShared, ICalendarExport {
+class CalendarImpl implements ICreateFromString, IHandleImipMessage, ICalendarIsWritable, ICalendarIsShared, ICalendarImport, ICalendarExport {
 	public function __construct(
 		private Calendar $calendar,
 		/** @var array<string, mixed> */
@@ -280,6 +282,20 @@ class CalendarImpl implements ICreateFromString, IHandleImipMessage, ICalendarIs
 		) {
 			yield Reader::read($event['calendardata']);
 		}
+	}
+
+	/**
+	 * Import objects
+	 *
+	 * @since 31.0.0
+	 * 
+	 */
+	public function import(CalendarImportSettings $settings, VCalendar ...$vObjects): void {
+
+		foreach ($vObjects as $vObject) {
+			
+		}
+
 	}
 
 }
