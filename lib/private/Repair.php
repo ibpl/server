@@ -7,6 +7,7 @@
  */
 namespace OC;
 
+use OC\Authentication\Token\IProvider as ITokenProvider;
 use OC\DB\Connection;
 use OC\DB\ConnectionAdapter;
 use OC\Repair\AddAppConfigLazyMigration;
@@ -58,6 +59,7 @@ use OC\Repair\RepairLogoDimension;
 use OC\Repair\RepairMimeTypes;
 use OC\Template\JSCombiner;
 use OCA\DAV\Migration\DeleteSchedulingObjects;
+use OCA\OAuth2\Db\AccessTokenMapper;
 use OCP\AppFramework\QueryException;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\Collaboration\Resources\IManager;
@@ -68,6 +70,8 @@ use OCP\IDBConnection;
 use OCP\Migration\IOutput;
 use OCP\Migration\IRepairStep;
 use OCP\Notification\IManager as INotificationManager;
+use OCP\Security\ICrypto;
+use OCP\Security\ISecureRandom;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -167,7 +171,7 @@ class Repair implements IOutput {
 				\OC::$server->getUserManager(),
 				\OC::$server->getConfig()
 			),
-			new MigrateOauthTables(\OC::$server->get(Connection::class)),
+			new MigrateOauthTables(\OC::$server->get(Connection::class), \OC::$server->get(AccessTokenMapper::class), \OC::$server->get(ITokenProvider::class), \OC::$server->get(ISecureRandom::class), \OC::$server->get(ITimeFactory::class), \OC::$server->get(ICrypto::class)),
 			new UpdateLanguageCodes(\OC::$server->getDatabaseConnection(), \OC::$server->getConfig()),
 			new AddLogRotateJob(\OC::$server->getJobList()),
 			new ClearFrontendCaches(\OC::$server->getMemCacheFactory(), \OCP\Server::get(JSCombiner::class)),
