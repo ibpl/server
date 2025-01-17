@@ -20,6 +20,8 @@ use OCA\FilesReminders\Model\RichReminder;
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\Files\IRootFolder;
 use OCP\Files\Node;
+use OCP\ICache;
+use OCP\ICacheFactory;
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -28,6 +30,9 @@ use Psr\Log\LoggerInterface;
 use Throwable;
 
 class ReminderService {
+
+	private ICache $cache;
+
 	public function __construct(
 		protected IUserManager $userManager,
 		protected IURLGenerator $urlGenerator,
@@ -35,23 +40,32 @@ class ReminderService {
 		protected ReminderMapper $reminderMapper,
 		protected IRootFolder $root,
 		protected LoggerInterface $logger,
+		protected ICacheFactory $cacheFactory,
 	) {
+		$this->cache = $this->cacheFactory->createDistributed('files_reminders');
 	}
 
 	/**
 	 * @throws DoesNotExistException
 	 */
-	public function get(int $id): RichReminder {
-		$reminder = $this->reminderMapper->find($id);
-		return new RichReminder($reminder, $this->root);
-	}
+	public function getDueForUser(IUser $user, int $fileId): ?RichReminder {
+		/** @var null|false|Reminder $cachedReminder */
+		$cachedReminder = $this->cache->get("{$user->getUID()}-$fileId");
+		if ($cachedReminder === false) {
+			return null;
+		}
+		if ($cachedReminder instanceof Reminder) {
+			return new RichReminder($cachedReminder, $this->root);
+		}
 
-	/**
-	 * @throws DoesNotExistException
-	 */
-	public function getDueForUser(IUser $user, int $fileId): RichReminder {
-		$reminder = $this->reminderMapper->findDueForUser($user, $fileId);
-		return new RichReminder($reminder, $this->root);
+		try {
+			$reminder = $this->reminderMapper->findDueForUser($user, $fileId);
+			$this->cache->set("{$user->getUID()}-$fileId", $reminder);
+			return new RichReminder($reminder, $this->root);
+		} catch (DoesNotExistException $e) {
+			$this->cache->set("{$user->getUID()}-$fileId", false);
+			return null;
+		}
 	}
 
 	/**
@@ -79,6 +93,7 @@ class ReminderService {
 			$reminder->setDueDate($dueDate);
 			$reminder->setUpdatedAt($now);
 			$this->reminderMapper->update($reminder);
+			$this->cache->set("{$user->getUID()}-$fileId", $reminder);
 			return false;
 		} catch (DoesNotExistException $e) {
 			$node = $this->root->getUserFolder($user->getUID())->getFirstNodeById($fileId);
@@ -93,6 +108,7 @@ class ReminderService {
 			$reminder->setUpdatedAt($now);
 			$reminder->setCreatedAt($now);
 			$this->reminderMapper->insert($reminder);
+			$this->cache->set("{$user->getUID()}-$fileId", $reminder);
 			return true;
 		}
 	}

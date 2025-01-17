@@ -52,9 +52,8 @@ class PropFindPlugin extends ServerPlugin {
 				}
 
 				$fileId = $node->getId();
-				try {
-					$reminder = $this->reminderService->getDueForUser($user, $fileId);
-				} catch (DoesNotExistException $e) {
+				$reminder = $this->reminderService->getDueForUser($user, $fileId);
+				if ($reminder === null) {
 					return '';
 				}
 
