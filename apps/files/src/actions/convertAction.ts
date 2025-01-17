@@ -5,42 +5,57 @@
 import type { Node, View } from '@nextcloud/files'
 
 import { FileAction, registerFileAction } from '@nextcloud/files'
-import { generateUrl } from '@nextcloud/router'
+import { generateOcsUrl, generateUrl } from '@nextcloud/router'
 import { getCapabilities } from '@nextcloud/capabilities'
 import { t } from '@nextcloud/l10n'
 
 import AutoRenewSvg from '@mdi/svg/svg/autorenew.svg?raw'
 
 import logger from '../logger'
+import axios from '@nextcloud/axios'
+import { convertFile, convertFiles } from './convertUtils'
+import { showError, showMessage } from '@nextcloud/dialogs'
 
 type ConversionsProvider = {
 	from: string,
-	to: string[],
+	to: string,
+	displayName: string,
 }
 
 export const ACTION_CONVERT = 'convert'
 
 export const registerConvertActions = () => {
 	// Generate sub actions
-	const convertProviders = getCapabilities()?.core?.conversions as ConversionsProvider[] ?? []
-	const actions = convertProviders.map(provider => {
-		return provider.to.map(to => new FileAction({
-			id: `convert-${provider.from}-${to}`,
-			displayName: () => t('files', 'Save as {to}', { to }),
+	const convertProviders = getCapabilities()?.files.file_conversions as ConversionsProvider[] ?? []
+	const actions = convertProviders.map(({ to, from, displayName }) => {
+		return new FileAction({
+			id: `convert-${from}-${to}`,
+			displayName: () => t('files', 'Save as {displayName}', { displayName }),
 			iconSvgInline: () => generateIconSvg(to),
 			enabled: (nodes: Node[]) => {
 				// Check if some of the nodes are not of the right type
-				return !nodes.some(node => provider.from !== node.mime)
+				return !nodes.some(node => from !== node.mime)
 			},
 
 			async exec(node: Node) {
-				logger.debug(`Convert to ${provider.from}`, { node })
+				// If we're here, we know that the node have a fileid
+				convertFile(node.fileid as number, to)
+
+				// Silently terminate, we'll handle the UI in the background
 				return null
 			},
 
-			parent: ACTION_CONVERT,
-		}))
-	}).flat()
+			async execBatch(nodes: Node[]) {
+				const fileIds = nodes.map(node => node.fileid).filter(Boolean) as number[]
+				convertFiles(fileIds, to)
+
+				// Silently terminate, we'll handle the UI in the background
+				return Array(nodes.length).fill(null)
+			},
+
+			// parent: ACTION_CONVERT,
+		})
+	})
 
 	// Register main action
 	registerFileAction(new FileAction({
