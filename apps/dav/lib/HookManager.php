@@ -14,6 +14,7 @@ use OCP\App\IAppManager;
 use OCP\Defaults;
 use OCP\IUser;
 use OCP\IUserManager;
+use Symfony\Component\Uid\Factory\UlidFactory;
 use OCP\Util;
 use Psr\Log\LoggerInterface;
 
@@ -37,7 +38,8 @@ class HookManager {
 		private CalDavBackend $calDav,
 		private CardDavBackend $cardDav,
 		private Defaults $themingDefaults,
-		private IAppManager $appManager
+		private IAppManager $appManager,
+		private UlidFactory $Uidfactory
 	) {
 	}
 
@@ -130,6 +132,7 @@ class HookManager {
 	 * @return void
 	 */
 	public function firstLogin(?IUser $user = null) {
+		\OC::$server->get(LoggerInterface::class)->error("First login"); 
 		if (!is_null($user)) {
 			$principal = 'principals/users/' . $user->getUID();
 			if ($this->calDav->getCalendarsForUserCount($principal) === 0) {
@@ -153,12 +156,14 @@ class HookManager {
 				}
 			}
 			$defaultAddressBook = $this->cardDav->getAddressBooksByUri($principal, CardDavBackend::PERSONAL_ADDRESSBOOK_URI);
+			\OC::$server->get(LoggerInterface::class)->error("default ab",[ 'defaultAddressBook' => $defaultAddressBook]);
+
 			if($defaultAddressBook != null) {
+				\OC::$server->get(LoggerInterface::class)->error("I'm here"); 
 				$cardData = 'BEGIN:VCARD' . PHP_EOL .
 				'VERSION:3.0' . PHP_EOL .
 				'PRODID:-//Nextcloud Contacts v' . $this->appManager->getAppVersion('contacts') . PHP_EOL .
-				'UID:'. \Symfony\Component\Uid\Uuid->uuid->v4()->toRfc4122() . PHP_EOL .
-				'FN:Jane Doe' . PHP_EOL .
+				'UID:'. $this->Uidfactory->create() . PHP_EOL .
 				'ADR;TYPE=HOME:;;123 Street Street;City;State;;Country' . PHP_EOL .
 				'EMAIL;TYPE=WORK:example@example.com' . PHP_EOL .
 				'TEL;TYPE=HOME,VOICE:+999999999999' . PHP_EOL .
