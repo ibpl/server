@@ -9,13 +9,17 @@ declare(strict_types=1);
 namespace OCA\DAV\Listener;
 
 use OCA\DAV\CardDAV\Activity\Backend as ActivityBackend;
+use OCA\DAV\CardDAV\CardDavBackend;
 use OCA\DAV\Events\AddressBookCreatedEvent;
 use OCA\DAV\Events\AddressBookDeletedEvent;
 use OCA\DAV\Events\AddressBookShareUpdatedEvent;
 use OCA\DAV\Events\AddressBookUpdatedEvent;
+use OCP\App\IAppManager;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
+use OCP\Files\AppData\IAppDataFactory;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Uid\Factory\UlidFactory;
 use Throwable;
 use function sprintf;
 
@@ -24,6 +28,10 @@ class AddressbookListener implements IEventListener {
 	public function __construct(
 		private ActivityBackend $activityBackend,
 		private LoggerInterface $logger,
+		private CardDavBackend $cardDav,
+		private IAppManager $appManager,
+		private UlidFactory $Uidfactory,
+		private IAppDataFactory $appDataFactory,
 	) {
 	}
 
@@ -33,6 +41,48 @@ class AddressbookListener implements IEventListener {
 				$this->activityBackend->onAddressbookCreate(
 					$event->getAddressBookData()
 				);
+				$this->logger->error('omek zabour: ', ['ab' => $event->getAddressBookData()]);
+				if ($event->getAddressBookData()['uri'] === 'contacts') {
+					$appData = $this->appDataFactory->get('contacts');
+					try {
+						$folder = $appData->getFolder('defaultContact');
+						$defaultContactFile = $folder->getFile('defaultContact.vcf');
+						$vcard = $defaultContactFile->getContent();
+					} catch (\Exception $e) {
+						$this->logger->error('Couldn\'t get default contact file', ['exception' => $e]);
+						return;
+					}
+					$newUid = $this->Uidfactory->create()->toRfc4122();
+					$newRev = date('Ymd\THis\Z');
+
+
+					$vcard = (strpos($vcard, 'UID:') !== false) ? preg_replace(
+						'/UID:.*?(\r\n|\n)/',
+						"UID:$newUid\n",
+						$vcard
+					) : str_replace(
+						'END:VCARD',
+						"UID:$newUid\nEND:VCARD",
+						$vcard
+					);
+
+
+					// Add or update REV
+					$vcard = (strpos($vcard, 'REV:') !== false) ? preg_replace(
+						'/REV:.*?(\r\n|\n)/',
+						"REV:$newRev\n",
+						$vcard
+					) : str_replace(
+						'END:VCARD:',
+						"REV:$newRev\END:VCARD:",
+						$vcard
+					);
+					try {
+						$this->cardDav->createCard($event->getAddressBookData()['id'], 'default', $vcard, false);
+					} catch (\Exception $e) {
+						\OC::$server->get(LoggerInterface::class)->error($e->getMessage(), ['exception' => $e]);
+					}
+				}
 
 				$this->logger->debug(
 					sprintf('Activity generated for new addressbook %d', $event->getAddressBookId())
