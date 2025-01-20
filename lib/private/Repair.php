@@ -7,8 +7,6 @@
  */
 namespace OC;
 
-use OC\Authentication\Token\IProvider as ITokenProvider;
-use OC\DB\Connection;
 use OC\DB\ConnectionAdapter;
 use OC\Repair\AddAppConfigLazyMigration;
 use OC\Repair\AddBruteForceCleanupJob;
@@ -59,7 +57,6 @@ use OC\Repair\RepairLogoDimension;
 use OC\Repair\RepairMimeTypes;
 use OC\Template\JSCombiner;
 use OCA\DAV\Migration\DeleteSchedulingObjects;
-use OCA\OAuth2\Db\AccessTokenMapper;
 use OCP\AppFramework\QueryException;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\Collaboration\Resources\IManager;
@@ -70,8 +67,6 @@ use OCP\IDBConnection;
 use OCP\Migration\IOutput;
 use OCP\Migration\IRepairStep;
 use OCP\Notification\IManager as INotificationManager;
-use OCP\Security\ICrypto;
-use OCP\Security\ISecureRandom;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
