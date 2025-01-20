@@ -2606,4 +2606,11 @@ $CONFIG = [
  * Defaults to 5.
  */
 'files.chunked_upload.max_parallel_count' => 5,
+
+/**
+ * Enables web UI integration with local client.
+ *
+ * Defaults to ``true``
+ */
+'web_ui_integration_local_client.enabled' => true,
 ];
