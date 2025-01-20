@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 import type { User } from '@nextcloud/cypress'
+import type { ShareOptions } from '../ShareOptionsType.ts'
 import { openSharingPanel } from '../FilesSharingUtils.ts'
 
 export interface ShareContext {
@@ -43,17 +44,65 @@ export function setupData(context: ShareContext, shareName: string): void {
 }
 
 /**
+ * Check the password state based on enforcement and default presence.
+ *
+ * @param enforced Whether the password is enforced.
+ * @param alwaysAskForPassword Wether the password should always be asked for.
+ */
+function checkPasswordState(enforced: boolean, alwaysAskForPassword: boolean) {
+	if (enforced) {
+	  cy.contains('Password protection (enforced)').should('exist')
+	  cy.contains('Enter a password')
+			.should('exist')
+			.and('not.be.disabled')
+	} else if (alwaysAskForPassword) {
+	  cy.contains('Password protection').should('exist')
+	  cy.contains('Enter a password')
+			.should('exist')
+			.and('not.be.disabled')
+	}
+}
+
+/**
+ * Check the expiration date state based on enforcement and default presence.
+ *
+ * @param enforced Whether the expiration date is enforced.
+ * @param hasDefault Whether a default expiration date is set.
+ */
+function checkExpirationDateState(enforced: boolean, hasDefault: boolean) {
+	if (enforced) {
+	  cy.contains('Enable link expiration (enforced)').should('exist')
+	  cy.contains('Enter expiration date')
+			.should('exist')
+			.and('not.be.disabled')
+	} else if (hasDefault) {
+	  cy.contains('Enable link expiration').should('exist')
+	  cy.contains('Enter expiration date')
+			.should('exist')
+			.and('not.be.disabled')
+	}
+}
+
+/**
  * Create a public link share
  * @param context The current share context
  * @param shareName The name of the shared folder
+ * @param options The share options
  */
-export function createShare(context: ShareContext, shareName: string) {
+export function createShare(context: ShareContext, shareName: string, options: ShareOptions | null = null) {
 	cy.login(context.user)
 	cy.visit('/apps/files') // Open the files app
 	openSharingPanel(shareName) // Open the sharing sidebar
 
 	cy.intercept('POST', '**/ocs/v2.php/apps/files_sharing/api/v1/shares').as('createShare')
 	cy.findByRole('button', { name: 'Create a new share link' }).click()
+	  // Conduct optional checks based on the provided options
+	if (options) {
+		cy.get('.sharing-entry__actions').should('be.visible') // Wait for the dialog to open
+		checkPasswordState(options.enforcePassword ?? false, options.alwaysAskForPassword ?? false)
+		checkExpirationDateState(options.enforceExpirationDate ?? false, options.defaultExpirationDateSet ?? false)
+		cy.findByRole('button', { name: 'Create share' }).should('be.visible').click()
+	}
 
 	// Extract the share link
 	return cy.wait('@createShare')
