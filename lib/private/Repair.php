@@ -171,7 +171,7 @@ class Repair implements IOutput {
 				\OC::$server->getUserManager(),
 				\OC::$server->getConfig()
 			),
-			new MigrateOauthTables(\OC::$server->get(Connection::class), \OC::$server->get(AccessTokenMapper::class), \OC::$server->get(ITokenProvider::class), \OC::$server->get(ISecureRandom::class), \OC::$server->get(ITimeFactory::class), \OC::$server->get(ICrypto::class)),
+			\OC::$server->get(MigrateOauthTables::class),
 			new UpdateLanguageCodes(\OC::$server->getDatabaseConnection(), \OC::$server->getConfig()),
 			new AddLogRotateJob(\OC::$server->getJobList()),
 			new ClearFrontendCaches(\OC::$server->getMemCacheFactory(), \OCP\Server::get(JSCombiner::class)),
