@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace OCA\DAV\CalDAV;
 
 use Generator;
+use InvalidArgumentException;
 use OCA\DAV\CalDAV\Auth\CustomPrincipalPlugin;
 use OCA\DAV\CalDAV\InvitationResponse\InvitationResponseServer;
 use OCP\Calendar\CalendarExportRange;
@@ -29,6 +30,8 @@ use Sabre\VObject\Component\VTimeZone;
 use Sabre\VObject\ITip\Message;
 use Sabre\VObject\Property;
 use Sabre\VObject\Reader;
+use Sabre\VObject\UUIDUtil;
+
 use function Sabre\Uri\split as uriSplit;
 
 class CalendarImpl implements ICreateFromString, IHandleImipMessage, ICalendarIsWritable, ICalendarIsShared, ICalendarImport, ICalendarExport {
@@ -290,11 +293,39 @@ class CalendarImpl implements ICreateFromString, IHandleImipMessage, ICalendarIs
 	 * @since 31.0.0
 	 * 
 	 */
-	public function import(CalendarImportSettings $settings, VCalendar ...$vObjects): void {
+	public function import(CalendarImportSettings $settings, VCalendar ...$vObjects): array {
 
+		$calendarId = $this->getKey();
+		$outcome = [];
 		foreach ($vObjects as $vObject) {
+
+			$components = $vObject->getBaseComponents();
+			if (count($components) > 1) {
+				throw new InvalidArgumentException('Import failure: objects can not contain more than one base instance object');
+			}
+			$uid = $components[0]->UID->getValue();
 			
+			$objectId = $this->backend->getCalendarObjectByUID($this->calendarInfo['principaluri'], $uid);
+			$objectData = $vObject->serialize();
+
+			// create or update object
+			if ($objectId === null) {
+				$objectId = UUIDUtil::getUUID();
+				$this->backend->createCalendarObject(
+					$calendarId,
+					$objectId,
+					$objectData
+				);
+			} elseif ($objectId !== null && $settings->supersede) {
+				$this->backend->updateCalendarObject(
+					$calendarId,
+					$objectId,
+					$objectData
+				);
+			}
 		}
+
+		return $outcome;
 
 	}
 

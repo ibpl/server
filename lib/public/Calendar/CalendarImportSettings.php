@@ -20,6 +20,6 @@ class CalendarImportSettings {
 	public bool $emitEvent = false;
 	public bool $emitITip = false;
 	public int $bulk = 32;
-	public int $validate = 1;	// 0 - no validation, 1 - validate and repair, 2 - validate and skip 
+	public int $validate = 1;	// 0 - no validation, 1 - validate and skip on issue, 2 - validate and fail on issue
 
 }

@@ -25,6 +25,6 @@ interface ICalendarImport {
 	 * 
 	 * @param VCalendar $vObjects
 	 */
-	public function import(CalendarImportSettings $settings, VCalendar ...$vObjects): void;
+	public function import(CalendarImportSettings $settings, VCalendar ...$vObjects): array;
 
 }
