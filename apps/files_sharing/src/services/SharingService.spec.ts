@@ -392,7 +392,7 @@ describe('SharingService share to Node mapping', () => {
 		expect(file.mtime?.getTime()).toBe(remoteFile.mtime * 1000)
 		// not available for remote shares
 		expect(file.size).toBe(undefined)
-		expect(file.permissions).toBe(0)
+		expect(file.permissions).toBe(19)
 		expect(file.root).toBe('/files/test')
 		expect(file.attributes).toBeInstanceOf(Object)
 		expect(file.attributes.favorite).toBe(0)
