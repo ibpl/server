@@ -58,6 +58,15 @@
 					<h6>{{ t('files_sharing', 'External shares') }}</h6>
 					<InfoIcon v-tooltip="t('files_sharing', 'Displays shares made to outside users.')" size="16" />
 				</div>
+				<NcInputField autocomplete="off"
+					show-trailing-button
+					:placeholder="t('files_sharing', 'Email, federated cloud id')"
+					@keydown="updateExternalShareQuery">
+					<template #trailing-button-icon>
+						<!-- to-do: add v-if to change icon based on input -->
+						<EmailIcon />
+					</template>
+				</NcInputField>
 				<!-- link shares list -->
 				<SharingLinkList v-if="!loading"
 					ref="linkShareList"
@@ -105,12 +114,14 @@ import { generateOcsUrl } from '@nextcloud/router'
 import { CollectionList } from 'nextcloud-vue-collections'
 import { ShareType } from '@nextcloud/sharing'
 
+import EmailIcon from 'vue-material-design-icons/Email.vue'
 import InfoIcon from 'vue-material-design-icons/Information.vue'
 
 import axios from '@nextcloud/axios'
 import moment from '@nextcloud/moment'
 import Tooltip from '@nextcloud/vue/dist/Directives/Tooltip.js'
 import NcAvatar from '@nextcloud/vue/dist/Components/NcAvatar.js'
+import NcInputField from '@nextcloud/vue/dist/Components/NcInputField.js'
 
 import { shareWithTitle } from '../utils/SharedWithMe.js'
 
@@ -134,8 +145,10 @@ export default {
 
 	components: {
 		CollectionList,
+		EmailIcon,
 		InfoIcon,
 		NcAvatar,
+		NcInputField,
 		SharingEntryInternal,
 		SharingEntrySimple,
 		SharingInherited,
@@ -166,6 +179,9 @@ export default {
 			showSharingDetailsView: false,
 			shareDetailsData: {},
 			returnFocusElement: null,
+
+			// external shars
+			externalShareQuery: '',
 		}
 	},
 
@@ -433,6 +449,11 @@ export default {
 					this.returnFocusElement = null
 				})
 			}
+		},
+
+		updateExternalShareQuery(query) {
+			console.debug('Handling external share query:', query)
+			this.externalShareQuery = query
 		},
 	},
 }
