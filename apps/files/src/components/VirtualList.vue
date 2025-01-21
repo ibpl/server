@@ -296,7 +296,8 @@ export default defineComponent({
 
 			// Check if the content is smaller than the viewport, meaning no scrollbar
 			const targetRow = Math.ceil(this.dataSources.length / this.columnCount)
-			if (targetRow < this.rowCount) {
+			// The offset is needed to avoid some items not being visible but also not being scrolled to.
+			if (targetRow < this.rowCount - 8) {
 				logger.debug('VirtualList: Skip scrolling, nothing to scroll', { index, targetRow, rowCount: this.rowCount })
 				return
 			}
