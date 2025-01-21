@@ -111,8 +111,6 @@ class PublicKeyToken extends Entity implements INamedToken, IWipeableToken {
 
 	/**
 	 * Get the login name used when generating the token
-	 *
-	 * @return string
 	 */
 	public function getLoginName(): string {
 		return parent::getLoginName();
@@ -137,8 +135,6 @@ class PublicKeyToken extends Entity implements INamedToken, IWipeableToken {
 
 	/**
 	 * Get the timestamp of the last password check
-	 *
-	 * @return int
 	 */
 	public function getLastCheck(): int {
 		return parent::getLastCheck();
@@ -202,14 +198,11 @@ class PublicKeyToken extends Entity implements INamedToken, IWipeableToken {
 		parent::setExpires($expires);
 	}
 
-	/**
-	 * @return int|null
-	 */
-	public function getExpires() {
+	public function getExpires(): ?int {
 		return parent::getExpires();
 	}
 
-	public function setPasswordInvalid(bool $invalid) {
+	public function setPasswordInvalid(bool $invalid): void {
 		parent::setPasswordInvalid($invalid);
 	}
 

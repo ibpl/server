@@ -22,51 +22,34 @@ use OCP\Util;
 use Psr\Log\LoggerInterface;
 
 class Store implements IStore {
-	/** @var ISession */
-	private $session;
-
-	/** @var LoggerInterface */
-	private $logger;
-
-	/** @var IProvider|null */
-	private $tokenProvider;
 
 	public function __construct(
-		ISession $session,
-		LoggerInterface $logger,
+		private ISession $session,
+		private LoggerInterface $logger,
 		private readonly ICrypto $crypto,
-		?IProvider $tokenProvider = null,
+		private ?IProvider $tokenProvider = null,
 	) {
-		$this->session = $session;
-		$this->logger = $logger;
-		$this->tokenProvider = $tokenProvider;
-
 		Util::connectHook('OC_User', 'post_login', $this, 'authenticate');
 	}
 
 	/**
 	 * Hook listener on post login
-	 *
-	 * @param array $params
 	 */
-	public function authenticate(array $params) {
+	public function authenticate(array $params): void {
 		$params['password'] = $this->crypto->encrypt((string)$params['password']);
 		$this->session->set('login_credentials', json_encode($params));
 	}
 
 	/**
 	 * Replace the session implementation
-	 *
-	 * @param ISession $session
 	 */
-	public function setSession(ISession $session) {
+	public function setSession(ISession $session): void {
 		$this->session = $session;
 	}
 
 	/**
 	 * @since 12
 	 *
-	 * @return ICredentials the login credentials of the current user
 	 * @throws CredentialsUnavailableException
 	 */
 	public function getLoginCredentials(): ICredentials {

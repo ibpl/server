@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * SPDX-FileCopyrightText: 2018 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
@@ -17,29 +18,23 @@ use OCP\Authentication\Token\IProvider as OCPIProvider;
 use OCP\Authentication\Token\IToken as OCPIToken;
 
 class Manager implements IProvider, OCPIProvider {
-	/** @var PublicKeyTokenProvider */
-	private $publicKeyTokenProvider;
 
-	public function __construct(PublicKeyTokenProvider $publicKeyTokenProvider) {
-		$this->publicKeyTokenProvider = $publicKeyTokenProvider;
+	public function __construct(
+		private PublicKeyTokenProvider $publicKeyTokenProvider,
+	) {
 	}
 
 	/**
 	 * Create and persist a new token
 	 *
-	 * @param string $token
-	 * @param string $uid
-	 * @param string $loginName
-	 * @param string|null $password
 	 * @param string $name Name will be trimmed to 120 chars when longer
-	 * @param int $type token type
 	 * @param int $remember whether the session token should be used for remember-me
 	 * @return OCPIToken
 	 */
 	public function generateToken(string $token,
 		string $uid,
 		string $loginName,
-		$password,
+		?string $password,
 		string $name,
 		int $type = OCPIToken::TEMPORARY_TOKEN,
 		int $remember = OCPIToken::DO_NOT_REMEMBER,
@@ -81,7 +76,7 @@ class Manager implements IProvider, OCPIProvider {
 	 * @param OCPIToken $token
 	 * @throws InvalidTokenException
 	 */
-	public function updateToken(OCPIToken $token) {
+	public function updateToken(OCPIToken $token): void {
 		$provider = $this->getProvider($token);
 		$provider->updateToken($token);
 	}
@@ -92,7 +87,7 @@ class Manager implements IProvider, OCPIProvider {
 	 * @throws InvalidTokenException
 	 * @param OCPIToken $token
 	 */
-	public function updateTokenActivity(OCPIToken $token) {
+	public function updateTokenActivity(OCPIToken $token): void {
 		$provider = $this->getProvider($token);
 		$provider->updateTokenActivity($token);
 	}
@@ -108,10 +103,8 @@ class Manager implements IProvider, OCPIProvider {
 	/**
 	 * Get a token by token
 	 *
-	 * @param string $tokenId
 	 * @throws InvalidTokenException
 	 * @throws \RuntimeException when OpenSSL reports a problem
-	 * @return OCPIToken
 	 */
 	public function getToken(string $tokenId): OCPIToken {
 		try {
@@ -128,9 +121,7 @@ class Manager implements IProvider, OCPIProvider {
 	/**
 	 * Get a token by token id
 	 *
-	 * @param int $tokenId
 	 * @throws InvalidTokenException
-	 * @return OCPIToken
 	 */
 	public function getTokenById(int $tokenId): OCPIToken {
 		try {
@@ -145,10 +136,7 @@ class Manager implements IProvider, OCPIProvider {
 	}
 
 	/**
-	 * @param string $oldSessionId
-	 * @param string $sessionId
 	 * @throws InvalidTokenException
-	 * @return OCPIToken
 	 */
 	public function renewSessionToken(string $oldSessionId, string $sessionId): OCPIToken {
 		try {
@@ -161,31 +149,28 @@ class Manager implements IProvider, OCPIProvider {
 	}
 
 	/**
-	 * @param OCPIToken $savedToken
-	 * @param string $tokenId session token
 	 * @throws InvalidTokenException
 	 * @throws PasswordlessTokenException
-	 * @return string
 	 */
 	public function getPassword(OCPIToken $savedToken, string $tokenId): string {
 		$provider = $this->getProvider($savedToken);
 		return $provider->getPassword($savedToken, $tokenId);
 	}
 
-	public function setPassword(OCPIToken $token, string $tokenId, string $password) {
+	public function setPassword(OCPIToken $token, string $tokenId, string $password): void {
 		$provider = $this->getProvider($token);
 		$provider->setPassword($token, $tokenId, $password);
 	}
 
-	public function invalidateToken(string $token) {
+	public function invalidateToken(string $token): void {
 		$this->publicKeyTokenProvider->invalidateToken($token);
 	}
 
-	public function invalidateTokenById(string $uid, int $id) {
+	public function invalidateTokenById(string $uid, int $id): void {
 		$this->publicKeyTokenProvider->invalidateTokenById($uid, $id);
 	}
 
-	public function invalidateOldTokens() {
+	public function invalidateOldTokens(): void {
 		$this->publicKeyTokenProvider->invalidateOldTokens();
 	}
 
@@ -194,10 +179,6 @@ class Manager implements IProvider, OCPIProvider {
 	}
 
 	/**
-	 * @param OCPIToken $token
-	 * @param string $oldTokenId
-	 * @param string $newTokenId
-	 * @return OCPIToken
 	 * @throws InvalidTokenException
 	 * @throws \RuntimeException when OpenSSL reports a problem
 	 */
@@ -211,8 +192,6 @@ class Manager implements IProvider, OCPIProvider {
 	}
 
 	/**
-	 * @param OCPIToken $token
-	 * @return IProvider
 	 * @throws InvalidTokenException
 	 */
 	private function getProvider(OCPIToken $token): IProvider {
@@ -224,15 +203,15 @@ class Manager implements IProvider, OCPIProvider {
 	}
 
 
-	public function markPasswordInvalid(OCPIToken $token, string $tokenId) {
+	public function markPasswordInvalid(OCPIToken $token, string $tokenId): void {
 		$this->getProvider($token)->markPasswordInvalid($token, $tokenId);
 	}
 
-	public function updatePasswords(string $uid, string $password) {
+	public function updatePasswords(string $uid, string $password): void {
 		$this->publicKeyTokenProvider->updatePasswords($uid, $password);
 	}
 
-	public function invalidateTokensOfUser(string $uid, ?string $clientName) {
+	public function invalidateTokensOfUser(string $uid, ?string $clientName): void {
 		$tokens = $this->getTokenByUser($uid);
 		foreach ($tokens as $token) {
 			if ($clientName === null || ($token->getName() === $clientName)) {
