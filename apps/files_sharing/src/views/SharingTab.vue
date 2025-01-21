@@ -25,53 +25,66 @@
 				</SharingEntrySimple>
 			</ul>
 
-			<!-- add new share input -->
-			<SharingInput v-if="!loading"
-				:can-reshare="canReshare"
-				:file-info="fileInfo"
-				:link-shares="linkShares"
-				:reshare="reshare"
-				:shares="shares"
-				@open-sharing-details="toggleShareDetailsView" />
+			<section>
+				<div class="section-header">
+					<h6>{{ t('files_sharing', 'Internal shares') }}</h6>
+					<InfoIcon v-tooltip="t('files_sharing', 'Displays shares made to internal users.')" size="16" />
+				</div>
+				<!-- add new share input -->
+				<SharingInput v-if="!loading"
+					:can-reshare="canReshare"
+					:file-info="fileInfo"
+					:link-shares="linkShares"
+					:reshare="reshare"
+					:shares="shares"
+					@open-sharing-details="toggleShareDetailsView" />
 
-			<!-- link shares list -->
-			<SharingLinkList v-if="!loading"
-				ref="linkShareList"
-				:can-reshare="canReshare"
-				:file-info="fileInfo"
-				:shares="linkShares"
-				@open-sharing-details="toggleShareDetailsView" />
+				<!-- other shares list -->
+				<SharingList v-if="!loading"
+					ref="shareList"
+					:shares="shares"
+					:file-info="fileInfo"
+					@open-sharing-details="toggleShareDetailsView" />
 
-			<!-- other shares list -->
-			<SharingList v-if="!loading"
-				ref="shareList"
-				:shares="shares"
-				:file-info="fileInfo"
-				@open-sharing-details="toggleShareDetailsView" />
+				<!-- inherited shares -->
+				<SharingInherited v-if="canReshare && !loading" :file-info="fileInfo" />
 
-			<!-- inherited shares -->
-			<SharingInherited v-if="canReshare && !loading" :file-info="fileInfo" />
+				<!-- internal link copy -->
+				<SharingEntryInternal :file-info="fileInfo" />
+			</section>
 
-			<!-- internal link copy -->
-			<SharingEntryInternal :file-info="fileInfo" />
-		</div>
+			<section>
+				<div class="section-header">
+					<h6>{{ t('files_sharing', 'External shares') }}</h6>
+					<InfoIcon v-tooltip="t('files_sharing', 'Displays shares made to outside users.')" size="16" />
+				</div>
+				<!-- link shares list -->
+				<SharingLinkList v-if="!loading"
+					ref="linkShareList"
+					:can-reshare="canReshare"
+					:file-info="fileInfo"
+					:shares="linkShares"
+					@open-sharing-details="toggleShareDetailsView" />
+			</section>
 
-		<!-- additional entries, use it with cautious -->
-		<div v-for="(section, index) in sections"
-			v-show="!showSharingDetailsView"
-			:ref="'section-' + index"
-			:key="index"
-			class="sharingTab__additionalContent">
-			<component :is="section($refs['section-'+index], fileInfo)" :file-info="fileInfo" />
-		</div>
+			<section>
+				<!-- additional entries, use it with cautious -->
+				<div v-for="(section, index) in sections"
+					v-show="!showSharingDetailsView"
+					:ref="'section-' + index"
+					:key="index"
+					class="sharingTab__additionalContent">
+					<component :is="section($refs['section-'+index], fileInfo)" :file-info="fileInfo" />
+				</div>
 
-		<!-- projects (deprecated as of NC25 (replaced by related_resources) - see instance config "projects.enabled" ; ignore this / remove it / move into own section) -->
-		<div v-show="!showSharingDetailsView && projectsEnabled && fileInfo"
-			 class="sharingTab__additionalContent">
-			<CollectionList
-				:id="`${fileInfo.id}`"
-				type="file"
-				:name="fileInfo.name" />
+				<!-- projects (deprecated as of NC25 (replaced by related_resources) - see instance config "projects.enabled" ; ignore this / remove it / move into own section) -->
+				<div v-show="!showSharingDetailsView && projectsEnabled && fileInfo"
+					class="sharingTab__additionalContent">
+					<CollectionList :id="`${fileInfo.id}`"
+						type="file"
+						:name="fileInfo.name" />
+				</div>
+			</section>
 		</div>
 
 		<!-- share details -->
@@ -92,8 +105,11 @@ import { generateOcsUrl } from '@nextcloud/router'
 import { CollectionList } from 'nextcloud-vue-collections'
 import { ShareType } from '@nextcloud/sharing'
 
+import InfoIcon from 'vue-material-design-icons/Information.vue'
+
 import axios from '@nextcloud/axios'
 import moment from '@nextcloud/moment'
+import Tooltip from '@nextcloud/vue/dist/Directives/Tooltip.js'
 import NcAvatar from '@nextcloud/vue/dist/Components/NcAvatar.js'
 
 import { shareWithTitle } from '../utils/SharedWithMe.js'
@@ -112,9 +128,14 @@ import SharingDetailsTab from './SharingDetailsTab.vue'
 export default {
 	name: 'SharingTab',
 
+	directives: {
+		Tooltip,
+	},
+
 	components: {
-		NcAvatar,
 		CollectionList,
+		InfoIcon,
+		NcAvatar,
 		SharingEntryInternal,
 		SharingEntrySimple,
 		SharingInherited,
@@ -428,6 +449,31 @@ export default {
 
 	&__content {
 		padding: 0 6px;
+
+		section {
+			.section-header {
+				margin-top: 4px;
+				margin-bottom: 2px;
+				display: flex;
+				align-items: center;
+				padding-bottom: 12px;
+
+				h6 {
+					margin: 0;
+					margin-right: 4px;
+				}
+
+				:deep(.material-design-icon.information-icon) svg {
+					fill: var(--color-primary-element) !important;
+				}
+			}
+			padding-bottom: 16px;
+		}
+
+		section:not(:last-child) {
+			border-bottom: 2px solid var(--color-border);
+		}
+
 	}
 
 	&__additionalContent {
