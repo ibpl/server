@@ -34,7 +34,7 @@ class DeleteConfigTest extends TestCase {
 		$this->consoleInput = $this->getMockBuilder(InputInterface::class)->getMock();
 		$this->consoleOutput = $this->getMockBuilder(OutputInterface::class)->getMock();
 
-		/** @var \OC\SystemConfig $systemConfig */
+		/** @var SystemConfig $systemConfig */
 		$this->command = new DeleteConfig($systemConfig);
 	}
 
@@ -72,7 +72,6 @@ class DeleteConfigTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider deleteData
 	 *
 	 * @param string $configName
 	 * @param bool $configExists
@@ -80,6 +79,7 @@ class DeleteConfigTest extends TestCase {
 	 * @param int $expectedReturn
 	 * @param string $expectedMessage
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('deleteData')]
 	public function testDelete($configName, $configExists, $checkIfExists, $expectedReturn, $expectedMessage): void {
 		$this->systemConfig->expects(($checkIfExists) ? $this->once() : $this->never())
 			->method('getKeys')
@@ -165,7 +165,6 @@ class DeleteConfigTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider deleteArrayData
 	 *
 	 * @param string[] $configNames
 	 * @param bool $configKeyExists
@@ -175,6 +174,7 @@ class DeleteConfigTest extends TestCase {
 	 * @param int $expectedReturn
 	 * @param string $expectedMessage
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('deleteArrayData')]
 	public function testArrayDelete(array $configNames, $configKeyExists, $checkIfKeyExists, $configValue, $updateValue, $expectedReturn, $expectedMessage): void {
 		$this->systemConfig->expects(($checkIfKeyExists) ? $this->once() : $this->never())
 			->method('getKeys')

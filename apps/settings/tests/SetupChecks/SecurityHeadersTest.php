@@ -107,9 +107,7 @@ class SecurityHeadersTest extends TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider dataSuccess
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataSuccess')]
 	public function testSuccess(array $headers): void {
 		$headers = array_merge(
 			[
@@ -151,9 +149,7 @@ class SecurityHeadersTest extends TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider dataFailure
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataFailure')]
 	public function testFailure(array $headers, string $msg): void {
 		$headers = array_merge(
 			[

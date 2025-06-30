@@ -99,11 +99,11 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataFirstResult
 	 *
 	 * @param int|null $firstResult
 	 * @param array $expectedSet
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataFirstResult')]
 	public function testFirstResult($firstResult, $expectedSet): void {
 		$this->deleteTestingRows();
 		$this->createTestingRows();
@@ -136,11 +136,11 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataMaxResults
 	 *
 	 * @param int $maxResult
 	 * @param array $expectedSet
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataMaxResults')]
 	public function testMaxResults($maxResult, $expectedSet): void {
 		$this->deleteTestingRows();
 		$this->createTestingRows();
@@ -188,12 +188,12 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataSelect
 	 *
 	 * @param array $selectArguments
 	 * @param array $expected
 	 * @param string $expectedLiteral
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataSelect')]
 	public function testSelect($selectArguments, $expected, $expectedLiteral = ''): void {
 		$this->deleteTestingRows();
 		$this->createTestingRows();
@@ -241,12 +241,12 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataSelectAlias
 	 *
 	 * @param mixed $select
 	 * @param array $alias
 	 * @param array $expected
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataSelectAlias')]
 	public function testSelectAlias($select, $alias, $expected): void {
 		$this->deleteTestingRows();
 		$this->createTestingRows();
@@ -365,12 +365,12 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataAddSelect
 	 *
 	 * @param array $selectArguments
 	 * @param array $expected
 	 * @param string $expectedLiteral
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataAddSelect')]
 	public function testAddSelect($selectArguments, $expected, $expectedLiteral = ''): void {
 		$this->deleteTestingRows();
 		$this->createTestingRows();
@@ -417,13 +417,13 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataDelete
 	 *
 	 * @param string $tableName
 	 * @param string $tableAlias
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataDelete')]
 	public function testDelete($tableName, $tableAlias, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->delete($tableName, $tableAlias);
 
@@ -446,13 +446,13 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataUpdate
 	 *
 	 * @param string $tableName
 	 * @param string $tableAlias
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataUpdate')]
 	public function testUpdate($tableName, $tableAlias, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->update($tableName, $tableAlias);
 
@@ -474,12 +474,12 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataInsert
 	 *
 	 * @param string $tableName
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataInsert')]
 	public function testInsert($tableName, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->insert($tableName);
 
@@ -516,7 +516,6 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataFrom
 	 *
 	 * @param string|IQueryFunction $table1Name
 	 * @param string $table1Alias
@@ -525,6 +524,7 @@ class QueryBuilderTest extends \Test\TestCase {
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataFrom')]
 	public function testFrom($table1Name, $table1Alias, $table2Name, $table2Alias, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->from($table1Name, $table1Alias);
 		if ($table2Name !== null) {
@@ -564,7 +564,6 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataJoin
 	 *
 	 * @param string $fromAlias
 	 * @param string $tableName
@@ -573,6 +572,7 @@ class QueryBuilderTest extends \Test\TestCase {
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataJoin')]
 	public function testJoin($fromAlias, $tableName, $tableAlias, $condition, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->from('data1', 'd1');
 		$this->queryBuilder->join(
@@ -594,7 +594,6 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataJoin
 	 *
 	 * @param string $fromAlias
 	 * @param string $tableName
@@ -603,6 +602,7 @@ class QueryBuilderTest extends \Test\TestCase {
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataJoin')]
 	public function testInnerJoin($fromAlias, $tableName, $tableAlias, $condition, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->from('data1', 'd1');
 		$this->queryBuilder->innerJoin(
@@ -644,7 +644,6 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataLeftJoin
 	 *
 	 * @param string $fromAlias
 	 * @param string $tableName
@@ -653,6 +652,7 @@ class QueryBuilderTest extends \Test\TestCase {
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataLeftJoin')]
 	public function testLeftJoin($fromAlias, $tableName, $tableAlias, $condition, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->from('data1', 'd1');
 		$this->queryBuilder->leftJoin(
@@ -694,7 +694,6 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataRightJoin
 	 *
 	 * @param string $fromAlias
 	 * @param string $tableName
@@ -703,6 +702,7 @@ class QueryBuilderTest extends \Test\TestCase {
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataRightJoin')]
 	public function testRightJoin($fromAlias, $tableName, $tableAlias, $condition, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->from('data1', 'd1');
 		$this->queryBuilder->rightJoin(
@@ -733,7 +733,6 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataSet
 	 *
 	 * @param string $partOne1
 	 * @param string $partOne2
@@ -742,6 +741,7 @@ class QueryBuilderTest extends \Test\TestCase {
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataSet')]
 	public function testSet($partOne1, $partOne2, $partTwo1, $partTwo2, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->update('data');
 		$this->queryBuilder->set($partOne1, $partOne2);
@@ -768,12 +768,12 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataWhere
 	 *
 	 * @param array $whereArguments
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataWhere')]
 	public function testWhere($whereArguments, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->select('column');
 		call_user_func_array(
@@ -793,12 +793,12 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataWhere
 	 *
 	 * @param array $whereArguments
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataWhere')]
 	public function testAndWhere($whereArguments, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->select('column');
 		call_user_func_array(
@@ -825,12 +825,12 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataOrWhere
 	 *
 	 * @param array $whereArguments
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataOrWhere')]
 	public function testOrWhere($whereArguments, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->select('column');
 		call_user_func_array(
@@ -857,12 +857,12 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataGroupBy
 	 *
 	 * @param array $groupByArguments
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataGroupBy')]
 	public function testGroupBy($groupByArguments, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->select('column');
 		call_user_func_array(
@@ -889,12 +889,12 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataAddGroupBy
 	 *
 	 * @param array $groupByArguments
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataAddGroupBy')]
 	public function testAddGroupBy($groupByArguments, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->select('column');
 		$this->queryBuilder->groupBy('column1');
@@ -921,13 +921,13 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataSetValue
 	 *
 	 * @param string $column
 	 * @param string $value
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataSetValue')]
 	public function testSetValue($column, $value, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->insert('data');
 		$this->queryBuilder->setValue($column, $value);
@@ -944,13 +944,13 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataSetValue
 	 *
 	 * @param string $column
 	 * @param string $value
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataSetValue')]
 	public function testValues($column, $value, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->insert('data');
 		$this->queryBuilder->values([
@@ -986,12 +986,12 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataHaving
 	 *
 	 * @param array $havingArguments
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataHaving')]
 	public function testHaving($havingArguments, $expectedQueryPart, $expectedQuery): void {
 		call_user_func_array(
 			[$this->queryBuilder, 'having'],
@@ -1027,12 +1027,12 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataAndHaving
 	 *
 	 * @param array $havingArguments
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataAndHaving')]
 	public function testAndHaving($havingArguments, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->having('condition1');
 		call_user_func_array(
@@ -1069,12 +1069,12 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataOrHaving
 	 *
 	 * @param array $havingArguments
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataOrHaving')]
 	public function testOrHaving($havingArguments, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->having('condition1');
 		call_user_func_array(
@@ -1102,13 +1102,13 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataOrderBy
 	 *
 	 * @param string $sort
 	 * @param string $order
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataOrderBy')]
 	public function testOrderBy($sort, $order, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->orderBy($sort, $order);
 
@@ -1138,7 +1138,6 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataAddOrderBy
 	 *
 	 * @param string $sort2
 	 * @param string $order2
@@ -1146,6 +1145,7 @@ class QueryBuilderTest extends \Test\TestCase {
 	 * @param array $expectedQueryPart
 	 * @param string $expectedQuery
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataAddOrderBy')]
 	public function testAddOrderBy($sort2, $order2, $order1, $expectedQueryPart, $expectedQuery): void {
 		$this->queryBuilder->orderBy('column1', $order1);
 		$this->queryBuilder->addOrderBy($sort2, $order2);
@@ -1218,12 +1218,12 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataGetTableName
 	 *
 	 * @param string|IQueryFunction $tableName
 	 * @param bool $automatic
 	 * @param string $expected
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataGetTableName')]
 	public function testGetTableName($tableName, $automatic, $expected): void {
 		if ($automatic !== null) {
 			$this->queryBuilder->automaticTablePrefix($automatic);
@@ -1243,11 +1243,11 @@ class QueryBuilderTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataGetColumnName
 	 * @param string $column
 	 * @param string $prefix
 	 * @param string $expected
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataGetColumnName')]
 	public function testGetColumnName($column, $prefix, $expected): void {
 		$this->assertSame(
 			$expected,

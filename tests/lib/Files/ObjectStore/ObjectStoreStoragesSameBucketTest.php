@@ -9,6 +9,7 @@ namespace Test\Files\ObjectStore;
 
 use OC\Files\ObjectStore\StorageObjectStore;
 use OC\Files\Storage\Temporary;
+use OCP\Files\ObjectStore\IObjectStore;
 use Test\Files\Storage\StoragesTestCase;
 
 /**
@@ -16,7 +17,7 @@ use Test\Files\Storage\StoragesTestCase;
  */
 class ObjectStoreStoragesSameBucketTest extends StoragesTestCase {
 	/**
-	 * @var \OCP\Files\ObjectStore\IObjectStore
+	 * @var IObjectStore
 	 */
 	private $objectStore;
 

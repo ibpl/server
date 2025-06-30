@@ -7,6 +7,7 @@ namespace Core\Controller;
 
 use OC\Core\Controller\GuestAvatarController;
 use OCP\AppFramework\Http\FileDisplayResponse;
+use OCP\Files\File;
 use OCP\Files\SimpleFS\ISimpleFile;
 use OCP\IAvatar;
 use OCP\IAvatarManager;
@@ -38,7 +39,7 @@ class GuestAvatarControllerTest extends \Test\TestCase {
 	private $avatar;
 
 	/**
-	 * @var \OCP\Files\File|\PHPUnit\Framework\MockObject\MockObject
+	 * @var File|\PHPUnit\Framework\MockObject\MockObject
 	 */
 	private $file;
 

@@ -12,6 +12,7 @@ use OC\Log\LogFactory;
 use OC\Log\Syslog;
 use OC\Log\Systemdlog;
 use OC\SystemConfig;
+use OCP\AppFramework\QueryException;
 use OCP\IServerContainer;
 use Test\TestCase;
 
@@ -58,9 +59,9 @@ class LogFactoryTest extends TestCase {
 
 	/**
 	 * @param string $type
-	 * @dataProvider fileTypeProvider
-	 * @throws \OCP\AppFramework\QueryException
+	 * @throws QueryException
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('fileTypeProvider')]
 	public function testFile(string $type): void {
 		$datadir = \OC::$SERVERROOT . '/data';
 		$defaultLog = $datadir . '/nextcloud.log';
@@ -91,9 +92,9 @@ class LogFactoryTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider logFilePathProvider
-	 * @throws \OCP\AppFramework\QueryException
+	 * @throws QueryException
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('logFilePathProvider')]
 	public function testFileCustomPath($path, $expected): void {
 		$datadir = \OC::$SERVERROOT . '/data';
 		$defaultLog = $datadir . '/nextcloud.log';
@@ -112,7 +113,7 @@ class LogFactoryTest extends TestCase {
 	}
 
 	/**
-	 * @throws \OCP\AppFramework\QueryException
+	 * @throws QueryException
 	 */
 	public function testErrorLog(): void {
 		$log = $this->factory->get('errorlog');
@@ -120,7 +121,7 @@ class LogFactoryTest extends TestCase {
 	}
 
 	/**
-	 * @throws \OCP\AppFramework\QueryException
+	 * @throws QueryException
 	 */
 	public function testSystemLog(): void {
 		$this->c->expects($this->once())
@@ -133,7 +134,7 @@ class LogFactoryTest extends TestCase {
 	}
 
 	/**
-	 * @throws \OCP\AppFramework\QueryException
+	 * @throws QueryException
 	 */
 	public function testSystemdLog(): void {
 		$this->c->expects($this->once())

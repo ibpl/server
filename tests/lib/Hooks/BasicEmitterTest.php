@@ -8,6 +8,7 @@
 namespace Test\Hooks;
 
 use OC\Hooks\BasicEmitter;
+use OC\Hooks\Emitter;
 
 /**
  * Class DummyEmitter
@@ -34,7 +35,7 @@ class EmittedException extends \Exception {
 
 class BasicEmitterTest extends \Test\TestCase {
 	/**
-	 * @var \OC\Hooks\Emitter $emitter
+	 * @var Emitter $emitter
 	 */
 	protected $emitter;
 

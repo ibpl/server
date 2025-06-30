@@ -13,12 +13,12 @@ use Test\TestCase;
 
 abstract class LockingProvider extends TestCase {
 	/**
-	 * @var \OCP\Lock\ILockingProvider
+	 * @var ILockingProvider
 	 */
 	protected $instance;
 
 	/**
-	 * @return \OCP\Lock\ILockingProvider
+	 * @return ILockingProvider
 	 */
 	abstract protected function getInstance();
 

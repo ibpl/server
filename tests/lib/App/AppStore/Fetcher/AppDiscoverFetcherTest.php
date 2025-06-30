@@ -71,9 +71,7 @@ class AppDiscoverFetcherTest extends FetcherBase {
 		$this->assertEquals([], $this->fetcher->get());
 	}
 
-	/**
-	 * @dataProvider dataGetETag
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataGetETag')]
 	public function testGetEtag(?string $expected, bool $throws, string $content = ''): void {
 		$folder = $this->createMock(ISimpleFolder::class);
 		if (!$throws) {

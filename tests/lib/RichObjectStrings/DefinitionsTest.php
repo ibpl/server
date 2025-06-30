@@ -30,10 +30,10 @@ class DefinitionsTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider dataGetDefinition
 	 * @param string $type
 	 * @param array $expected
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataGetDefinition')]
 	public function testGetDefinition($type, array $expected): void {
 		$definitions = new Definitions();
 		$definition = $definitions->getDefinition($type);

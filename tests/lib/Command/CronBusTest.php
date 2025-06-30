@@ -7,6 +7,7 @@
 namespace Test\Command;
 
 use OC\Command\CronBus;
+use OCP\BackgroundJob\IJobList;
 use Test\BackgroundJob\DummyJobList;
 
 /**
@@ -14,7 +15,7 @@ use Test\BackgroundJob\DummyJobList;
  */
 class CronBusTest extends AsyncBusTestCase {
 	/**
-	 * @var \OCP\BackgroundJob\IJobList
+	 * @var IJobList
 	 */
 	private $jobList;
 

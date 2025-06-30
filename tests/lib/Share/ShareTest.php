@@ -126,10 +126,10 @@ class ShareTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider urls
 	 * @param string $url
 	 * @param string $expectedResult
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('urls')]
 	public function testRemoveProtocolFromUrl($url, $expectedResult): void {
 		$share = new Share();
 		$result = self::invokePrivate($share, 'removeProtocolFromUrl', [$url]);
@@ -145,10 +145,10 @@ class ShareTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider dataProviderTestGroupItems
 	 * @param array $ungrouped
 	 * @param array $grouped
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataProviderTestGroupItems')]
 	public function testGroupItems($ungrouped, $grouped): void {
 		$result = DummyShareClass::groupItemsTest($ungrouped);
 

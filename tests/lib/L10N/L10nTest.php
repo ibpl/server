@@ -30,9 +30,9 @@ class L10nTest extends TestCase {
 	 * @return Factory
 	 */
 	protected function getFactory() {
-		/** @var \OCP\IConfig $config */
+		/** @var IConfig $config */
 		$config = $this->createMock(IConfig::class);
-		/** @var \OCP\IRequest $request */
+		/** @var IRequest $request */
 		$request = $this->createMock(IRequest::class);
 		/** @var IUserSession $userSession */
 		$userSession = $this->createMock(IUserSession::class);
@@ -107,11 +107,11 @@ class L10nTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider dataPlaceholders
 	 *
 	 * @param $string
 	 * @param $expected
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataPlaceholders')]
 	public function testPlaceholders($string, $expected): void {
 		$transFile = \OC::$SERVERROOT . '/tests/data/l10n/de.json';
 		$l = new L10N($this->getFactory(), 'test', 'de', 'de_AT', [$transFile]);
@@ -155,9 +155,7 @@ class L10nTest extends TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider localizationData
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('localizationData')]
 	public function testNumericStringLocalization($expectedDate, $lang, $locale, $type, $value): void {
 		$l = new L10N($this->getFactory(), 'test', $lang, $locale, []);
 		$this->assertSame($expectedDate, $l->l($type, $value));
@@ -171,11 +169,11 @@ class L10nTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider firstDayData
 	 * @param $expected
 	 * @param $lang
 	 * @param $locale
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('firstDayData')]
 	public function testFirstWeekDay($expected, $lang, $locale): void {
 		$l = new L10N($this->getFactory(), 'test', $lang, $locale, []);
 		$this->assertSame($expected, $l->l('firstday', 'firstday'));
@@ -189,11 +187,11 @@ class L10nTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider jsDateData
 	 * @param $expected
 	 * @param $lang
 	 * @param $locale
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('jsDateData')]
 	public function testJSDate($expected, $lang, $locale): void {
 		$l = new L10N($this->getFactory(), 'test', $lang, $locale, []);
 		$this->assertSame($expected, $l->l('jsdate', 'jsdate'));
@@ -215,10 +213,10 @@ class L10nTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider findLanguageFromLocaleData
 	 * @param $locale
 	 * @param $language
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('findLanguageFromLocaleData')]
 	public function testFindLanguageFromLocale($locale, $language): void {
 		$this->assertEquals(
 			$language,

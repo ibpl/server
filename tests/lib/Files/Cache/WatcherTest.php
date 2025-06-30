@@ -8,6 +8,7 @@
 namespace Test\Files\Cache;
 
 use OC\Files\Cache\Watcher;
+use OC\Files\Storage\Storage;
 use OC\Files\Storage\Temporary;
 
 /**
@@ -19,7 +20,7 @@ use OC\Files\Storage\Temporary;
  */
 class WatcherTest extends \Test\TestCase {
 	/**
-	 * @var \OC\Files\Storage\Storage[] $storages
+	 * @var Storage[] $storages
 	 */
 	private $storages = [];
 
@@ -175,7 +176,7 @@ class WatcherTest extends \Test\TestCase {
 
 	/**
 	 * @param bool $scan
-	 * @return \OC\Files\Storage\Storage
+	 * @return Storage
 	 */
 	private function getTestStorage($scan = true) {
 		$storage = new Temporary([]);

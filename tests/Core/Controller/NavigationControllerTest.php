@@ -47,7 +47,7 @@ class NavigationControllerTest extends TestCase {
 			[true],
 		];
 	}
-	/** @dataProvider dataGetNavigation */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataGetNavigation')]
 	public function testGetAppNavigation(bool $absolute): void {
 		$this->navigationManager->expects($this->once())
 			->method('getAll')
@@ -75,7 +75,7 @@ class NavigationControllerTest extends TestCase {
 		}
 	}
 
-	/** @dataProvider dataGetNavigation */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataGetNavigation')]
 	public function testGetSettingsNavigation(bool $absolute): void {
 		$this->navigationManager->expects($this->once())
 			->method('getAll')

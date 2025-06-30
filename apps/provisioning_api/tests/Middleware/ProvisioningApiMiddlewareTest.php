@@ -43,9 +43,7 @@ class ProvisioningApiMiddlewareTest extends TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider dataAnnotation
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataAnnotation')]
 	public function testBeforeController(bool $subadminRequired, bool $isAdmin, bool $isSubAdmin, bool $hasSettingAuthorizationAnnotation, bool $shouldThrowException): void {
 		$middleware = new ProvisioningApiMiddleware(
 			$this->reflector,
@@ -82,9 +80,7 @@ class ProvisioningApiMiddlewareTest extends TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider dataAfterException
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataAfterException')]
 	public function testAfterException(\Exception $exception, bool $forwared): void {
 		$middleware = new ProvisioningApiMiddleware(
 			$this->reflector,

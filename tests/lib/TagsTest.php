@@ -11,6 +11,7 @@ use OC\Tagging\TagMapper;
 use OC\TagManager;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IDBConnection;
+use OCP\ITagManager;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
@@ -24,14 +25,14 @@ use Psr\Log\LoggerInterface;
  */
 class TagsTest extends \Test\TestCase {
 	protected $objectType;
-	/** @var \OCP\IUser */
+	/** @var IUser */
 	protected $user;
-	/** @var \OCP\IUserSession */
+	/** @var IUserSession */
 	protected $userSession;
 	protected $backupGlobals = false;
 	/** @var \OC\Tagging\TagMapper */
 	protected $tagMapper;
-	/** @var \OCP\ITagManager */
+	/** @var ITagManager */
 	protected $tagMgr;
 
 	protected function setUp(): void {

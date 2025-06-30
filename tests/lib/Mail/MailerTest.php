@@ -75,10 +75,10 @@ class MailerTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider sendmailModeProvider
 	 * @param $sendmailMode
 	 * @param $binaryParam
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('sendmailModeProvider')]
 	public function testGetSendmailInstanceSendMail($sendmailMode, $binaryParam): void {
 		$this->config
 			->expects($this->exactly(2))
@@ -98,10 +98,10 @@ class MailerTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider sendmailModeProvider
 	 * @param $sendmailMode
 	 * @param $binaryParam
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('sendmailModeProvider')]
 	public function testGetSendmailInstanceSendMailQmail($sendmailMode, $binaryParam): void {
 		$this->config
 			->expects($this->exactly(2))
@@ -242,9 +242,7 @@ class MailerTest extends TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider mailAddressProvider
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('mailAddressProvider')]
 	public function testValidateMailAddress($email, $expected, $strict): void {
 		$this->config
 			->expects($this->atMost(1))

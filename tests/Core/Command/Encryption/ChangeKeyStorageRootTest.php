@@ -45,7 +45,7 @@ class ChangeKeyStorageRootTest extends TestCase {
 	/** @var OutputInterface | \PHPUnit\Framework\MockObject\MockObject */
 	protected $outputInterface;
 
-	/** @var \OCP\UserInterface |  \PHPUnit\Framework\MockObject\MockObject */
+	/** @var UserInterface|\PHPUnit\Framework\MockObject\MockObject */
 	protected $userInterface;
 
 	protected function setUp(): void {
@@ -77,9 +77,7 @@ class ChangeKeyStorageRootTest extends TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider dataTestExecute
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataTestExecute')]
 	public function testExecute($newRoot, $answer, $successMoveKey): void {
 		$changeKeyStorageRoot = $this->getMockBuilder('OC\Core\Command\Encryption\ChangeKeyStorageRoot')
 			->setConstructorArgs(
@@ -134,7 +132,7 @@ class ChangeKeyStorageRootTest extends TestCase {
 	}
 
 	public function testMoveAllKeys(): void {
-		/** @var \OC\Core\Command\Encryption\ChangeKeyStorageRoot $changeKeyStorageRoot */
+		/** @var ChangeKeyStorageRoot $changeKeyStorageRoot */
 		$changeKeyStorageRoot = $this->getMockBuilder('OC\Core\Command\Encryption\ChangeKeyStorageRoot')
 			->setConstructorArgs(
 				[
@@ -165,11 +163,11 @@ class ChangeKeyStorageRootTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider dataTestPrepareNewRootException
 	 *
 	 * @param bool $dirExists
 	 * @param bool $couldCreateFile
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataTestPrepareNewRootException')]
 	public function testPrepareNewRootException($dirExists, $couldCreateFile): void {
 		$this->expectException(\Exception::class);
 
@@ -189,12 +187,12 @@ class ChangeKeyStorageRootTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider dataTestMoveSystemKeys
 	 *
 	 * @param bool $dirExists
 	 * @param bool $targetExists
 	 * @param bool $executeRename
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataTestMoveSystemKeys')]
 	public function testMoveSystemKeys($dirExists, $targetExists, $executeRename): void {
 		$changeKeyStorageRoot = $this->getMockBuilder('OC\Core\Command\Encryption\ChangeKeyStorageRoot')
 			->setConstructorArgs(
@@ -255,13 +253,13 @@ class ChangeKeyStorageRootTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider dataTestMoveUserEncryptionFolder
 	 *
 	 * @param bool $userExists
 	 * @param bool $isDir
 	 * @param bool $targetExists
 	 * @param bool $shouldRename
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataTestMoveUserEncryptionFolder')]
 	public function testMoveUserEncryptionFolder($userExists, $isDir, $targetExists, $shouldRename): void {
 		$changeKeyStorageRoot = $this->getMockBuilder('OC\Core\Command\Encryption\ChangeKeyStorageRoot')
 			->setConstructorArgs(
@@ -307,9 +305,7 @@ class ChangeKeyStorageRootTest extends TestCase {
 	}
 
 
-	/**
-	 * @dataProvider dataTestPrepareParentFolder
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataTestPrepareParentFolder')]
 	public function testPrepareParentFolder($path, $pathExists): void {
 		$this->view->expects($this->any())->method('file_exists')
 			->willReturnCallback(

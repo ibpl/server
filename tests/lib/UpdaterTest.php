@@ -81,7 +81,6 @@ class UpdaterTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider versionCompatibilityTestData
 	 *
 	 * @param string $oldVersion
 	 * @param string $newVersion
@@ -90,6 +89,7 @@ class UpdaterTest extends TestCase {
 	 * @param bool $debug
 	 * @param string $vendor
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('versionCompatibilityTestData')]
 	public function testIsUpgradePossible($oldVersion, $newVersion, $allowedVersions, $result, $debug = false, $vendor = 'nextcloud'): void {
 		$this->config->expects($this->any())
 			->method('getSystemValueBool')

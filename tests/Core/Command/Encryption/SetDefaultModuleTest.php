@@ -52,7 +52,6 @@ class SetDefaultModuleTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider dataSetDefaultModule
 	 *
 	 * @param string $oldModule
 	 * @param string $newModule
@@ -60,6 +59,7 @@ class SetDefaultModuleTest extends TestCase {
 	 * @param bool $updateSuccess
 	 * @param string $expectedString
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataSetDefaultModule')]
 	public function testSetDefaultModule($oldModule, $newModule, $updateModule, $updateSuccess, $expectedString): void {
 		$this->consoleInput->expects($this->once())
 			->method('getArgument')
@@ -90,7 +90,6 @@ class SetDefaultModuleTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider dataSetDefaultModule
 	 *
 	 * @param string $oldModule
 	 * @param string $newModule
@@ -98,6 +97,7 @@ class SetDefaultModuleTest extends TestCase {
 	 * @param bool $updateSuccess
 	 * @param string $expectedString
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataSetDefaultModule')]
 	public function testMaintenanceMode($oldModule, $newModule, $updateModule, $updateSuccess, $expectedString): void {
 		$this->consoleInput->expects($this->never())
 			->method('getArgument')

@@ -119,7 +119,7 @@ class AuthSettingsControllerTest extends TestCase {
 
 		$this->session->expects($this->once())
 			->method('getId')
-			->will($this->throwException(new SessionNotAvailableException()));
+			->willThrowException(new SessionNotAvailableException());
 
 		$expected = new JSONResponse();
 		$expected->setStatus(Http::STATUS_SERVICE_UNAVAILABLE);
@@ -136,7 +136,7 @@ class AuthSettingsControllerTest extends TestCase {
 		$this->tokenProvider->expects($this->once())
 			->method('getToken')
 			->with('sessionid')
-			->will($this->throwException(new InvalidTokenException()));
+			->willThrowException(new InvalidTokenException());
 
 		$expected = new JSONResponse();
 		$expected->setStatus(Http::STATUS_SERVICE_UNAVAILABLE);
@@ -212,9 +212,7 @@ class AuthSettingsControllerTest extends TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider dataRenameToken
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataRenameToken')]
 	public function testUpdateRename(string $name, string $newName): void {
 		$tokenId = 42;
 		$token = $this->createMock(PublicKeyToken::class);
@@ -252,9 +250,7 @@ class AuthSettingsControllerTest extends TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider dataUpdateFilesystemScope
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataUpdateFilesystemScope')]
 	public function testUpdateFilesystemScope(bool $filesystem, bool $newFilesystem): void {
 		$tokenId = 42;
 		$token = $this->createMock(PublicKeyToken::class);

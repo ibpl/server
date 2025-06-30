@@ -19,7 +19,7 @@ use OCP\Http\Client\IResponse;
  * @group DB
  */
 class ExternalStorageTest extends \Test\TestCase {
-	public function optionsProvider() {
+	public static function optionsProvider() {
 		return [
 			[
 				'http://remoteserver:8080/owncloud',
@@ -87,9 +87,7 @@ class ExternalStorageTest extends \Test\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider optionsProvider
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('optionsProvider')]
 	public function testStorageMountOptions($inputUri, $baseUri): void {
 		$storage = $this->getTestStorage($inputUri);
 		$this->assertEquals($baseUri, $storage->getBaseUri());

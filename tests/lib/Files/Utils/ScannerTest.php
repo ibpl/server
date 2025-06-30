@@ -23,12 +23,12 @@ use Psr\Log\LoggerInterface;
 
 class TestScanner extends Scanner {
 	/**
-	 * @var \OC\Files\Mount\MountPoint[] $mounts
+	 * @var MountPoint[] $mounts
 	 */
 	private $mounts = [];
 
 	/**
-	 * @param \OC\Files\Mount\MountPoint $mount
+	 * @param MountPoint $mount
 	 */
 	public function addMount($mount) {
 		$this->mounts[] = $mount;
@@ -158,9 +158,9 @@ class ScannerTest extends \Test\TestCase {
 	}
 
 	/**
-	 * @dataProvider invalidPathProvider
 	 * @param string $invalidPath
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('invalidPathProvider')]
 	public function testInvalidPathScanning($invalidPath): void {
 		$this->expectException(\InvalidArgumentException::class);
 		$this->expectExceptionMessage('Invalid path to scan');

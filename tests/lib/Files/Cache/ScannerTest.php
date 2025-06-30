@@ -385,11 +385,11 @@ class ScannerTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider dataTestIsPartialFile
 	 *
 	 * @param string $path
 	 * @param bool $expected
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataTestIsPartialFile')]
 	public function testIsPartialFile($path, $expected): void {
 		$this->assertSame($expected,
 			$this->scanner->isPartialFile($path)

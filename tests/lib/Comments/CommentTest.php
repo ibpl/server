@@ -14,7 +14,7 @@ use Test\TestCase;
 
 class CommentTest extends TestCase {
 	/**
-	 * @throws \OCP\Comments\IllegalIDChangeException
+	 * @throws IllegalIDChangeException
 	 */
 	public function testSettersValidInput(): void {
 		$comment = new Comment();
@@ -73,7 +73,7 @@ class CommentTest extends TestCase {
 	}
 
 	/**
-	 * @throws \OCP\Comments\IllegalIDChangeException
+	 * @throws IllegalIDChangeException
 	 */
 	public function testResetId(): void {
 		$comment = new Comment();
@@ -95,9 +95,7 @@ class CommentTest extends TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider simpleSetterProvider
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('simpleSetterProvider')]
 	public function testSimpleSetterInvalidInput($field, $input): void {
 		$this->expectException(\InvalidArgumentException::class);
 
@@ -120,9 +118,7 @@ class CommentTest extends TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider roleSetterProvider
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('roleSetterProvider')]
 	public function testSetRoleInvalidInput($role, $type, $id): void {
 		$this->expectException(\InvalidArgumentException::class);
 
@@ -208,12 +204,12 @@ class CommentTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider mentionsProvider
 	 *
 	 * @param string $message
 	 * @param array $expectedMentions
 	 * @param ?string $author
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('mentionsProvider')]
 	public function testMentions(string $message, array $expectedMentions, ?string $author = null): void {
 		$comment = new Comment();
 		$comment->setMessage($message);

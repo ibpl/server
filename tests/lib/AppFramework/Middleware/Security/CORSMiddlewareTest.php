@@ -52,9 +52,7 @@ class CORSMiddlewareTest extends \Test\TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider dataSetCORSAPIHeader
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataSetCORSAPIHeader')]
 	public function testSetCORSAPIHeader(string $method): void {
 		$request = new Request(
 			[
@@ -97,9 +95,7 @@ class CORSMiddlewareTest extends \Test\TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider dataNoOriginHeaderNoCORSHEADER
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataNoOriginHeaderNoCORSHEADER')]
 	public function testNoOriginHeaderNoCORSHEADER(string $method): void {
 		$request = new Request(
 			[],
@@ -121,9 +117,7 @@ class CORSMiddlewareTest extends \Test\TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider dataCorsIgnoredIfWithCredentialsHeaderPresent
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataCorsIgnoredIfWithCredentialsHeaderPresent')]
 	public function testCorsIgnoredIfWithCredentialsHeaderPresent(string $method): void {
 		$this->expectException(SecurityException::class);
 
@@ -153,9 +147,7 @@ class CORSMiddlewareTest extends \Test\TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider dataNoCORSOnAnonymousPublicPage
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataNoCORSOnAnonymousPublicPage')]
 	public function testNoCORSOnAnonymousPublicPage(string $method): void {
 		$request = new Request(
 			[],
@@ -187,9 +179,7 @@ class CORSMiddlewareTest extends \Test\TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider dataCORSShouldNeverAllowCookieAuth
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataCORSShouldNeverAllowCookieAuth')]
 	public function testCORSShouldNeverAllowCookieAuth(string $method): void {
 		$request = new Request(
 			[],
@@ -219,9 +209,7 @@ class CORSMiddlewareTest extends \Test\TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider dataCORSShouldRelogin
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataCORSShouldRelogin')]
 	public function testCORSShouldRelogin(string $method): void {
 		$request = new Request(
 			['server' => [
@@ -250,9 +238,7 @@ class CORSMiddlewareTest extends \Test\TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider dataCORSShouldFailIfPasswordLoginIsForbidden
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataCORSShouldFailIfPasswordLoginIsForbidden')]
 	public function testCORSShouldFailIfPasswordLoginIsForbidden(string $method): void {
 		$this->expectException(SecurityException::class);
 
@@ -283,9 +269,7 @@ class CORSMiddlewareTest extends \Test\TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider dataCORSShouldNotAllowCookieAuth
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataCORSShouldNotAllowCookieAuth')]
 	public function testCORSShouldNotAllowCookieAuth(string $method): void {
 		$this->expectException(SecurityException::class);
 

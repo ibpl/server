@@ -86,7 +86,6 @@ class MailPluginTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider dataGetEmail
 	 *
 	 * @param string $searchTerm
 	 * @param array $contacts
@@ -94,6 +93,7 @@ class MailPluginTest extends TestCase {
 	 * @param array $expected
 	 * @param bool $reachedEnd
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataGetEmail')]
 	public function testSearch($searchTerm, $contacts, $shareeEnumeration, $expected, $exactIdMatch, $reachedEnd, $validEmail): void {
 		$this->config->expects($this->any())
 			->method('getAppValue')
@@ -568,7 +568,6 @@ class MailPluginTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider dataGetEmailGroupsOnly
 	 *
 	 * @param string $searchTerm
 	 * @param array $contacts
@@ -577,6 +576,7 @@ class MailPluginTest extends TestCase {
 	 * @param bool $reachedEnd
 	 * @param array groups
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataGetEmailGroupsOnly')]
 	public function testSearchGroupsOnly($searchTerm, $contacts, $expected, $exactIdMatch, $reachedEnd, $userToGroupMapping, $validEmail): void {
 		$this->config->expects($this->any())
 			->method('getAppValue')
@@ -593,7 +593,7 @@ class MailPluginTest extends TestCase {
 
 		$this->instantiatePlugin();
 
-		/** @var \OCP\IUser | \PHPUnit\Framework\MockObject\MockObject */
+		/** @var IUser|\PHPUnit\Framework\MockObject\MockObject */
 		$currentUser = $this->createMock('\OCP\IUser');
 
 		$currentUser->expects($this->any())

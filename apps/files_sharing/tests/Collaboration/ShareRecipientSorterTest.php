@@ -35,9 +35,9 @@ class ShareRecipientSorterTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider sortDataProvider
 	 * @param $data
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('sortDataProvider')]
 	public function testSort($data): void {
 		$node = $this->createMock(Node::class);
 
@@ -114,7 +114,7 @@ class ShareRecipientSorterTest extends TestCase {
 		$this->assertEquals($originalArray, $workArray);
 	}
 
-	public function sortDataProvider() {
+	public static function sortDataProvider() {
 		return [[
 			[
 				#0 – sort properly and otherwise keep existing order

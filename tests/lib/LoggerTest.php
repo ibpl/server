@@ -130,9 +130,7 @@ class LoggerTest extends TestCase implements IWriter {
 		];
 	}
 
-	/**
-	 * @dataProvider dataMatchesCondition
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataMatchesCondition')]
 	public function testMatchesCondition(string $userId, array $conditions, array $expectedLogs): void {
 		$this->config->expects($this->any())
 			->method('getValue')
@@ -194,9 +192,7 @@ class LoggerTest extends TestCase implements IWriter {
 		];
 	}
 
-	/**
-	 * @dataProvider userAndPasswordData
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('userAndPasswordData')]
 	public function testDetectlogin(string $user, string $password): void {
 		$this->mockDefaultLogLevel();
 		$e = new \Exception('test');
@@ -217,9 +213,7 @@ class LoggerTest extends TestCase implements IWriter {
 		}
 	}
 
-	/**
-	 * @dataProvider userAndPasswordData
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('userAndPasswordData')]
 	public function testDetectcheckPassword(string $user, string $password): void {
 		$this->mockDefaultLogLevel();
 		$e = new \Exception('test');
@@ -240,9 +234,7 @@ class LoggerTest extends TestCase implements IWriter {
 		}
 	}
 
-	/**
-	 * @dataProvider userAndPasswordData
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('userAndPasswordData')]
 	public function testDetectvalidateUserPass(string $user, string $password): void {
 		$this->mockDefaultLogLevel();
 		$e = new \Exception('test');
@@ -263,9 +255,7 @@ class LoggerTest extends TestCase implements IWriter {
 		}
 	}
 
-	/**
-	 * @dataProvider userAndPasswordData
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('userAndPasswordData')]
 	public function testDetecttryLogin(string $user, string $password): void {
 		$this->mockDefaultLogLevel();
 		$e = new \Exception('test');
@@ -286,9 +276,7 @@ class LoggerTest extends TestCase implements IWriter {
 		}
 	}
 
-	/**
-	 * @dataProvider userAndPasswordData
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('userAndPasswordData')]
 	public function testDetectclosure(string $user, string $password): void {
 		$this->mockDefaultLogLevel();
 		$a = function ($user, $password): void {

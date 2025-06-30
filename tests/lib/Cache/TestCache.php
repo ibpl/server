@@ -7,9 +7,11 @@
 
 namespace Test\Cache;
 
+use OCP\ICache;
+
 abstract class TestCache extends \Test\TestCase {
 	/**
-	 * @var \OCP\ICache cache;
+	 * @var ICache cache;
 	 */
 	protected $instance;
 

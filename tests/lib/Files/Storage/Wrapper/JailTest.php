@@ -13,7 +13,7 @@ use OC\Files\Storage\Wrapper\Jail;
 
 class JailTest extends \Test\Files\Storage\Storage {
 	/**
-	 * @var \OC\Files\Storage\Temporary
+	 * @var Temporary
 	 */
 	private $sourceStorage;
 

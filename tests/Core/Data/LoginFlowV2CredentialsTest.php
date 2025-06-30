@@ -11,7 +11,7 @@ use OC\Core\Data\LoginFlowV2Credentials;
 use Test\TestCase;
 
 class LoginFlowV2CredentialsTest extends TestCase {
-	/** @var \OC\Core\Data\LoginFlowV2Credentials */
+	/** @var LoginFlowV2Credentials */
 	private $fixture;
 
 	public function setUp(): void {

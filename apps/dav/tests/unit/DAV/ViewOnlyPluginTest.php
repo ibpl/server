@@ -88,9 +88,7 @@ class ViewOnlyPluginTest extends TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider providesDataForCanGet
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('providesDataForCanGet')]
 	public function testCanGet(bool $isVersion, ?bool $attrEnabled, bool $expectCanDownloadFile): void {
 		$nodeInfo = $this->createMock(File::class);
 		if ($isVersion) {

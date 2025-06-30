@@ -11,6 +11,7 @@ use OC\Share20\Share;
 use OCP\Files\IRootFolder;
 use OCP\IUserManager;
 use OCP\Share\Exceptions\IllegalIDChangeException;
+use OCP\Share\IShare;
 use PHPUnit\Framework\MockObject\MockObject;
 
 /**
@@ -23,7 +24,7 @@ class ShareTest extends \Test\TestCase {
 	protected $rootFolder;
 	/** @var IUserManager|MockObject */
 	protected $userManager;
-	/** @var \OCP\Share\IShare */
+	/** @var IShare */
 	protected $share;
 
 	protected function setUp(): void {

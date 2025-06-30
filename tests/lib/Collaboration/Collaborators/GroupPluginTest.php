@@ -417,7 +417,6 @@ class GroupPluginTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider dataGetGroups
 	 *
 	 * @param string $searchTerm
 	 * @param bool $shareWithGroupOnly
@@ -430,6 +429,7 @@ class GroupPluginTest extends TestCase {
 	 * @param bool $reachedEnd
 	 * @param bool|IGroup $singleGroup
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('dataGetGroups')]
 	public function testSearch(
 		string $searchTerm,
 		bool $shareWithGroupOnly,

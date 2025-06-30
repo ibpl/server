@@ -18,7 +18,7 @@ use OCP\Server;
  */
 class NonCachingDBLockingProviderTest extends DBLockingProviderTest {
 	/**
-	 * @return \OCP\Lock\ILockingProvider
+	 * @return ILockingProvider
 	 */
 	protected function getInstance() {
 		$this->connection = Server::get(IDBConnection::class);

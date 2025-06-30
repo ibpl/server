@@ -83,9 +83,7 @@ class AddTest extends TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider addEmailDataProvider
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('addEmailDataProvider')]
 	public function testAddEmail(
 		?string $email,
 		bool $isEmailValid,

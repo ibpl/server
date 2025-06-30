@@ -70,8 +70,8 @@ class UrlGeneratorTest extends \Test\TestCase {
 	/**
 	 * @small
 	 * test linkTo URL construction
-	 * @dataProvider provideDocRootAppUrlParts
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('provideDocRootAppUrlParts')]
 	public function testLinkToDocRoot($app, $file, $args, $expectedResult): void {
 		\OC::$WEBROOT = '';
 		$result = $this->urlGenerator->linkTo($app, $file, $args);
@@ -81,17 +81,15 @@ class UrlGeneratorTest extends \Test\TestCase {
 	/**
 	 * @small
 	 * test linkTo URL construction in sub directory
-	 * @dataProvider provideSubDirAppUrlParts
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('provideSubDirAppUrlParts')]
 	public function testLinkToSubDir($app, $file, $args, $expectedResult): void {
 		\OC::$WEBROOT = '/nextcloud';
 		$result = $this->urlGenerator->linkTo($app, $file, $args);
 		$this->assertEquals($expectedResult, $result);
 	}
 
-	/**
-	 * @dataProvider provideRoutes
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('provideRoutes')]
 	public function testLinkToRouteAbsolute($route, $expected): void {
 		$this->mockBaseUrl();
 		\OC::$WEBROOT = '/nextcloud';
@@ -134,8 +132,8 @@ class UrlGeneratorTest extends \Test\TestCase {
 	/**
 	 * @small
 	 * test absolute URL construction
-	 * @dataProvider provideDocRootURLs
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('provideDocRootURLs')]
 	public function testGetAbsoluteURLDocRoot($url, $expectedResult): void {
 		$this->mockBaseUrl();
 		\OC::$WEBROOT = '';
@@ -146,8 +144,8 @@ class UrlGeneratorTest extends \Test\TestCase {
 	/**
 	 * @small
 	 * test absolute URL construction
-	 * @dataProvider provideSubDirURLs
 	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('provideSubDirURLs')]
 	public function testGetAbsoluteURLSubDir($url, $expectedResult): void {
 		$this->mockBaseUrl();
 		\OC::$WEBROOT = '/nextcloud';
@@ -189,9 +187,7 @@ class UrlGeneratorTest extends \Test\TestCase {
 		$this->assertEquals(\OC::$WEBROOT, $actual);
 	}
 
-	/**
-	 * @dataProvider provideOCSRoutes
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('provideOCSRoutes')]
 	public function testLinkToOCSRouteAbsolute(string $route, bool $ignoreFrontController, string $expected): void {
 		$this->mockBaseUrl();
 		\OC::$WEBROOT = '/nextcloud';
@@ -276,9 +272,7 @@ class UrlGeneratorTest extends \Test\TestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider imagePathProvider
-	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('imagePathProvider')]
 	public function testImagePath(string $appName, string $file, string $result): void {
 		$this->assertSame($result, $this->urlGenerator->imagePath($appName, $file));
 	}
