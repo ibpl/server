@@ -41,8 +41,8 @@ class SyncFederationAddressbooksTest extends \Test\TestCase {
 					'sync_token' => '0'
 				]
 			]);
-		$dbHandler->expects($this->once())->method('setServerStatus')->
-			with('https://cloud.drop.box', 1, '1');
+		$dbHandler->expects($this->once())->method('setServerStatus')
+			->with('https://cloud.drop.box', 1, '1');
 		$syncService = $this->createMock(SyncService::class);
 		$syncService->expects($this->once())->method('syncRemoteAddressBook')
 			->willReturn('1');
@@ -58,8 +58,8 @@ class SyncFederationAddressbooksTest extends \Test\TestCase {
 	public function testException(): void {
 		/** @var DbHandler&MockObject $dbHandler */
 		$dbHandler = $this->createMock(DbHandler::class);
-		$dbHandler->method('getAllServer')->
-		willReturn([
+		$dbHandler->method('getAllServer')
+		->willReturn([
 			[
 				'url' => 'https://cloud.drop.box',
 				'url_hash' => 'sha1',
@@ -92,8 +92,8 @@ class SyncFederationAddressbooksTest extends \Test\TestCase {
 				]
 			]);
 		$dbHandler->method('getServerStatus')->willReturn(TrustedServers::STATUS_FAILURE);
-		$dbHandler->expects($this->once())->method('setServerStatus')->
-			with('https://cloud.drop.box', 1);
+		$dbHandler->expects($this->once())->method('setServerStatus')
+			->with('https://cloud.drop.box', 1);
 		$syncService = $this->createMock(SyncService::class);
 		$syncService->expects($this->once())->method('syncRemoteAddressBook')
 			->willReturn('0');
