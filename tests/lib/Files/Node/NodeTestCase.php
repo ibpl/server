@@ -158,7 +158,7 @@ abstract class NodeTestCase extends \Test\TestCase {
 		$test = $this;
 		$hooksRun = 0;
 		/**
-		 * @param \OC\Files\Node\File $node
+		 * @param File $node
 		 */
 		$preListener = function ($node) use (&$test, &$hooksRun): void {
 			$test->assertInstanceOf($this->getNodeClass(), $node);
@@ -169,7 +169,7 @@ abstract class NodeTestCase extends \Test\TestCase {
 		};
 
 		/**
-		 * @param \OC\Files\Node\File $node
+		 * @param File $node
 		 */
 		$postListener = function ($node) use (&$test, &$hooksRun): void {
 			$test->assertInstanceOf($this->getNonExistingNodeClass(), $node);
@@ -413,7 +413,7 @@ abstract class NodeTestCase extends \Test\TestCase {
 		$test = $this;
 		$hooksRun = 0;
 		/**
-		 * @param \OC\Files\Node\File $node
+		 * @param File $node
 		 */
 		$preListener = function ($node) use (&$test, &$hooksRun): void {
 			$test->assertEquals('foo', $node->getInternalPath());
@@ -422,7 +422,7 @@ abstract class NodeTestCase extends \Test\TestCase {
 		};
 
 		/**
-		 * @param \OC\Files\Node\File $node
+		 * @param File $node
 		 */
 		$postListener = function ($node) use (&$test, &$hooksRun): void {
 			$test->assertEquals('foo', $node->getInternalPath());
@@ -630,7 +630,7 @@ abstract class NodeTestCase extends \Test\TestCase {
 			->willReturn($this->getFileInfo(['permissions' => Constants::PERMISSION_ALL, 'fileid' => 1]));
 
 		/**
-		 * @var \OC\Files\Node\File|\PHPUnit\Framework\MockObject\MockObject $node
+		 * @var File|\PHPUnit\Framework\MockObject\MockObject $node
 		 */
 		$node = $this->createTestNode($root, $this->view, '/bar/foo');
 		$parentNode = new Folder($root, $this->view, '/bar');
