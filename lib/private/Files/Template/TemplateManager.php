@@ -11,14 +11,17 @@ namespace OC\Files\Template;
 use OC\AppFramework\Bootstrap\Coordinator;
 use OC\Files\Cache\Scanner;
 use OC\Files\Filesystem;
+use OC\User\NoUserException;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\GenericFileException;
 use OCP\Files\IFilenameValidator;
+use OCP\Files\InvalidPathException;
 use OCP\Files\IRootFolder;
 use OCP\Files\Node;
 use OCP\Files\NotFoundException;
+use OCP\Files\NotPermittedException;
 use OCP\Files\Template\BeforeGetTemplatesEvent;
 use OCP\Files\Template\Field;
 use OCP\Files\Template\FileCreatedFromTemplateEvent;
@@ -41,43 +44,23 @@ class TemplateManager implements ITemplateManager {
 
 	/** @var array|null */
 	private $providers = null;
-
-	private $serverContainer;
-	private $eventDispatcher;
-	private $rootFolder;
-	private $userManager;
-	private $previewManager;
-	private $config;
 	private $l10n;
-	private $logger;
 	private $userId;
-	private $l10nFactory;
-	/** @var Coordinator */
-	private $bootstrapCoordinator;
 
 	public function __construct(
-		IServerContainer $serverContainer,
-		IEventDispatcher $eventDispatcher,
-		Coordinator $coordinator,
-		IRootFolder $rootFolder,
+		private IServerContainer $serverContainer,
+		private IEventDispatcher $eventDispatcher,
+		private Coordinator $bootstrapCoordinator,
+		private IRootFolder $rootFolder,
 		IUserSession $userSession,
-		IUserManager $userManager,
-		IPreview $previewManager,
-		IConfig $config,
-		IFactory $l10nFactory,
-		LoggerInterface $logger,
+		private IUserManager $userManager,
+		private IPreview $previewManager,
+		private IConfig $config,
+		private IFactory $l10nFactory,
+		private LoggerInterface $logger,
 		private IFilenameValidator $filenameValidator,
 	) {
-		$this->serverContainer = $serverContainer;
-		$this->eventDispatcher = $eventDispatcher;
-		$this->bootstrapCoordinator = $coordinator;
-		$this->rootFolder = $rootFolder;
-		$this->userManager = $userManager;
-		$this->previewManager = $previewManager;
-		$this->config = $config;
-		$this->l10nFactory = $l10nFactory;
-		$this->l10n = $l10nFactory->get('lib');
-		$this->logger = $logger;
+		$this->l10n = $this->l10nFactory->get('lib');
 		$user = $userSession->getUser();
 		$this->userId = $user ? $user->getUID() : null;
 	}
@@ -159,6 +142,7 @@ class TemplateManager implements ITemplateManager {
 			if (!$userFolder->nodeExists(dirname($filePath))) {
 				throw new GenericFileException($this->l10n->t('Invalid path'));
 			}
+			/** @var Folder $folder */
 			$folder = $userFolder->get(dirname($filePath));
 			$template = null;
 			if ($templateType === 'user' && $templateId !== '') {
@@ -187,9 +171,9 @@ class TemplateManager implements ITemplateManager {
 
 	/**
 	 * @return Folder
-	 * @throws \OCP\Files\NotFoundException
-	 * @throws \OCP\Files\NotPermittedException
-	 * @throws \OC\User\NoUserException
+	 * @throws NotFoundException
+	 * @throws NotPermittedException
+	 * @throws NoUserException
 	 */
 	private function getTemplateFolder(): Folder {
 		if ($this->getTemplatePath() !== '') {
@@ -286,7 +270,7 @@ class TemplateManager implements ITemplateManager {
 	 * @param Node|File $file
 	 * @return array
 	 * @throws NotFoundException
-	 * @throws \OCP\Files\InvalidPathException
+	 * @throws InvalidPathException
 	 */
 	private function formatFile(Node $file): array {
 		return [
@@ -365,8 +349,10 @@ class TemplateManager implements ITemplateManager {
 			}
 
 			try {
+				/** @var Folder $folder */
 				$folder = $userFolder->get($userTemplatePath);
 			} catch (NotFoundException $e) {
+				/** @var Folder $folder */
 				$folder = $userFolder->get(dirname($userTemplatePath));
 				$folder = $folder->newFolder(basename($userTemplatePath));
 			}

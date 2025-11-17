@@ -7,6 +7,8 @@
 namespace OC\Log;
 
 use OC\SystemConfig;
+use OCP\IRequest;
+use OCP\Server;
 
 abstract class LogDetails {
 	public function __construct(
@@ -30,7 +32,7 @@ abstract class LogDetails {
 			// apply timezone if $time is created from UNIX timestamp
 			$time->setTimezone($timezone);
 		}
-		$request = \OC::$server->getRequest();
+		$request = Server::get(IRequest::class);
 		$reqId = $request->getId();
 		$remoteAddr = $request->getRemoteAddress();
 		// remove username/passwords from URLs before writing the to the log file
