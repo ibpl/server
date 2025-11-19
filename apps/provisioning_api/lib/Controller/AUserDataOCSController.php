@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OCA\Provisioning_API\Controller;
 
+use OC\Group\DisplayNameCache as GroupDisplayNameCache;
 use OC\Group\Manager as GroupManager;
 use OC\User\Backend;
 use OC\User\NoUserException;
@@ -36,6 +37,7 @@ use OCP\Util;
 
 /**
  * @psalm-import-type Provisioning_APIUserDetails from ResponseDefinitions
+ * @psalm-import-type Provisioning_APIUserDetailsGroupDisplayname from ResponseDefinitions
  * @psalm-import-type Provisioning_APIUserDetailsQuota from ResponseDefinitions
  */
 abstract class AUserDataOCSController extends OCSController {
@@ -62,6 +64,7 @@ abstract class AUserDataOCSController extends OCSController {
 		protected ISubAdmin $subAdminManager,
 		protected IFactory $l10nFactory,
 		protected IRootFolder $rootFolder,
+		private GroupDisplayNameCache $groupDisplayNameCache,
 	) {
 		parent::__construct($appName, $request);
 	}
@@ -105,6 +108,7 @@ abstract class AUserDataOCSController extends OCSController {
 		$userAccount = $this->accountManager->getAccount($targetUserObject);
 		$groups = $this->groupManager->getUserGroups($targetUserObject);
 		$gids = [];
+		$gidsDisplayName = [];
 		foreach ($groups as $group) {
 			$gids[] = $group->getGID();
 		}

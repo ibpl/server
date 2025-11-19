@@ -87,7 +87,7 @@ export function userToFormData(user, allGroups, quotaOptions, serverLanguages) {
 		displayName: user.displayname ?? '',
 		password: '',
 		email: user.email ?? '',
-		groups,
+		groups: user.groupsWithDisplayname,
 		subadminGroups,
 		quota,
 		language: resolveLanguage(user, serverLanguages),

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OCA\Provisioning_API\Controller;
 
+use OC\Group\DisplayNameCache as GroupDisplayNameCache;
 use OCA\Provisioning_API\ResponseDefinitions;
 use OCA\Settings\Settings\Admin\Sharing;
 use OCA\Settings\Settings\Admin\Users;
@@ -52,6 +53,7 @@ class GroupsController extends AUserDataOCSController {
 		IFactory $l10nFactory,
 		IRootFolder $rootFolder,
 		private LoggerInterface $logger,
+		protected GroupDisplayNameCache $groupDisplayNameCache,
 	) {
 		parent::__construct($appName,
 			$request,
@@ -63,6 +65,7 @@ class GroupsController extends AUserDataOCSController {
 			$subAdminManager,
 			$l10nFactory,
 			$rootFolder,
+			$this->groupDisplayNameCache,
 		);
 	}
 
