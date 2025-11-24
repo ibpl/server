@@ -21,7 +21,7 @@ use Psr\Log\LoggerInterface;
  * @since 33.0.0 removed deprecated `execute()` method
  */
 abstract class Job implements IJob, IParallelAwareJob {
-	protected int $id = 0;
+	protected string $id = '0';
 	protected int $lastRun = 0;
 	protected mixed $argument = null;
 	protected bool $allowParallelRuns = true;
@@ -64,7 +64,7 @@ abstract class Job implements IJob, IParallelAwareJob {
 	/**
 	 * @since 15.0.0
 	 */
-	final public function setId(int $id) {
+	final public function setId(string $id): void {
 		$this->id = $id;
 	}
 
@@ -85,7 +85,7 @@ abstract class Job implements IJob, IParallelAwareJob {
 	/**
 	 * @since 15.0.0
 	 */
-	final public function getId(): int {
+	final public function getId(): string {
 		return $this->id;
 	}
 

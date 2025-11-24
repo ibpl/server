@@ -44,7 +44,7 @@ interface IJob {
 	/**
 	 * @since 7.0.0
 	 */
-	public function setId(int $id);
+	public function setId(string $id): void;
 
 	/**
 	 * @since 7.0.0
@@ -61,10 +61,9 @@ interface IJob {
 	 * Get the id of the background job
 	 * This id is determined by the job list when a job is added to the list
 	 *
-	 * @return int
 	 * @since 7.0.0
 	 */
-	public function getId();
+	public function getId(): string;
 
 	/**
 	 * Get the last time this job was run as unix timestamp

@@ -7,7 +7,6 @@
  */
 namespace OC\BackgroundJob;
 
-use OCP\AppFramework\QueryException;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\AutoloadNotAllowedException;
 use OCP\BackgroundJob\IJob;
@@ -17,6 +16,8 @@ use OCP\DB\Exception;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IConfig;
 use OCP\IDBConnection;
+use OCP\Snowflake\IGenerator;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Log\LoggerInterface;
 use function get_class;
 use function json_encode;
@@ -24,14 +25,15 @@ use function min;
 use function strlen;
 
 class JobList implements IJobList {
-	/** @var array<string, int> */
+	/** @var array<string, string> */
 	protected array $alreadyVisitedParallelBlocked = [];
 
 	public function __construct(
-		protected IDBConnection $connection,
-		protected IConfig $config,
-		protected ITimeFactory $timeFactory,
-		protected LoggerInterface $logger,
+		protected readonly IDBConnection $connection,
+		protected readonly IConfig $config,
+		protected readonly ITimeFactory $timeFactory,
+		protected readonly LoggerInterface $logger,
+		protected readonly IGenerator $generator,
 	) {
 	}
 
@@ -51,6 +53,7 @@ class JobList implements IJobList {
 		if (!$this->has($job, $argument)) {
 			$query->insert('jobs')
 				->values([
+					'id' => $query->createNamedParameter($this->generator->nextId(), IQueryBuilder::PARAM_INT),
 					'class' => $query->createNamedParameter($class),
 					'argument' => $query->createNamedParameter($argumentJson),
 					'argument_hash' => $query->createNamedParameter(hash('sha256', $argumentJson)),
@@ -104,7 +107,7 @@ class JobList implements IJobList {
 		}
 	}
 
-	public function removeById(int $id): void {
+	public function removeById(string $id): void {
 		$query = $this->connection->getQueryBuilder();
 		$query->delete('jobs')
 			->where($query->expr()->eq('id', $query->createNamedParameter($id, IQueryBuilder::PARAM_INT)));
@@ -282,7 +285,7 @@ class JobList implements IJobList {
 	/**
 	 * @return ?IJob The job matching the id. Beware that this object may be a singleton and may be modified by the next call to buildJob.
 	 */
-	public function getById(int $id): ?IJob {
+	public function getById(string $id): ?IJob {
 		$row = $this->getDetailsById($id);
 
 		if ($row) {
@@ -292,7 +295,7 @@ class JobList implements IJobList {
 		return null;
 	}
 
-	public function getDetailsById(int $id): ?array {
+	public function getDetailsById(string $id): ?array {
 		$query = $this->connection->getQueryBuilder();
 		$query->select('*')
 			->from('jobs')
@@ -320,7 +323,7 @@ class JobList implements IJobList {
 				// Try to load the job as a service
 				/** @var IJob $job */
 				$job = \OCP\Server::get($row['class']);
-			} catch (QueryException $e) {
+			} catch (ContainerExceptionInterface $e) {
 				if (class_exists($row['class'])) {
 					$class = $row['class'];
 					$job = new $class();
@@ -336,7 +339,7 @@ class JobList implements IJobList {
 				// This most likely means an invalid job was enqueued. We can ignore it.
 				return null;
 			}
-			$job->setId((int)$row['id']);
+			$job->setId($row['id']);
 			$job->setLastRun((int)$row['last_run']);
 			$job->setArgument(json_decode($row['argument'], true));
 			return $job;
@@ -351,7 +354,7 @@ class JobList implements IJobList {
 	 */
 	public function setLastJob(IJob $job): void {
 		$this->unlockJob($job);
-		$this->config->setAppValue('backgroundjob', 'lastjob', (string)$job->getId());
+		$this->config->setAppValue('backgroundjob', 'lastjob', $job->getId());
 	}
 
 	/**

@@ -63,10 +63,9 @@ interface IJobList {
 	/**
 	 * Remove a job from the list by id
 	 *
-	 * @param int $id
 	 * @since 30.0.0
 	 */
-	public function removeById(int $id): void;
+	public function removeById(string $id): void;
 
 	/**
 	 * check if a job is in the list
@@ -109,12 +108,12 @@ interface IJobList {
 	/**
 	 * @since 7.0.0
 	 */
-	public function getById(int $id): ?IJob;
+	public function getById(string $id): ?IJob;
 
 	/**
 	 * @since 23.0.0
 	 */
-	public function getDetailsById(int $id): ?array;
+	public function getDetailsById(string $id): ?array;
 
 	/**
 	 * set the job that was last ran to the current time
