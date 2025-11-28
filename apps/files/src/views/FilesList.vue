@@ -793,7 +793,12 @@ export default defineComponent({
 			if (window?.OCA?.Files?.Sidebar?.setActiveTab) {
 				window.OCA.Files.Sidebar.setActiveTab('sharing')
 			}
-			sidebarAction.exec(this.currentFolder, this.currentView!, this.currentFolder.path)
+			sidebarAction.exec({
+				nodes: [this.source],
+				view: this.currentView,
+				folder: this.currentFolder,
+				contents: this.dirContents,
+			})
 		},
 
 		toggleGridView() {
@@ -823,7 +828,12 @@ export default defineComponent({
 
 			const displayName = this.actionDisplayName(action)
 			try {
-				const success = await action.exec(this.source, this.dirContents, this.currentDir)
+				const success = await action.exec({
+					nodes: [this.source],
+					view: this.currentView,
+					folder: this.currentFolder,
+					contents: this.dirContents,
+				})
 				// If the action returns null, we stay silent
 				if (success === null || success === undefined) {
 					return

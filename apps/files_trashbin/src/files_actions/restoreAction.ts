@@ -26,7 +26,7 @@ export const restoreAction = new FileAction({
 
 	iconSvgInline: () => svgHistory,
 
-	enabled(nodes: Node[], view) {
+	enabled({ nodes, view }) {
 		// Only available in the trashbin view
 		if (view.id !== TRASHBIN_VIEW_ID) {
 			return false
@@ -39,7 +39,8 @@ export const restoreAction = new FileAction({
 				.every((permission) => Boolean(permission & Permission.READ))
 	},
 
-	async exec(node: Node) {
+	async exec({ nodes }) {
+		const node = nodes[0]
 		try {
 			const destination = generateRemoteUrl(encodePath(`dav/trashbin/${getCurrentUser()!.uid}/restore/${node.basename}`))
 			await axios.request({
@@ -63,8 +64,8 @@ export const restoreAction = new FileAction({
 		}
 	},
 
-	async execBatch(nodes: Node[], view: View, dir: string) {
-		return Promise.all(nodes.map((node) => this.exec(node, view, dir)))
+	async execBatch({ nodes, view, folder, contents }) {
+		return Promise.all(nodes.map((node) => this.exec({ nodes: [node], view, folder, contents })))
 	},
 
 	order: 1,

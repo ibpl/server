@@ -12,9 +12,10 @@ import type { ShareAttribute } from '../sharing.d.ts'
 
 import { getCurrentUser } from '@nextcloud/auth'
 import axios from '@nextcloud/axios'
-import { davRemoteURL, davRootPath, File, Folder, Permission } from '@nextcloud/files'
+import { File, Folder, Permission } from '@nextcloud/files'
 import { generateOcsUrl } from '@nextcloud/router'
 import logger from './logger.ts'
+import { getRemoteURL, getRootPath } from '@nextcloud/files/dav'
 
 const headers = {
 	'Content-Type': 'application/json',
@@ -66,7 +67,7 @@ async function ocsEntryToNode(ocsEntry: any): Promise<Folder | File | null> {
 
 		// Generate path and strip double slashes
 		const path = ocsEntry.path || ocsEntry.file_target || ocsEntry.name
-		const source = `${davRemoteURL}${davRootPath}/${path.replace(/^\/+/, '')}`
+		const source = `${getRemoteURL()}${getRootPath()}/${path.replace(/^\/+/, '')}`
 
 		let mtime = ocsEntry.item_mtime ? new Date((ocsEntry.item_mtime) * 1000) : undefined
 		// Prefer share time if more recent than item mtime
@@ -93,7 +94,7 @@ async function ocsEntryToNode(ocsEntry: any): Promise<Folder | File | null> {
 			mtime,
 			size: ocsEntry?.item_size,
 			permissions: ocsEntry?.item_permissions || ocsEntry?.permissions,
-			root: davRootPath,
+			root: getRootPath(),
 			attributes: {
 				...ocsEntry,
 				'has-preview': hasPreview,
@@ -271,7 +272,7 @@ export async function getContents(sharedWithYou = true, sharedWithOthers = true,
 	return {
 		folder: new Folder({
 			id: 0,
-			source: `${davRemoteURL}${davRootPath}`,
+			source: `${getRemoteURL()}${getRootPath()}`,
 			owner: getCurrentUser()?.uid || null,
 		}),
 		contents,

@@ -294,7 +294,7 @@ export default defineComponent({
 				})
 
 				// Dispatch action execution
-				const results = await action.execBatch(this.nodes, this.currentView, this.directory)
+				const results = await action.execBatch({ nodes: this.nodes, directory: this.directory })
 
 				// Check if all actions returned null
 				if (!results.some((result) => result !== null)) {

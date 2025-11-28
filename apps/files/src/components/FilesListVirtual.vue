@@ -311,9 +311,19 @@ export default defineComponent({
 			// Open the sidebar for the given URL fileid
 			// iif we just loaded the app.
 			const node = this.nodes.find((n) => n.fileid === fileId) as NcNode
-			if (node && sidebarAction?.enabled?.([node], this.currentView)) {
+			if (node && sidebarAction?.enabled?.({
+				nodes: [node],
+				folder: this.currentFolder,
+				view: this.currentView,
+				contents: this.nodes,
+			})) {
 				logger.debug('Opening sidebar on file ' + node.path, { node })
-				sidebarAction.exec(node, this.currentView, this.currentFolder.path)
+				sidebarAction.exec({
+					nodes: [node],
+					folder: this.currentFolder,
+					view: this.currentView,
+					contents: this.nodes,
+				})
 				return
 			}
 			logger.warn(`Failed to open sidebar on file ${fileId}, file isn't cached yet !`, { fileId, node })
@@ -393,7 +403,12 @@ export default defineComponent({
 				// So if there is an enabled default action, so execute it
 				if (defaultAction) {
 					logger.debug('Opening file ' + node.path, { node })
-					return await defaultAction.exec(node, this.currentView, this.currentFolder.path)
+					return await defaultAction.exec({
+						nodes: [node],
+						view: this.currentView,
+						folder: this.currentFolder,
+						contents: this.nodes,
+					})
 				}
 			}
 			// The file is either a folder or has no default action other than downloading

@@ -208,7 +208,7 @@ export default defineComponent({
 			}
 			return this.enabledFileActions.filter((action) => {
 				try {
-					return action?.inline?.(this.source, this.currentView)
+					return action?.inline?.({ nodes: [this.source], view: this.currentView }) === true
 				} catch (error) {
 					logger.error('Error while checking if action is inline', { action, error })
 					return false

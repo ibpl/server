@@ -122,7 +122,7 @@ export default defineComponent({
 		},
 
 		isActive() {
-			return String(this.fileid) === String(this.currentFileId)
+			return String(this.fileid) === String(this.activeNode.fileid)
 		},
 
 		/**
@@ -378,14 +378,29 @@ export default defineComponent({
 			event.preventDefault()
 			event.stopPropagation()
 			// Execute the first default action if any
-			this.defaultFileAction.exec(this.source, this.currentView, this.currentDir)
+			this.defaultFileAction.exec({
+				nodes: [this.source],
+				folder: this.activeFolder!,
+				contents: this.nodes,
+				view: this.activeView!,
+			})
 		},
 
 		openDetailsIfAvailable(event) {
 			event.preventDefault()
 			event.stopPropagation()
-			if (sidebarAction?.enabled?.([this.source], this.currentView)) {
-				sidebarAction.exec(this.source, this.currentView, this.currentDir)
+			if (sidebarAction?.enabled?.({
+				nodes: [this.source],
+				folder: this.activeFolder!,
+				contents: this.nodes,
+				view: this.activeView!,
+			})) {
+				sidebarAction.exec({
+					nodes: [this.source],
+					folder: this.activeFolder!,
+					contents: this.nodes,
+					view: this.activeView!,
+				})
 			}
 		},
 
