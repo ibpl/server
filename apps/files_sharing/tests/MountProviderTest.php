@@ -148,7 +148,6 @@ class MountProviderTest extends \Test\TestCase {
 				['user1', IShare::TYPE_CIRCLE, null, -1, 0, $circleShares],
 				['user1', IShare::TYPE_ROOM, null, -1, 0, $roomShares],
 				['user1', IShare::TYPE_DECK, null, -1, 0, $deckShares],
-				['user1', IShare::TYPE_SCIENCEMESH, null, -1, 0, $scienceMeshShares],
 			]);
 
 		$this->shareManager->expects($this->any())
@@ -365,7 +364,6 @@ class MountProviderTest extends \Test\TestCase {
 				['user1', IShare::TYPE_CIRCLE, null, -1, 0, $circleShares],
 				['user1', IShare::TYPE_ROOM, null, -1, 0, $roomShares],
 				['user1', IShare::TYPE_DECK, null, -1, 0, $deckShares],
-				['user1', IShare::TYPE_SCIENCEMESH, null, -1, 0, $scienceMeshShares],
 			]);
 
 		$this->shareManager->expects($this->any())

@@ -52,7 +52,6 @@ class MountProvider implements IMountProvider {
 			$this->shareManager->getSharedWith($user->getUID(), IShare::TYPE_CIRCLE, null, -1),
 			$this->shareManager->getSharedWith($user->getUID(), IShare::TYPE_ROOM, null, -1),
 			$this->shareManager->getSharedWith($user->getUID(), IShare::TYPE_DECK, null, -1),
-			$this->shareManager->getSharedWith($user->getUID(), IShare::TYPE_SCIENCEMESH, null, -1),
 		);
 
 		// filter out excluded shares and group shares that includes self
