@@ -128,7 +128,12 @@ describe('Open sidebar action exec tests', () => {
 			mime: 'text/plain',
 		})
 
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 		// Silent action
 		expect(exec).toBe(null)
 		expect(openMock).toBeCalledWith('/foobar.txt')
@@ -157,7 +162,12 @@ describe('Open sidebar action exec tests', () => {
 			mime: 'httpd/unix-directory',
 		})
 
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 		// Silent action
 		expect(exec).toBe(null)
 		expect(openMock).toBeCalledWith('/foobar')
@@ -186,7 +196,12 @@ describe('Open sidebar action exec tests', () => {
 			mime: 'text/plain',
 		})
 
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 		expect(exec).toBe(false)
 		expect(openMock).toBeCalledTimes(1)
 		expect(logger.error).toBeCalledTimes(1)

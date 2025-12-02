@@ -138,7 +138,12 @@ describe('View in folder action execute tests', () => {
 			permissions: Permission.READ,
 		})
 
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 		// Silent action
 		expect(exec).toBe(null)
 		expect(goToRouteMock).toBeCalledTimes(1)
@@ -158,7 +163,12 @@ describe('View in folder action execute tests', () => {
 			permissions: Permission.READ,
 		})
 
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 		// Silent action
 		expect(exec).toBe(null)
 		expect(goToRouteMock).toBeCalledTimes(1)
@@ -169,7 +179,13 @@ describe('View in folder action execute tests', () => {
 		const goToRouteMock = vi.fn()
 		window.OCP = { Files: { Router: { goToRoute: goToRouteMock } } }
 
-		const exec = await action.exec(null as unknown as Node, view, '/')
+		const exec = await action.exec({
+			// @ts-expect-error We want to test without node
+			nodes: [],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 		expect(exec).toBe(false)
 		expect(goToRouteMock).toBeCalledTimes(0)
 	})
@@ -184,7 +200,12 @@ describe('View in folder action execute tests', () => {
 			owner: 'admin',
 		})
 
-		const exec = await action.exec(folder, view, '/')
+		const exec = await action.exec({
+			nodes: [folder],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 		expect(exec).toBe(false)
 		expect(goToRouteMock).toBeCalledTimes(0)
 	})

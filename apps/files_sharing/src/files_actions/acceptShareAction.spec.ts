@@ -1,4 +1,4 @@
-import type { View } from '@nextcloud/files'
+import type { Folder, View } from '@nextcloud/files'
 
 import axios from '@nextcloud/axios'
 import * as eventBus from '@nextcloud/event-bus'
@@ -116,7 +116,12 @@ describe('Accept share action execute tests', () => {
 			},
 		})
 
-		const exec = await action.exec(file, pendingShareView, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view: pendingShareView,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(exec).toBe(true)
 		expect(axios.post).toBeCalledTimes(1)
@@ -143,7 +148,12 @@ describe('Accept share action execute tests', () => {
 			},
 		})
 
-		const exec = await action.exec(file, pendingShareView, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view: pendingShareView,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(exec).toBe(true)
 		expect(axios.post).toBeCalledTimes(1)
@@ -210,7 +220,12 @@ describe('Accept share action execute tests', () => {
 			},
 		})
 
-		const exec = await action.exec(file, pendingShareView, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view: pendingShareView,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(exec).toBe(false)
 		expect(axios.post).toBeCalledTimes(1)

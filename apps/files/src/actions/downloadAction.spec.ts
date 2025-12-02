@@ -109,7 +109,12 @@ describe('Download action execute tests', () => {
 			permissions: Permission.READ,
 		})
 
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		// Silent action
 		expect(exec).toBe(null)
@@ -163,7 +168,12 @@ describe('Download action execute tests', () => {
 			permissions: Permission.READ,
 		})
 
-		const exec = await action.exec(folder, view, '/')
+		const exec = await action.exec({
+			nodes: [folder],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		// Silent action
 		expect(exec).toBe(null)
@@ -208,7 +218,12 @@ describe('Download action execute tests', () => {
 		vi.spyOn(axios, 'head').mockRejectedValue(new Error('File not found'))
 
 		const errorSpy = vi.spyOn(dialogs, 'showError')
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 		expect(exec).toBe(null)
 		expect(errorSpy).toHaveBeenCalledWith('The requested file is not available.')
 		expect(link.click).not.toHaveBeenCalled()

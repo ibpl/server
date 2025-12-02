@@ -141,7 +141,12 @@ describe('Inline unread comments action execute tests', () => {
 			},
 		})
 
-		const result = await action.exec!(file, view, '/')
+		const result = await action.exec!({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(result).toBe(null)
 		expect(setActiveTabMock).toBeCalledWith('comments')
@@ -175,7 +180,12 @@ describe('Inline unread comments action execute tests', () => {
 			},
 		})
 
-		const result = await action.exec!(file, view, '/')
+		const result = await action.exec!({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(result).toBe(false)
 		expect(setActiveTabMock).toBeCalledWith('comments')

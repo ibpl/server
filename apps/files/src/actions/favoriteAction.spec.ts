@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import type { View } from '@nextcloud/files'
+import type { Folder, View } from '@nextcloud/files'
 
 import axios from '@nextcloud/axios'
 import * as eventBus from '@nextcloud/event-bus'
@@ -149,7 +149,12 @@ describe('Favorite action execute tests', () => {
 			mime: 'text/plain',
 		})
 
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(exec).toBe(true)
 
@@ -177,7 +182,12 @@ describe('Favorite action execute tests', () => {
 			},
 		})
 
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(exec).toBe(true)
 
@@ -205,7 +215,12 @@ describe('Favorite action execute tests', () => {
 			},
 		})
 
-		const exec = await action.exec(file, favoriteView, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view: favoriteView,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(exec).toBe(true)
 
@@ -235,7 +250,12 @@ describe('Favorite action execute tests', () => {
 			},
 		})
 
-		const exec = await action.exec(file, favoriteView, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view: favoriteView,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(exec).toBe(true)
 
@@ -266,7 +286,12 @@ describe('Favorite action execute tests', () => {
 			},
 		})
 
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(exec).toBe(false)
 
@@ -298,7 +323,12 @@ describe('Favorite action execute tests', () => {
 			},
 		})
 
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(exec).toBe(false)
 

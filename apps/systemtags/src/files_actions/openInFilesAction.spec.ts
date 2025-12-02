@@ -95,7 +95,12 @@ describe('Open in files action execute tests', () => {
 			permissions: Permission.ALL,
 		})
 
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		// Silent action
 		expect(exec).toBe(null)
@@ -116,7 +121,12 @@ describe('Open in files action execute tests', () => {
 			permissions: Permission.ALL,
 		})
 
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		// Silent action
 		expect(exec).toBe(null)

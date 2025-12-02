@@ -144,7 +144,12 @@ describe('Reject share action execute tests', () => {
 			},
 		})
 
-		const exec = await action.exec(file, pendingShareView, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view: pendingShareView,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(exec).toBe(true)
 		expect(axios.delete).toBeCalledTimes(1)
@@ -171,7 +176,12 @@ describe('Reject share action execute tests', () => {
 			},
 		})
 
-		const exec = await action.exec(file, pendingShareView, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view: pendingShareView,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(exec).toBe(true)
 		expect(axios.delete).toBeCalledTimes(1)
@@ -238,7 +248,12 @@ describe('Reject share action execute tests', () => {
 			},
 		})
 
-		const exec = await action.exec(file, pendingShareView, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view: pendingShareView,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(exec).toBe(false)
 		expect(axios.delete).toBeCalledTimes(1)

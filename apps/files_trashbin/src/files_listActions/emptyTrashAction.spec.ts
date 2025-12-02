@@ -129,7 +129,12 @@ describe('files_trashbin: file list actions - empty trashbin', () => {
 			const apiSpy = vi.spyOn(api, 'emptyTrash')
 
 			dialogBuilder.build.mockImplementationOnce(() => ({ show: async () => false }))
-			expect(await emptyTrashAction.exec(trashbinView, nodes, root)).toBe(null)
+			expect(await emptyTrashAction.exec({
+				view: trashbinView,
+				nodes,
+				folder: root,
+				contents: [],
+			})).toBe(null)
 			expect(apiSpy).not.toBeCalled()
 		})
 
@@ -143,7 +148,12 @@ describe('files_trashbin: file list actions - empty trashbin', () => {
 					await cancel.callback()
 				},
 			}))
-			expect(await emptyTrashAction.exec(trashbinView, nodes, root)).toBe(null)
+			expect(await emptyTrashAction.exec({
+				view: trashbinView,
+				nodes,
+				folder: root,
+				contents: [],
+			})).toBe(null)
 			expect(apiSpy).not.toBeCalled()
 		})
 
@@ -159,7 +169,12 @@ describe('files_trashbin: file list actions - empty trashbin', () => {
 					await cancel.callback()
 				},
 			}))
-			expect(await emptyTrashAction.exec(trashbinView, nodes, root)).toBe(null)
+			expect(await emptyTrashAction.exec({
+				view: trashbinView,
+				nodes,
+				folder: root,
+				contents: [],
+			})).toBe(null)
 			expect(apiSpy).toBeCalled()
 			expect(dialogSpy).not.toBeCalled()
 			expect(eventBusSpy).toBeCalledWith('files:node:deleted', nodes[0])
@@ -177,7 +192,12 @@ describe('files_trashbin: file list actions - empty trashbin', () => {
 					await cancel.callback()
 				},
 			}))
-			expect(await emptyTrashAction.exec(trashbinView, nodes, root)).toBe(null)
+			expect(await emptyTrashAction.exec({
+				view: trashbinView,
+				nodes,
+				folder: root,
+				contents: [],
+			})).toBe(null)
 			expect(apiSpy).toBeCalled()
 			expect(dialogSpy).not.toBeCalled()
 			expect(eventBusSpy).not.toBeCalled()

@@ -94,7 +94,12 @@ describe('Rename action exec tests', () => {
 			mime: 'text/plain',
 		})
 
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		// Silent action
 		expect(exec).toBe(null)

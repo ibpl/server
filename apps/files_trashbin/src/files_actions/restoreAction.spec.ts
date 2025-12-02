@@ -106,7 +106,12 @@ describe('files_trashbin: file actions - restore action', () => {
 		it('send restore request', async () => {
 			const node = new Folder({ owner: 'test', source: 'https://example.com/remote.php/dav/trashbin/test/folder', root: '/trashbin/test/', permissions: PERMISSION_ALL })
 
-			expect(await restoreAction.exec(node, trashbinView, '/')).toBe(true)
+			expect(await restoreAction.exec({
+				nodes: [node],
+				view: trashbinView,
+				folder: {} as Folder,
+				contents: [],
+			})).toBe(true)
 			expect(axiosMock.request).toBeCalled()
 			expect(axiosMock.request.mock.calls[0]![0].method).toBe('MOVE')
 			expect(axiosMock.request.mock.calls[0]![0].url).toBe(node.encodedSource)
@@ -118,7 +123,12 @@ describe('files_trashbin: file actions - restore action', () => {
 
 			const emitSpy = vi.spyOn(ncEventBus, 'emit')
 
-			expect(await restoreAction.exec(node, trashbinView, '/')).toBe(true)
+			expect(await restoreAction.exec({
+				nodes: [node],
+				view: trashbinView,
+				folder: {} as Folder,
+				contents: [],
+			})).toBe(true)
 			expect(axiosMock.request).toBeCalled()
 			expect(emitSpy).toBeCalled()
 			expect(emitSpy).toBeCalledWith('files:node:deleted', node)
@@ -132,7 +142,12 @@ describe('files_trashbin: file actions - restore action', () => {
 			})
 			const emitSpy = vi.spyOn(ncEventBus, 'emit')
 
-			expect(await restoreAction.exec(node, trashbinView, '/')).toBe(false)
+			expect(await restoreAction.exec({
+				nodes: [node],
+				view: trashbinView,
+				folder: {} as Folder,
+				contents: [],
+			})).toBe(false)
 			expect(axiosMock.request).toBeCalled()
 			expect(emitSpy).not.toBeCalled()
 			expect(errorSpy).toBeCalled()

@@ -132,7 +132,12 @@ describe('Open locally action execute tests', () => {
 			permissions: Permission.UPDATE,
 		})
 
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(spyShowDialog).toBeCalled()
 
@@ -156,7 +161,12 @@ describe('Open locally action execute tests', () => {
 			permissions: Permission.UPDATE,
 		})
 
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(spyShowDialog).toBeCalled()
 

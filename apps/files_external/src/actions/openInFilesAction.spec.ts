@@ -92,7 +92,12 @@ describe('Open in files action execute tests', () => {
 			},
 		})
 
-		const exec = await action.exec(storage, externalStorageView, '/')
+		const exec = await action.exec({
+			nodes: [storage],
+			view: externalStorageView,
+			folder: {} as Folder,
+			contents: [],
+		})
 		// Silent action
 		expect(exec).toBe(null)
 		expect(goToRouteMock).toBeCalledTimes(1)
@@ -116,7 +121,12 @@ describe('Open in files action execute tests', () => {
 			},
 		})
 
-		const exec = await action.exec(storage, externalStorageView, '/')
+		const exec = await action.exec({
+			nodes: [storage],
+			view: externalStorageView,
+			folder: {} as Folder,
+			contents: [],
+		})
 		// Silent action
 		expect(exec).toBe(null)
 		expect(confirmMock).toBeCalledTimes(1)

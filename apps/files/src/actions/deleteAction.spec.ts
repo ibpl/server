@@ -221,7 +221,12 @@ describe('Delete action execute tests', () => {
 			permissions: Permission.READ | Permission.UPDATE | Permission.DELETE,
 		})
 
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(exec).toBe(true)
 		expect(axios.delete).toBeCalledTimes(1)
@@ -403,7 +408,12 @@ describe('Delete action execute tests', () => {
 			permissions: Permission.READ | Permission.UPDATE | Permission.DELETE,
 		})
 
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(exec).toBe(false)
 		expect(axios.delete).toBeCalledTimes(1)

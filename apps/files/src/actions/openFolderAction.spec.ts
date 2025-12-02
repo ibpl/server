@@ -113,7 +113,12 @@ describe('Open folder action execute tests', () => {
 			permissions: Permission.READ,
 		})
 
-		const exec = await action.exec(folder, view, '/')
+		const exec = await action.exec({
+			nodes: [folder],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 		// Silent action
 		expect(exec).toBe(null)
 		expect(goToRouteMock).toBeCalledTimes(1)
@@ -122,17 +127,21 @@ describe('Open folder action execute tests', () => {
 
 	test('Open folder fails without node', async () => {
 		const goToRouteMock = vi.fn()
-		// @ts-expect-error We only mock what needed, we do not need Files.Router.goTo or Files.Navigation
 		window.OCP = { Files: { Router: { goToRoute: goToRouteMock } } }
 
-		const exec = await action.exec(null as unknown as Node, view, '/')
+		const exec = await action.exec({
+			// @ts-expect-error We want to test without node
+			nodes: [],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 		expect(exec).toBe(false)
 		expect(goToRouteMock).toBeCalledTimes(0)
 	})
 
 	test('Open folder fails without Folder', async () => {
 		const goToRouteMock = vi.fn()
-		// @ts-expect-error We only mock what needed, we do not need Files.Router.goTo or Files.Navigation
 		window.OCP = { Files: { Router: { goToRoute: goToRouteMock } } }
 
 		const file = new File({
@@ -142,7 +151,12 @@ describe('Open folder action execute tests', () => {
 			mime: 'text/plain',
 		})
 
-		const exec = await action.exec(file, view, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 		expect(exec).toBe(false)
 		expect(goToRouteMock).toBeCalledTimes(0)
 	})

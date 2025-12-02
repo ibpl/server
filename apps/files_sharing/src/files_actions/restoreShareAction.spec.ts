@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: 2023 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-import type { View } from '@nextcloud/files'
+import type { Folder, View } from '@nextcloud/files'
 
 import axios from '@nextcloud/axios'
 import * as eventBus from '@nextcloud/event-bus'
@@ -117,7 +117,12 @@ describe('Restore share action execute tests', () => {
 			},
 		})
 
-		const exec = await action.exec(file, deletedShareView, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view: deletedShareView,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(exec).toBe(true)
 		expect(axios.post).toBeCalledTimes(1)
@@ -183,7 +188,12 @@ describe('Restore share action execute tests', () => {
 			},
 		})
 
-		const exec = await action.exec(file, deletedShareView, '/')
+		const exec = await action.exec({
+			nodes: [file],
+			view: deletedShareView,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(exec).toBe(false)
 		expect(axios.post).toBeCalledTimes(1)
