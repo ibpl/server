@@ -517,9 +517,8 @@ class Directory extends Node implements
 			throw new NotFound();
 		}
 
-		$destinationPath = $this->getPath() . '/' . $path;
-		$destinationDir = $this->getPath();
-		$destinationName = basename($destinationPath);
+		$destinationPath = PathHelper::normalizePath($this->getPath() . '/' . $path);
+		$destinationDir = dirname($destinationPath);
 
 		try {
 			$this->fileView->verifyPath($destinationDir, $destinationName, true);
@@ -533,7 +532,7 @@ class Directory extends Node implements
 		}
 
 		if (!$info) {
-			throw new \Sabre\DAV\Exception\NotFound('File with name ' . $fullPath
+			throw new \Sabre\DAV\Exception\NotFound('File with name ' . $destinationPath
 				. ' could not be located');
 		}
 
@@ -559,11 +558,9 @@ class Directory extends Node implements
 		$this->tree?->cacheNode($node);
 
 		// recurse upwards until the root (for backwards-compatibility)
-		// no need to get child information
 		if ($destinationDir !== '') {
-			/** @var Folder $scanNode */
-			$scanNode = $node->getNode();
-			$scanPath = $destinationName;
+			$scanNode = $node->getNode()->getParent();
+			$scanPath = basename($destinationDir);
 			while ($parent = $scanNode->getParent()) {
 				$parent->get($scanPath);
 				$scanPath = $parent->getName();
