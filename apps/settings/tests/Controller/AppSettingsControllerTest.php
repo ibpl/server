@@ -164,6 +164,11 @@ class AppSettingsControllerTest extends TestCase {
 			->method('getSystemValueBool')
 			->with('appstoreenabled', true)
 			->willReturn(true);
+		$this->config
+			->expects($this->once())
+			->method('getAppValue')
+			->with('settings', 'display_documentation_link', 'true')
+			->willReturn('true');
 		$this->navigationManager
 			->expects($this->once())
 			->method('setActiveEntry')
@@ -209,6 +214,11 @@ class AppSettingsControllerTest extends TestCase {
 			->method('getSystemValueBool')
 			->with('appstoreenabled', true)
 			->willReturn(false);
+		$this->config
+			->expects($this->once())
+			->method('getAppValue')
+			->with('settings', 'display_documentation_link', 'true')
+			->willReturn('true');
 		$this->navigationManager
 			->expects($this->once())
 			->method('setActiveEntry')
@@ -242,5 +252,89 @@ class AppSettingsControllerTest extends TestCase {
 		$expected->setContentSecurityPolicy($policy);
 
 		$this->assertEquals($expected, $this->appSettingsController->viewApps());
+	}
+
+	public function testDeveloperDocumentationLinkHiddenWhenConfigured(): void {
+		$this->installer->expects($this->any())
+			->method('isUpdateAvailable')
+			->willReturn(false);
+		$this->bundleFetcher->expects($this->once())->method('getBundles')->willReturn([]);
+		$this->config
+			->expects($this->once())
+			->method('getSystemValueBool')
+			->with('appstoreenabled', true)
+			->willReturn(true);
+		$this->config
+			->expects($this->once())
+			->method('getAppValue')
+			->with('settings', 'display_documentation_link', 'true')
+			->willReturn('false');
+		$this->navigationManager
+			->expects($this->once())
+			->method('setActiveEntry')
+			->with('core_apps');
+
+		// When display_documentation_link is false, linkToDocs should not be called
+		$this->urlGenerator
+			->expects($this->never())
+			->method('linkToDocs');
+
+		$providedStates = [];
+		$this->initialState
+			->expects($this->exactly(4))
+			->method('provideInitialState')
+			->willReturnCallback(function ($key, $value) use (&$providedStates) {
+				$providedStates[$key] = $value;
+			});
+
+		$this->appSettingsController->viewApps();
+
+		// Assert that the developer docs state was provided with an empty string
+		$this->assertArrayHasKey('appstoreDeveloperDocs', $providedStates);
+		$this->assertEquals('', $providedStates['appstoreDeveloperDocs']);
+	}
+
+	public function testDeveloperDocumentationLinkShownByDefault(): void {
+		$this->installer->expects($this->any())
+			->method('isUpdateAvailable')
+			->willReturn(false);
+		$this->bundleFetcher->expects($this->once())->method('getBundles')->willReturn([]);
+		$this->config
+			->expects($this->once())
+			->method('getSystemValueBool')
+			->with('appstoreenabled', true)
+			->willReturn(true);
+		$this->config
+			->expects($this->once())
+			->method('getAppValue')
+			->with('settings', 'display_documentation_link', 'true')
+			->willReturn('true');
+		$this->navigationManager
+			->expects($this->once())
+			->method('setActiveEntry')
+			->with('core_apps');
+
+		$developerDocsUrl = 'https://docs.nextcloud.com/server/latest/developer_manual/';
+
+		// When display_documentation_link is true (default), linkToDocs should be called
+		$this->urlGenerator
+			->expects($this->once())
+			->method('linkToDocs')
+			->with('developer-manual')
+			->willReturn($developerDocsUrl);
+
+		$providedStates = [];
+		$this->initialState
+			->expects($this->exactly(4))
+			->method('provideInitialState')
+			->willReturnCallback(function ($key, $value) use (&$providedStates) {
+				$providedStates[$key] = $value;
+			});
+
+		$this->appSettingsController->viewApps();
+
+		// Assert that the developer docs state was provided with the correct URL
+		$this->assertArrayHasKey('appstoreDeveloperDocs', $providedStates);
+		$this->assertEquals($developerDocsUrl, $providedStates['appstoreDeveloperDocs']);
 	}
 }
