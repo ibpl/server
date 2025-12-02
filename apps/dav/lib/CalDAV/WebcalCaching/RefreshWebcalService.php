@@ -71,6 +71,10 @@ class RefreshWebcalService {
 
 				// Some calendar providers (e.g. Google, MS) use very long UIDs
 				if (strlen($vBase->UID->getValue()) > 512) {
+					$this->logger->warning('Skipping calendar object with overly long UID from subscription "{subscriptionId}"', [
+						'subscriptionId' => $subscription['id'],
+						'uid' => $vBase->UID->getValue(),
+					]);
 					continue;
 				}
 

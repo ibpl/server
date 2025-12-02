@@ -313,8 +313,8 @@ class RefreshWebcalServiceTest extends TestCase {
 				],
 			]);
 
-		// Create a UID that is longer than 255 characters
-		$longUid = str_repeat('a', 256);
+		// Create a UID that is longer than 512 characters
+		$longUid = str_repeat('a', 513);
 		$body = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Test//Test//EN\r\nBEGIN:VEVENT\r\nUID:$longUid\r\nDTSTAMP:20160218T133704Z\r\nDTSTART:20160218T133704Z\r\nSUMMARY:Event with long UID\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n";
 		$stream = $this->createStreamFromString($body);
 
