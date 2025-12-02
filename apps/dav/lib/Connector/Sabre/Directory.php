@@ -521,19 +521,16 @@ class Directory extends Node implements
 		$destinationDir = dirname($destinationPath);
 
 		try {
-			$this->fileView->verifyPath($destinationDir, $destinationName, true);
-			$info = $this->fileView->getFileInfo($destinationPath);
-		} catch (StorageNotAvailableException $e) {
-			throw new \Sabre\DAV\Exception\ServiceUnavailable($e->getMessage(), 0, $e);
-		} catch (InvalidPathException $ex) {
-			throw new InvalidPath($ex->getMessage(), false, $ex);
-		} catch (ForbiddenException $e) {
-			throw new \Sabre\DAV\Exception\Forbidden($e->getMessage(), $e->getCode(), $e);
-		}
-
-		if (!$info) {
+			/** @var File|Folder $internalNode */
+			$internalNode = $this->getNode()->get($path);
+			$info = $internalNode->getFileInfo();
+		} catch (NotFoundException $e) {
 			throw new \Sabre\DAV\Exception\NotFound('File with name ' . $destinationPath
 				. ' could not be located');
+		} catch (StorageNotAvailableException $e) {
+			throw new \Sabre\DAV\Exception\ServiceUnavailable($e->getMessage(), 0, $e);
+		} catch (NotPermittedException $ex) {
+			throw new InvalidPath($ex->getMessage(), false, $ex);
 		}
 
 		// if not in a public share with no read permissions, throw Forbidden
