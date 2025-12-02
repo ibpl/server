@@ -23,7 +23,7 @@ export const action = new FileAction({
 		// accessible in the files app.
 	].includes(view.id),
 
-	async exec(node: Node) {
+	async exec({ nodes }) {
 		const isFolder = node.type === FileType.Folder
 
 		window.OCP.Files.Router.goToRoute(

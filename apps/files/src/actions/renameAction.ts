@@ -44,7 +44,7 @@ export const action = new FileAction({
 			&& Boolean(parentPermissions & Permission.CREATE)
 	},
 
-	async exec(node: Node) {
+	async exec({ nodes }) {
 		// Renaming is a built-in feature of the files app
 		emit('files:node:rename', node)
 		return null

@@ -17,7 +17,7 @@ export const action = new FileAction({
 	},
 	iconSvgInline: () => FolderSvg,
 
-	enabled(nodes: Node[]) {
+	enabled({ nodes }) {
 		// Only works on single node
 		if (nodes.length !== 1) {
 			return false

@@ -259,7 +259,12 @@ describe('Delete action execute tests', () => {
 			permissions: Permission.READ | Permission.UPDATE | Permission.DELETE,
 		})
 
-		const exec = await action.execBatch!([file1, file2], view, '/')
+		const exec = await action.execBatch!({
+			nodes: [file1, file2],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		// Not enough nodes to trigger a confirmation dialog
 		expect(confirmMock).toBeCalledTimes(0)
@@ -322,7 +327,12 @@ describe('Delete action execute tests', () => {
 			permissions: Permission.READ | Permission.UPDATE | Permission.DELETE,
 		})
 
-		const exec = await action.execBatch!([file1, file2, file3, file4, file5], view, '/')
+		const exec = await action.execBatch!({
+			nodes: [file1, file2, file3, file4, file5],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		// Enough nodes to trigger a confirmation dialog
 		expect(confirmMock).toBeCalledTimes(1)
@@ -376,7 +386,12 @@ describe('Delete action execute tests', () => {
 			permissions: Permission.READ | Permission.UPDATE | Permission.DELETE,
 		})
 
-		const exec = await action.execBatch!([file1, file2], view, '/')
+		const exec = await action.execBatch!({
+			nodes: [file1, file2],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		// Will trigger a confirmation dialog because trashbin app is disabled
 		expect(confirmMock).toBeCalledTimes(1)
@@ -447,7 +462,12 @@ describe('Delete action execute tests', () => {
 			permissions: Permission.READ | Permission.UPDATE | Permission.DELETE,
 		})
 
-		const exec = await action.execBatch!([file1], view, '/')
+		const exec = await action.execBatch!({
+			nodes: [file1],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		expect(confirmMock).toBeCalledTimes(1)
 

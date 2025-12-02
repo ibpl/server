@@ -66,7 +66,7 @@ export const action = new FileAction({
 	displayName: () => t('files', 'Enter missing credentials'),
 	iconSvgInline: () => LoginSvg,
 
-	enabled: (nodes: Node[]) => {
+	enabled: ({ nodes }) => {
 		// Only works on single node
 		if (nodes.length !== 1) {
 			return false
@@ -85,7 +85,7 @@ export const action = new FileAction({
 		return false
 	},
 
-	async exec(node: Node) {
+	async exec({ nodes }) {
 		const { login, password } = await new Promise<CredentialResponse>((resolve) => spawnDialog(
 			defineAsyncComponent(() => import('../views/CredentialsDialog.vue')),
 			{},

@@ -24,7 +24,7 @@ export const action = new FileAction({
 	iconSvgInline: () => LaptopSvg,
 
 	// Only works on single files
-	enabled(nodes: Node[]) {
+	enabled({ nodes }) {
 		// Only works on single node
 		if (nodes.length !== 1) {
 			return false
@@ -38,7 +38,7 @@ export const action = new FileAction({
 		return isSyncable(nodes[0])
 	},
 
-	async exec(node: Node) {
+	async exec({ nodes }) {
 		await attemptOpenLocalClient(node.path)
 		return null
 	},

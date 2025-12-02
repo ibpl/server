@@ -50,7 +50,7 @@ export const action = new FileAction({
 		return node.type === FileType.File
 	},
 
-	async exec(node: Node) {
+	async exec({ nodes }) {
 		if (!node || node.type !== FileType.File) {
 			return false
 		}

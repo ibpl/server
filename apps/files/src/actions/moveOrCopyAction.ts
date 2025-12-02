@@ -306,7 +306,7 @@ async function openFilePickerForAction(
 export const ACTION_COPY_MOVE = 'move-copy'
 export const action = new FileAction({
 	id: ACTION_COPY_MOVE,
-	displayName(nodes: Node[]) {
+	displayName({ nodes }) {
 		switch (getActionForNodes(nodes)) {
 			case MoveCopyAction.MOVE:
 				return t('files', 'Move')
@@ -317,7 +317,7 @@ export const action = new FileAction({
 		}
 	},
 	iconSvgInline: () => FolderMoveSvg,
-	enabled(nodes: Node[], view: View) {
+	enabled({ nodes, view }): boolean {
 		// We can not copy or move in single file shares
 		if (view.id === 'public-file-share') {
 			return false
@@ -329,11 +329,11 @@ export const action = new FileAction({
 		return nodes.length > 0 && (canMove(nodes) || canCopy(nodes))
 	},
 
-	async exec(node: Node, view: View, dir: string) {
-		const action = getActionForNodes([node])
+	async exec({ nodes, folder }) {
+		const action = getActionForNodes([nodes[0]])
 		let result
 		try {
-			result = await openFilePickerForAction(action, dir, [node])
+			result = await openFilePickerForAction(action, folder.path, [nodes[0]])
 		} catch (e) {
 			logger.error(e as Error)
 			return false
@@ -343,7 +343,7 @@ export const action = new FileAction({
 		}
 
 		try {
-			await handleCopyMoveNodeTo(node, result.destination, result.action)
+			await handleCopyMoveNodeTo(nodes[0], result.destination, result.action)
 			return true
 		} catch (error) {
 			if (error instanceof Error && !!error.message) {
@@ -355,9 +355,9 @@ export const action = new FileAction({
 		}
 	},
 
-	async execBatch(nodes: Node[], view: View, dir: string) {
+	async execBatch({ nodes, folder }) {
 		const action = getActionForNodes(nodes)
-		const result = await openFilePickerForAction(action, dir, nodes)
+		const result = await openFilePickerForAction(action, folder.path, nodes)
 		// Handle cancellation silently
 		if (result === false) {
 			return nodes.map(() => null)

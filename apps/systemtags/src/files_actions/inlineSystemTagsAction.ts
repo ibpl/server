@@ -24,7 +24,7 @@ export const action = new FileAction({
 	displayName: () => '',
 	iconSvgInline: () => '',
 
-	enabled(nodes: Node[]) {
+	enabled({ nodes }) {
 		// Only show the action on single nodes
 		if (nodes.length !== 1) {
 			return false
@@ -141,7 +141,7 @@ function renderTag(tag: string, isMore = false): HTMLElement {
  *
  * @param node
  */
-async function renderInline(node: Node): Promise<HTMLElement> {
+async function renderInline({ nodes }: { nodes: Node[] }): Promise<HTMLElement> {
 	// Ensure we have the system tags as an array
 	const tags = getNodeSystemTags(node)
 

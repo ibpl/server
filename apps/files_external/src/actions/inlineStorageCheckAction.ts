@@ -23,7 +23,7 @@ export const action = new FileAction({
 	displayName: () => '',
 	iconSvgInline: () => '',
 
-	enabled: (nodes: Node[]) => {
+	enabled: ({ nodes }) => {
 		return nodes.every((node) => isNodeExternalStorage(node) === true)
 	},
 	exec: async () => null,

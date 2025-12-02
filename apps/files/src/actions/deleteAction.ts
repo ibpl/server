@@ -26,7 +26,7 @@ export const ACTION_DELETE = 'delete'
 export const action = new FileAction({
 	id: ACTION_DELETE,
 	displayName,
-	iconSvgInline: (nodes: Node[]) => {
+	enabled({ nodes }) => {
 		if (canUnshareOnly(nodes)) {
 			return CloseSvg
 		}
@@ -51,7 +51,7 @@ export const action = new FileAction({
 			.every((permission) => (permission & Permission.DELETE) !== 0)
 	},
 
-	async exec(node: Node, view: View) {
+	async exec({ nodes, view }): Promise<boolean | null> {
 		try {
 			let confirm = true
 
@@ -62,7 +62,7 @@ export const action = new FileAction({
 			const isCalledFromEventListener = callStack.toLocaleLowerCase().includes('keydown')
 
 			if (shouldAskForConfirmation() || isCalledFromEventListener) {
-				confirm = await askConfirmation([node], view)
+				confirm = await askConfirmation([nodes[0]], view)
 			}
 
 			// If the user cancels the deletion, we don't want to do anything
@@ -70,7 +70,7 @@ export const action = new FileAction({
 				return null
 			}
 
-			await deleteNode(node)
+			await deleteNode(nodes[0])
 
 			return true
 		} catch (error) {
@@ -79,7 +79,7 @@ export const action = new FileAction({
 		}
 	},
 
-	async execBatch(nodes: Node[], view: View): Promise<(boolean | null)[]> {
+	async execBatch({ nodes, view }): Promise<(boolean | null)[]> {
 		let confirm = true
 
 		if (shouldAskForConfirmation()) {

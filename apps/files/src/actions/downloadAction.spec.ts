@@ -132,7 +132,12 @@ describe('Download action execute tests', () => {
 			permissions: Permission.READ,
 		})
 
-		const exec = await action.execBatch!([file], view, '/')
+		const exec = await action.execBatch!({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		// Silent action
 		expect(exec).toStrictEqual([null])
@@ -151,7 +156,12 @@ describe('Download action execute tests', () => {
 			permissions: Permission.READ,
 		})
 
-		const exec = await action.execBatch!([file], view, '/')
+		const exec = await action.execBatch!({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		// Silent action
 		expect(exec).toStrictEqual([null])
@@ -198,7 +208,12 @@ describe('Download action execute tests', () => {
 			permissions: Permission.READ,
 		})
 
-		const exec = await action.execBatch!([file1, file2], view, '/Dir')
+		const exec = await action.execBatch!({
+			nodes: [file1, file2],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})
 
 		// Silent action
 		expect(exec).toStrictEqual([null, null])

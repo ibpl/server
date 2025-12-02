@@ -17,7 +17,7 @@ import { defineAsyncComponent } from 'vue'
  *
  * @param nodes Nodes to modify tags for
  */
-async function execBatch(nodes: Node[]): Promise<(null | boolean)[]> {
+async function execBatch({ nodes }: { nodes: Node[] }): Promise<(null | boolean)[]> {
 	const response = await new Promise<null | boolean>((resolve) => {
 		spawnDialog(defineAsyncComponent(() => import('../components/SystemTagPicker.vue')), {
 			nodes,
@@ -34,7 +34,7 @@ export const action = new FileAction({
 	iconSvgInline: () => TagMultipleSvg,
 
 	// If the app is disabled, the action is not available anyway
-	enabled(nodes) {
+	enabled({ nodes }) {
 		if (isPublicShare()) {
 			return false
 		}
@@ -52,8 +52,8 @@ export const action = new FileAction({
 		return !nodes.some((node) => (node.permissions & Permission.UPDATE) === 0)
 	},
 
-	async exec(node: Node) {
-		return execBatch([node])[0]
+	async exec({ nodes }) {
+		return execBatch({ nodes })[0]
 	},
 
 	execBatch,

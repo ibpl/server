@@ -31,12 +31,12 @@ export function registerConvertActions() {
 			id: `convert-${from}-${to}`,
 			displayName: () => t('files', 'Save as {displayName}', { displayName }),
 			iconSvgInline: () => generateIconSvg(to),
-			enabled: (nodes: Node[]) => {
+			enabled: ({ nodes }) => {
 				// Check that all nodes have the same mime type
 				return nodes.every((node) => from === node.mime)
 			},
 
-			async exec(node: Node) {
+			async exec({ nodes }) {
 				// If we're here, we know that the node has a fileid
 				convertFile(node.fileid as number, to)
 
@@ -44,7 +44,7 @@ export function registerConvertActions() {
 				return null
 			},
 
-			async execBatch(nodes: Node[]) {
+			async execBatch({ nodes }) {
 				const fileIds = nodes.map((node) => node.fileid).filter(Boolean) as number[]
 				convertFiles(fileIds, to)
 

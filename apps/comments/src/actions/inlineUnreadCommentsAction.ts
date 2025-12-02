@@ -26,12 +26,12 @@ export const action = new FileAction({
 
 	iconSvgInline: () => CommentProcessingSvg,
 
-	enabled(nodes: Node[]) {
+	enabled({ nodes }) {
 		const unread = nodes[0].attributes['comments-unread'] as number | undefined
 		return typeof unread === 'number' && unread > 0
 	},
 
-	async exec(node: Node) {
+	async exec({ nodes }) {
 		try {
 			window.OCA.Files.Sidebar.setActiveTab('comments')
 			await window.OCA.Files.Sidebar.open(node.path)

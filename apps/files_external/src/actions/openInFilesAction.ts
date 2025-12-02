@@ -24,7 +24,7 @@ export const action = new FileAction({
 
 	enabled: (nodes: Node[], view) => view.id === 'extstoragemounts',
 
-	async exec(node: Node) {
+	async exec({ nodes }) {
 		const config = node.attributes.config as StorageConfig
 		if (config?.status !== STORAGE_STATUS.SUCCESS) {
 			window.OC.dialogs.confirm(

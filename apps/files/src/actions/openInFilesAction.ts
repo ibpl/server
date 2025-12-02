@@ -18,7 +18,7 @@ export const action = new FileAction({
 		return view.id === 'recent' || view.id === SEARCH_VIEW_ID
 	},
 
-	async exec(node: Node) {
+	async exec({ nodes }) {
 		let dir = node.dirname
 		if (node.type === FileType.Folder) {
 			dir = dir + '/' + node.basename

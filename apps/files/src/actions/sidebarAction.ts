@@ -18,7 +18,7 @@ export const action = new FileAction({
 	iconSvgInline: () => InformationSvg,
 
 	// Sidebar currently supports user folder only, /files/USER
-	enabled: (nodes: Node[]) => {
+	enabled: ({ nodes }) => {
 		if (isPublicShare()) {
 			return false
 		}
@@ -40,7 +40,7 @@ export const action = new FileAction({
 		return (nodes[0].root?.startsWith('/files/') && nodes[0].permissions !== Permission.NONE) ?? false
 	},
 
-	async exec(node: Node, view: View, dir: string) {
+	async exec({ nodes, view, folder }) {
 		try {
 			// If the sidebar is already open for the current file, do nothing
 			if (window.OCA.Files?.Sidebar?.file === node.path) {
