@@ -2,8 +2,6 @@
  * SPDX-FileCopyrightText: 2023 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-import type { Node, View } from '@nextcloud/files'
-
 import ArrowULeftTopSvg from '@mdi/svg/svg/arrow-u-left-top.svg?raw'
 import axios from '@nextcloud/axios'
 import { emit } from '@nextcloud/event-bus'
@@ -37,7 +35,7 @@ export const action = new FileAction({
 		}
 	},
 	async execBatch({ nodes, view, folder, contents }) {
-		return Promise.all(nodes.map((node) => this.exec({nodes: [node], view, folder, contents })))
+		return Promise.all(nodes.map((node) => this.exec({ nodes: [node], view, folder, contents })))
 	},
 
 	order: 1,

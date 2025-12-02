@@ -18,8 +18,18 @@ describe('Manage tags action conditions tests', () => {
 	test('Default values', () => {
 		expect(action).toBeInstanceOf(FileAction)
 		expect(action.id).toBe('systemtags:bulk')
-		expect(action.displayName([], view)).toBe('Manage tags')
-		expect(action.iconSvgInline([], view)).toMatch(/<svg.+<\/svg>/)
+		expect(action.displayName({
+			nodes: [],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe('Manage tags')
+		expect(action.iconSvgInline({
+			nodes: [],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toMatch(/<svg.+<\/svg>/)
 		expect(action.default).toBeUndefined()
 		expect(action.order).toBe(undefined)
 		expect(action.enabled).toBeDefined()
@@ -45,9 +55,24 @@ describe('Manage tags action enabled tests', () => {
 		})
 
 		expect(action.enabled).toBeDefined()
-		expect(action.enabled!([file1, file2], view)).toBe(false)
-		expect(action.enabled!([file1], view)).toBe(false)
-		expect(action.enabled!([file2], view)).toBe(true)
+		expect(action.enabled!({
+			nodes: [file1, file2],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe(false)
+		expect(action.enabled!({
+			nodes: [file1],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe(false)
+		expect(action.enabled!({
+			nodes: [file2],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe(true)
 	})
 
 	test('Disabled for non-dav ressources', () => {
@@ -60,7 +85,12 @@ describe('Manage tags action enabled tests', () => {
 		})
 
 		expect(action.enabled).toBeDefined()
-		expect(action.enabled!([file], view)).toBe(false)
+		expect(action.enabled!({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe(false)
 	})
 
 	test('Enabled for files outside the user root folder', () => {
@@ -72,6 +102,11 @@ describe('Manage tags action enabled tests', () => {
 		})
 
 		expect(action.enabled).toBeDefined()
-		expect(action.enabled!([file], view)).toBe(true)
+		expect(action.enabled!({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe(true)
 	})
 })

@@ -36,7 +36,12 @@ export const action = new FileAction({
 	},
 
 	exec: async () => null,
-	renderInline,
+	renderInline: ({ nodes }) => {
+		if (nodes.length !== 1 || !nodes[0]) {
+			return Promise.resolve(null)
+		}
+		return renderInline(nodes[0])
+	},
 
 	order: 0,
 
@@ -141,7 +146,7 @@ function renderTag(tag: string, isMore = false): HTMLElement {
  *
  * @param node
  */
-async function renderInline({ nodes }: { nodes: Node[] }): Promise<HTMLElement> {
+async function renderInline(node: Node): Promise<HTMLElement> {
 	// Ensure we have the system tags as an array
 	const tags = getNodeSystemTags(node)
 

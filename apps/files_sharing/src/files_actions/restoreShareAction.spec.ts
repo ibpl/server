@@ -43,12 +43,27 @@ describe('Restore share action conditions tests', () => {
 
 		expect(action).toBeInstanceOf(FileAction)
 		expect(action.id).toBe('restore-share')
-		expect(action.displayName([file], deletedShareView)).toBe('Restore share')
-		expect(action.iconSvgInline([file], deletedShareView)).toMatch(/<svg.+<\/svg>/)
+		expect(action.displayName({
+			view: deletedShareView,
+			nodes: [file],
+			folder: {} as Folder,
+			contents: [],
+		})).toBe('Restore share')
+		expect(action.iconSvgInline({
+			view: deletedShareView,
+			nodes: [file],
+			folder: {} as Folder,
+			contents: [],
+		})).toMatch(/<svg.+<\/svg>/)
 		expect(action.default).toBeUndefined()
 		expect(action.order).toBe(1)
 		expect(action.inline).toBeDefined()
-		expect(action.inline!(file, deletedShareView)).toBe(true)
+		expect(action.inline!({
+			view: deletedShareView,
+			nodes: [file],
+			folder: {} as Folder,
+			contents: [],
+		})).toBe(true)
 	})
 
 	test('Default values for multiple files', () => {
@@ -67,7 +82,12 @@ describe('Restore share action conditions tests', () => {
 			permissions: Permission.ALL,
 		})
 
-		expect(action.displayName([file1, file2], deletedShareView)).toBe('Restore shares')
+		expect(action.displayName({
+			view: deletedShareView,
+			nodes: [file1, file2],
+			folder: {} as Folder,
+			contents: [],
+		})).toBe('Restore shares')
 	})
 })
 
@@ -82,17 +102,32 @@ describe('Restore share action enabled tests', () => {
 		})
 
 		expect(action.enabled).toBeDefined()
-		expect(action.enabled!([file], deletedShareView)).toBe(true)
+		expect(action.enabled!({
+			nodes: [file],
+			view: deletedShareView,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe(true)
 	})
 
 	test('Disabled on wrong view', () => {
 		expect(action.enabled).toBeDefined()
-		expect(action.enabled!([], view)).toBe(false)
+		expect(action.enabled!({
+			nodes: [],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe(false)
 	})
 
 	test('Disabled without nodes', () => {
 		expect(action.enabled).toBeDefined()
-		expect(action.enabled!([], deletedShareView)).toBe(false)
+		expect(action.enabled!({
+			nodes: [],
+			view: deletedShareView,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe(false)
 	})
 })
 

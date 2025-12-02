@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import type { View } from '@nextcloud/files'
+import type { Folder, View } from '@nextcloud/files'
 
 import { File, FileAction, Permission } from '@nextcloud/files'
 import { describe, expect, test, vi } from 'vitest'
@@ -30,11 +30,36 @@ describe('Inline unread comments action display name tests', () => {
 
 		expect(action).toBeInstanceOf(FileAction)
 		expect(action.id).toBe('comments-unread')
-		expect(action.displayName([file], view)).toBe('')
-		expect(action.title!([file], view)).toBe('1 new comment')
-		expect(action.iconSvgInline([], view)).toMatch(/<svg.+<\/svg>/)
-		expect(action.enabled!([file], view)).toBe(true)
-		expect(action.inline!(file, view)).toBe(true)
+		expect(action.displayName({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe('')
+		expect(action.title!({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe('1 new comment')
+		expect(action.iconSvgInline({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toMatch(/<svg.+<\/svg>/)
+		expect(action.enabled!({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe(true)
+		expect(action.inline!({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe(true)
 		expect(action.default).toBeUndefined()
 		expect(action.order).toBe(-140)
 	})
@@ -51,8 +76,18 @@ describe('Inline unread comments action display name tests', () => {
 			},
 		})
 
-		expect(action.displayName([file], view)).toBe('')
-		expect(action.title!([file], view)).toBe('2 new comments')
+		expect(action.displayName({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe('')
+		expect(action.title!({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe('2 new comments')
 	})
 })
 
@@ -67,7 +102,12 @@ describe('Inline unread comments action enabled tests', () => {
 			attributes: { },
 		})
 
-		expect(action.enabled!([file], view)).toBe(false)
+		expect(action.enabled!({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe(false)
 	})
 
 	test('Action is disabled when file does not have unread comments', () => {
@@ -82,7 +122,12 @@ describe('Inline unread comments action enabled tests', () => {
 			},
 		})
 
-		expect(action.enabled!([file], view)).toBe(false)
+		expect(action.enabled!({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe(false)
 	})
 
 	test('Action is enabled when file has a single unread comment', () => {
@@ -97,7 +142,12 @@ describe('Inline unread comments action enabled tests', () => {
 			},
 		})
 
-		expect(action.enabled!([file], view)).toBe(true)
+		expect(action.enabled!({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe(true)
 	})
 
 	test('Action is enabled when file has a two unread comments', () => {
@@ -112,7 +162,12 @@ describe('Inline unread comments action enabled tests', () => {
 			},
 		})
 
-		expect(action.enabled!([file], view)).toBe(true)
+		expect(action.enabled!({
+			nodes: [file],
+			view,
+			folder: {} as Folder,
+			contents: [],
+		})).toBe(true)
 	})
 })
 

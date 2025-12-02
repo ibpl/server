@@ -68,7 +68,7 @@ export const action = new FileAction({
 
 	enabled: ({ nodes }) => {
 		// Only works on single node
-		if (nodes.length !== 1) {
+		if (nodes.length !== 1 || !nodes[0]) {
 			return false
 		}
 
@@ -96,7 +96,7 @@ export const action = new FileAction({
 
 		if (login && password) {
 			try {
-				await setCredentials(node, login, password)
+				await setCredentials(nodes[0], login, password)
 				showSuccess(t('files_external', 'Credentials successfully set'))
 			} catch (error) {
 				showError(t('files_external', 'Error while setting credentials: {error}', {
