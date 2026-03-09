@@ -47,7 +47,6 @@ use OCP\IURLGenerator;
 use OCP\IUserSession;
 use OCP\Security\Ip\IRemoteAddress;
 use OCP\Server;
-use OCP\Util;
 use Psr\Log\LoggerInterface;
 use ReflectionMethod;
 
