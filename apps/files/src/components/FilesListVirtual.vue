@@ -5,15 +5,17 @@
 <template>
 	<VirtualList
 		ref="table"
-		:data-component="userConfig.grid_view ? FileEntryGrid : FileEntry"
+		:data-component="FileEntryWrapper"
 		data-key="source"
-		:data-sources="nodes"
+		:data-sources="groupedNodes"
 		:grid-mode="userConfig.grid_view"
 		:extra-props="{
+			gridMode: userConfig.grid_view,
 			isMimeAvailable,
 			isMtimeAvailable,
 			isSizeAvailable,
 			nodes,
+			onToggleGroup: toggleGroup,
 		}"
 		:scroll-to-index="scrollToIndex"
 		:caption="caption">
@@ -73,6 +75,9 @@ import type { INode } from '@nextcloud/files'
 import type { ComponentPublicInstance, PropType } from 'vue'
 import type { UserConfig } from '../types.ts'
 
+import { ref } from 'vue'
+import FileEntryWrapper from './FileEntryWrapper.vue'
+import { useImageGrouping, type ImageGroupingConfig } from '../composables/useImageGrouping.ts'
 import { showError } from '@nextcloud/dialogs'
 import { FileType, Folder, getSidebar, Permission, View } from '@nextcloud/files'
 import { n, t } from '@nextcloud/l10n'
@@ -167,6 +172,30 @@ export default defineComponent({
 			return props.nodes.some((node: INode) => node.size !== undefined)
 		})
 
+		const expandedGroups = ref<Set<string>>(new Set())
+
+		const groupingConfig = computed<ImageGroupingConfig>(() => {
+			const raw = userConfigStore.userConfig.recent_files_group_mimetypes
+			const mimetypes = Array.isArray(raw) ? raw : []
+			const timespanMinutes = Number(userConfigStore.userConfig.recent_files_group_timespan_minutes) || 2
+			return { mimetypes, timespanMinutes }
+		})
+
+		const groupedNodes = useImageGrouping(
+			computed(() => props.nodes),
+			expandedGroups,
+			groupingConfig,
+		)
+
+		function toggleGroup(groupKey: string) {
+			if (expandedGroups.value.has(groupKey)) {
+				expandedGroups.value.delete(groupKey)
+			} else {
+				expandedGroups.value.add(groupKey)
+			}
+			expandedGroups.value = new Set(expandedGroups.value)
+		}
+
 		return {
 			fileId,
 			headers: useFileListHeaders(),
@@ -183,6 +212,10 @@ export default defineComponent({
 
 			n,
 			t,
+
+			groupedNodes,
+			toggleGroup,
+			FileEntryWrapper,
 		}
 	},
 
