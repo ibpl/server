@@ -27,3 +27,5 @@ tests
 /config/config.php
 /contribute
 /data
+/openapi.json
+/vendor-bin
