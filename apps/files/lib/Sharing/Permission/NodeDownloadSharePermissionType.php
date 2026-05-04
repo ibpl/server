@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
+declare(strict_types=1);
+
+namespace OCA\Files\Sharing\Permission;
+
+use OCA\Files\AppInfo\Application;
+use OCP\L10N\IFactory;
+use OCP\Server;
+use OCP\Sharing\Permission\ISharePermissionType;
+use OCP\Sharing\Permission\SharePermissionPreset;
+
+final class NodeDownloadSharePermissionType implements ISharePermissionType {
+	#[\Override]
+	public function getDisplayName(): string {
+		return Server::get(IFactory::class)->get(Application::APP_ID)->t('Allow download');
+	}
+
+	#[\Override]
+	public function getHint(): ?string {
+		return null;
+	}
+
+	/**
+	 * @return list<SharePermissionPreset>
+	 */
+	#[\Override]
+	public function getPresets(): array {
+		return [
+			SharePermissionPreset::View,
+			SharePermissionPreset::Edit,
+		];
+	}
+
+	#[\Override]
+	public function getDefault(): bool {
+		return false;
+	}
+}

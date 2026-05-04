@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
+declare(strict_types=1);
+
+namespace OCA\Files\Sharing\Permission;
+
+use OCA\Files\AppInfo\Application;
+use OCP\Constants;
+use OCP\IAppConfig;
+use OCP\L10N\IFactory;
+use OCP\Server;
+use OCP\Sharing\Permission\ISharePermissionType;
+use OCP\Sharing\Permission\SharePermissionPreset;
+
+final class NodeUpdateSharePermissionType implements ISharePermissionType {
+	#[\Override]
+	public function getDisplayName(): string {
+		return Server::get(IFactory::class)->get(Application::APP_ID)->t('Edit files');
+	}
+
+	#[\Override]
+	public function getHint(): ?string {
+		return null;
+	}
+
+	/**
+	 * @return list<SharePermissionPreset>
+	 */
+	#[\Override]
+	public function getPresets(): array {
+		return [
+			SharePermissionPreset::Edit,
+		];
+	}
+
+	#[\Override]
+	public function getDefault(): bool {
+		return (Server::get(IAppConfig::class)->getValueInt(Application::APP_ID, 'shareapi_default_permissions') & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE;
+	}
+}
