@@ -17,9 +17,11 @@ use Psr\Log\LoggerInterface;
 
 class StorageFactory implements IStorageFactory {
 	/**
-	 * @var array[] [$name=>['priority'=>$priority, 'wrapper'=>$callable] $storageWrappers
+	 * @var array<string, array{priority: int, wrapper: (callable(string, IStorage, IMountPoint): IStorage)}> $storageWrappers
 	 */
-	private $storageWrappers = [];
+	private array $storageWrappers = [];
+	/** @var bool $dirty Whether the list of storage wrappers is sorted */
+	private bool $dirty = true;
 
 	#[\Override]
 	public function addStorageWrapper(string $wrapperName, callable $callback, int $priority = 50, array $existingMounts = []): bool {
@@ -33,6 +35,7 @@ class StorageFactory implements IStorageFactory {
 		}
 
 		$this->storageWrappers[$wrapperName] = ['wrapper' => $callback, 'priority' => $priority];
+		$this->dirty = true;
 		return true;
 	}
 
@@ -44,6 +47,7 @@ class StorageFactory implements IStorageFactory {
 	 */
 	public function removeStorageWrapper(string $wrapperName): void {
 		unset($this->storageWrappers[$wrapperName]);
+		$this->dirty = true;
 	}
 
 	/**
@@ -58,14 +62,14 @@ class StorageFactory implements IStorageFactory {
 	}
 
 	public function wrap(IMountPoint $mountPoint, IStorage $storage): IStorage {
+		if ($this->dirty) {
+			uasort($this->storageWrappers, static fn (array $a, array $b) => $b['priority'] - $a['priority']);
+			$this->dirty = false;
+		}
 		$wrappers = array_values($this->storageWrappers);
-		usort($wrappers, function ($a, $b) {
-			return $b['priority'] - $a['priority'];
-		});
-		/** @var callable[] $wrappers */
-		$wrappers = array_map(function ($wrapper) {
-			return $wrapper['wrapper'];
-		}, $wrappers);
+
+		/** @var list<callable(string, IStorage, IMountPoint): IStorage> $wrappers */
+		$wrappers = array_map(static fn (array $wrapper): callable => $wrapper['wrapper'], $wrappers);
 		foreach ($wrappers as $wrapper) {
 			$storage = $wrapper($mountPoint->getMountPoint(), $storage, $mountPoint);
 			if (!($storage instanceof IStorage)) {
