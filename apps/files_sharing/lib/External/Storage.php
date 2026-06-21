@@ -12,6 +12,7 @@ namespace OCA\Files_Sharing\External;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
+use OC\Files\Storage\BearerAuthAwareSabreClient;
 use OC\Files\Storage\DAV;
 use OC\ForbiddenException;
 use OC\Share\Share;
@@ -95,7 +96,7 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage, 
 		// Shares created before the exchange-token capability was introduced have no
 		// stored token and must keep using basic auth for backwards compatibility.
 		if (!empty($options['access_token'])) {
-			$authType = \OC\Files\Storage\BearerAuthAwareSabreClient::AUTH_BEARER;
+			$authType = BearerAuthAwareSabreClient::AUTH_BEARER;
 		}
 
 		$host = parse_url($remote, PHP_URL_HOST);
@@ -130,7 +131,7 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage, 
 				'root' => $webDavEndpoint,
 				'user' => $options['token'],
 				'authType' => $authType,
-				'password' => $authType === \OC\Files\Storage\BearerAuthAwareSabreClient::AUTH_BEARER
+				'password' => $authType === BearerAuthAwareSabreClient::AUTH_BEARER
 					? (string)($options['access_token'] ?? '')
 					: (string)($options['password'] ?? ''),
 				'discoveryService' => $discoveryService,
