@@ -15,6 +15,7 @@ use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Files\Config\IAuthoritativeMountProvider;
 use OCP\Files\Config\IMountProvider;
 use OCP\Files\Config\IPartialMountProvider;
+use OCP\Files\IRootFolder;
 use OCP\Files\Mount\IMountManager;
 use OCP\Files\Mount\IMountPoint;
 use OCP\Files\Storage\IStorageFactory;

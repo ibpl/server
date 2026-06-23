@@ -154,9 +154,7 @@ class SharedStorage extends Jail implements LegacyISharedStorage, ISharedStorage
 				throw new \Exception('Maximum share depth reached');
 			}
 
-			/** @var IRootFolder $rootFolder */
-			$rootFolder = Server::get(IRootFolder::class);
-			$this->ownerUserFolder = $rootFolder->getUserFolder($this->superShare->getShareOwner());
+			$this->ownerUserFolder = $this->rootFolder->getUserFolder($this->superShare->getShareOwner());
 			$sourceId = $this->superShare->getNodeId();
 			$ownerNodes = $this->ownerUserFolder->getById($sourceId);
 
