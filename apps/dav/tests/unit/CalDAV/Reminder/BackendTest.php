@@ -114,8 +114,13 @@ class BackendTest extends TestCase {
 		$rows = $this->reminderBackend->getRemindersToProcess();
 
 		$this->assertCount(2, $rows);
-		unset($rows[0]['id']);
-		unset($rows[1]['id']);
+		// calendardata is a BLOB and may be returned as a stream resource by the DB
+		foreach ($rows as &$row) {
+			unset($row['id']);
+			if (is_resource($row['calendardata'])) {
+				$row['calendardata'] = stream_get_contents($row['calendardata']);
+			}
+		}
 
 		$expected1 = [
 			'calendar_id' => 1,
