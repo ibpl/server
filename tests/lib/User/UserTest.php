@@ -350,7 +350,7 @@ class UserTest extends TestCase {
 			->method('implementsActions')
 			->willReturn(false);
 
-		$backend->expects($this->never())
+		$backend->expects($this->once())
 			->method('setDisplayName');
 
 		$user = new User('foo', $backend, $this->dispatcher);
