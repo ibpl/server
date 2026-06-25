@@ -4,6 +4,7 @@
  */
 
 import { mount } from '@vue/test-utils'
+import timezoneMock from 'timezone-mock'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 let personalInfoParameters
@@ -26,7 +27,17 @@ vi.mock('../../service/PersonalInfo/PersonalInfoService.js', () => ({
 	savePrimaryAccountProperty,
 }))
 
+async function mountBirthdaySection() {
+	const BirthdaySection = await import('./BirthdaySection.vue')
+	return mount(BirthdaySection.default, {
+		mocks: {
+			t: (_app, text) => text,
+		},
+	})
+}
+
 afterEach(() => {
+	timezoneMock.unregister()
 	personalInfoParameters = undefined
 	vi.resetModules()
 })
@@ -42,12 +53,45 @@ describe('BirthdaySection', () => {
 		savePrimaryAccountProperty.mockReturnValue(Promise.resolve({
 			ocs: { meta: { status: 'ok' } },
 		}))
-		const BirthdaySection = await import('./BirthdaySection.vue')
-		const wrapper = mount(BirthdaySection.default, {
-			mocks: {
-				t: (_app, text) => text,
+		const wrapper = await mountBirthdaySection()
+
+		const input = wrapper.find('input')
+		await input.setValue('1987-12-01')
+
+		await expect.poll(() => savePrimaryAccountProperty.mock.calls.length).toBe(1)
+		expect(savePrimaryAccountProperty).toHaveBeenCalledWith(
+			'birthdate',
+			'1987-12-01T00:00:00.000Z',
+		)
+		expect(input.element.value).toBe('1987-12-01')
+	})
+
+	it('displays value when browser timezone is set', async () => {
+		timezoneMock.register('US/Pacific')
+		personalInfoParameters = {
+			birthdate: {
+				name: 'birthdate',
+				value: '1987-12-15T00:00:00.000Z',
 			},
-		})
+		}
+
+		const wrapper = await mountBirthdaySection()
+
+		expect(wrapper.find('input').element.value).toBe('1987-12-15')
+	})
+
+	it('saves value when browser timezone is set', async () => {
+		timezoneMock.register('US/Pacific')
+		personalInfoParameters = {
+			birthdate: {
+				name: 'birthdate',
+				value: null,
+			},
+		}
+		savePrimaryAccountProperty.mockReturnValue(Promise.resolve({
+			ocs: { meta: { status: 'ok' } },
+		}))
+		const wrapper = await mountBirthdaySection()
 
 		const input = wrapper.find('input')
 		await input.setValue('1987-12-01')
